@@ -37,7 +37,7 @@ CREATE TABLE `question` (
   `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `form_id` INT NOT NULL,
   `text` TEXT NOT NULL,
-  `answer_type` ENUM ('text', 'single_choice', 'multiple_choice', 'date') NOT NULL DEFAULT 'text',
+  `type` ENUM ('text', 'single_choice', 'multiple_choice', 'date') NOT NULL DEFAULT 'text',
   `created` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) COMMENT 'date this record was created',
   `modified` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP),
   `deleted` datetime DEFAULT null COMMENT 'date this record was deleted'
