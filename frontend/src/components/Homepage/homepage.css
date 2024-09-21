@@ -1,15 +1,14 @@
 .homepage {
-text-align: center;
-margin-top: 20vh;
-font-family: "open_sanssemibold",'Open Sans',Arial,Helvetica,sans-serif;
+    text-align: center;
+    font-family: "open_sanssemibold",'Open Sans',Arial,Helvetica,sans-serif;
 }
 
 .homepage h2 {
-font-size: 40px;
-color: #17882c;
+    font-size: 40px;
+    color: #17882c;
 }
 
 .homepage p {
-font-size: 30px;
-color: #000
+    font-size: 30px;
+    color: #000
 }

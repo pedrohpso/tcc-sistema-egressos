@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import './Header.css';
-import Button from '../Button/button';
+import Button from '../Button/Button';
 import { useNavigate } from 'react-router-dom';
-import { useUser } from '../../context/userContext';
+import { useUser } from '../../context/UserContext';
 
 const Header: React.FC = () => {
   const { user, setUser } = useUser();
@@ -34,11 +34,20 @@ const Header: React.FC = () => {
 
   return (
     <header className="header">
-      <h3>IFSP - Campus Campinas</h3>
+      <h3 className='title'>IFSP - Campus Campinas</h3>
       <h1 className="title" onClick={handleHomeClick}>Sistema de Egressos</h1>
-      {user && <p className="username">Boas vindas, {user.name}!</p>}
       <div className="bar">
-        { !user ? <div><Button onClick={handleLoginClick} label="Login"/> <Button onClick={handleRegisterClick} label="Registrar"/> </div>: <Button onClick={handleLogoutClick} label="Logout"/> }
+        { !user ? 
+        <div>
+          <Button className="bar-button" onClick={handleLoginClick} label="Login"/>
+          <Button className="bar-button" onClick={handleRegisterClick} label="Registrar"/>
+        </div>
+        :
+          <div className='user-info'>
+            <p className="username">Olá, {user.name}!</p>
+            <Button className="bar-button" onClick={handleLogoutClick} label="Logout"/> 
+          </div>
+        }
       </div>
     </header>
   );

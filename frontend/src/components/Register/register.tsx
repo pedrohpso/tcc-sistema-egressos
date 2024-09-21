@@ -1,52 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FormFieldProps } from '../FormField/FormField';
+import Form from '../Form/Form';
 
 const Register: React.FC = () => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        console.log({ name, email, password });
+        //TODO: Implementar lógica de cadastro
+        navigate('/')
     };
 
+    // Campos temporários
+    const fields: FormFieldProps[] = [
+        {
+            type: 'text',
+            label: 'Name',
+            required: true,
+            name: 'Name'
+        },
+        {
+            type: 'email',
+            label: 'Email',
+            required: true,
+            name: 'Email'
+        },
+        {
+            type: 'password',
+            label: 'Password',
+            required: true,
+            name: 'Password'
+        }
+    ]
+
     return (
-        <div>
-            <h2>Register</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="name">Name:</label>
-                    <input
-                        type="text"
-                        id="name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="email">Email:</label>
-                    <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="password">Password:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit">Register</button>
-            </form>
-        </div>
+        <div className='box'>
+            <h2>Registro</h2>
+            <Form fields={fields} onSubmit={handleSubmit}/>
+        </div>    
     );
 };
 

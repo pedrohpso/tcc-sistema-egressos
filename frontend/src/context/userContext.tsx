@@ -2,7 +2,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export interface UserData {
   name: string;
-  // Outros dados do usuário
+  email: string;
+  is_admin: boolean;
 }
 
 interface UserContextType {

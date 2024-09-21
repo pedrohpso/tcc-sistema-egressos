@@ -1,45 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
+import FormField, { FormFieldProps } from '../FormField/FormField';
+import Button from '../Button/Button'; 
 
-const FormEgresso: React.FC = () => {
-  const [name, setName] = useState('');
-  const [course, setCourse] = useState('');
-  const [year, setYear] = useState<number | string>('');
+interface FormProps {
+  fields: FormFieldProps[];
+  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void; 
+}
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const data = { name, course, year };
-    console.log('Formulário enviado: ', data);
-  };
-
+const Form: React.FC<FormProps> = ({ fields, onSubmit }) => {
   return (
-    <div>
-      <h2>Preencha o formulário de egresso</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Nome completo"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Curso"
-          value={course}
-          onChange={(e) => setCourse(e.target.value)}
-          required
-        />
-        <input
-          type="number"
-          placeholder="Ano de conclusão"
-          value={year}
-          onChange={(e) => setYear(e.target.value)}
-          required
-        />
-        <button type="submit">Enviar</button>
-      </form>
-    </div>
+    <form onSubmit={onSubmit}>
+      {fields.map(field => (
+        <FormField key={field.name} {...field} />
+      ))}
+      <Button className='form-button' label="Enviar" type='submit' /> {}
+    </form>
   );
 };
 
-export default FormEgresso;
+export default Form;
