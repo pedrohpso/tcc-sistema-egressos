@@ -13,11 +13,18 @@
   justify-content: space-between; 
 }
 
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
 .title {
   font-family: "open_sansextrabold",'Open Sans',Arial,Helvetica,sans-serif;
   padding-left: 20px;
   margin-top: 10px;
-  flex-grow: 0; 
+  flex-grow: 1; 
 }
 
 .title h1 {
@@ -64,4 +71,26 @@
   align-items: center;
   width: 100%;
   justify-content: space-between;
+}
+
+.image-container {
+  display:flex;
+  align-items: center;
+  background-color:white;
+  border-radius: 10px;
+  margin-right: 20px;
+  margin-bottom: 10px;
+}
+
+
+.header-image {
+  width: 265px;
+  height: 95px;
+  border-radius: 10px;
+}
+
+@media (max-width: 500px) {
+  .image-container {
+    display: none;
+  }
 }
