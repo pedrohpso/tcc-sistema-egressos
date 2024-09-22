@@ -5,6 +5,7 @@ import Register from './components/Register/Register';
 import Login from './components/Login/Login';
 import './App.css';
 import Footer from './components/Footer/Footer';
+import Error from './components/Error/Error';
 
 const App: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ const App: React.FC = () => {
               <Route path="/" element={<Homepage />} />
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
+              <Route path="*" element={<Error name="Página não encontrada" />} />
             </Routes>
           </main>
           <Footer />
