@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Form from '../Form/Form'; 
-import { getMockFormData, iForm, iOption, iField } from './mockFormData';
+import { getMockFormData, iForm, iField, iOption } from './mockFormData';
 import './AlumniForm.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -34,10 +34,7 @@ const AlumniForm: React.FC = () => {
       id: option.id,
       text: option.text,
     })),
-    dependency: field.dependencies ? field.dependencies.map(dep => ({
-      fieldId: String(dep.fieldId),
-      optionIds: dep.optionIds
-    })) : undefined,
+    dependencies: field.dependencies,
     required: true,
   }));
 

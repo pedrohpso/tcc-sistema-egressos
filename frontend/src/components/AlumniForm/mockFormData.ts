@@ -14,7 +14,7 @@ export interface iField {
   question: string;
   options?: iOption[]; 
   position: number;
-  dependencies?: iDependency[]
+  dependencies?: iDependency[];
 }
 
 export interface iForm {
@@ -24,56 +24,7 @@ export interface iForm {
 }
 
 export async function getMockFormData(): Promise<iForm> {
-  return Promise.resolve(testForm);
-}
-
-const testForm: iForm = {
-  id: 1,
-  title: "Formulário de Egresso TESTE",
-  fields: [
-    {
-      id: 5345,
-      type: 'text',
-      question: 'What is your name?',
-      position: 1,
-    },
-    {
-      id: 63456,
-      type: 'single_choice',
-      question: 'What is your favorite color?',
-      options: [
-        { id: 1, text: 'Red' },
-        { id: 2, text: 'Blue' },
-        { id: 3, text: 'Green' },
-      ],
-      position: 2,
-    },
-    {
-      id: 234523,
-      type: 'multiple_choice',
-      question: 'Which of the following fruits do you like?',
-      options: [
-        { id: 1, text: 'Apple' },
-        { id: 2, text: 'Banana' },
-        { id: 3, text: 'Orange' },
-        { id: 4, text: 'Grapes' },
-      ],
-      position: 3,
-    },
-    {
-      id: 56756,
-      type: 'text',
-      question: 'Why do you like this color?',
-      dependencies: [{ fieldId: 63456, optionIds: [2] }],
-      position: 4,
-    },
-    {
-      id: 45645,
-      type: 'text',
-      question: 'Any additional comments?',
-      position: 5,
-    },
-  ],
+  return Promise.resolve(egressoForm);
 }
 
 const egressoForm: iForm = {

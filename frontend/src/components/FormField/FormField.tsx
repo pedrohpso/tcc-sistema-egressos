@@ -11,29 +11,13 @@ export interface FormFieldProps {
   name: string;
   type: 'text' | 'email' | 'password' | 'date' | 'single_choice' | 'multiple_choice';
   value?: string | string[];
-  options?: Option[];  
+  options?: Option[];
   required?: boolean;
-  dependencies?: { fieldId: string; optionIds: number[] }[];  
+  dependencies?: { fieldId: number, optionIds: number[] }[];
   onChange?: (name: string, value: string | string[]) => void;
-  formData?: { [key: string]: string | string[] };
 }
 
-const FormField: React.FC<FormFieldProps> = ({ label, name, type, value, options, required, dependencies, onChange, formData }) => {
-  const isFieldVisible = () => {
-    if (!dependencies) return true; 
-
-    return dependencies.some(dep => {
-      const dependentValue = formData?.[dep.fieldId];
-      if (Array.isArray(dependentValue)) {
-        return dep.optionIds.some(optionId => dependentValue.includes(String(optionId)));
-      }
-      return dep.optionIds.includes(Number(dependentValue));
-    });
-  };
-  
-  if (!isFieldVisible()) {
-    return null; 
-  }
+const FormField: React.FC<FormFieldProps> = ({ label, name, type, value, options, required, onChange }) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     onChange?.(name, e.target.value);
@@ -41,15 +25,16 @@ const FormField: React.FC<FormFieldProps> = ({ label, name, type, value, options
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checkedValue = e.target.value;
+    let updatedValue: string[] = [];
 
     if (Array.isArray(value)) {
-      const updatedValue = e.target.checked
+      updatedValue = e.target.checked
         ? [...value, checkedValue]
-        : value.filter(v => v !== checkedValue); 
-      onChange?.(name, updatedValue);
+        : value.filter(v => v !== checkedValue);
     } else {
-      onChange?.(name, [checkedValue]);
+      updatedValue = [checkedValue];
     }
+    onChange?.(name, updatedValue);
   };
 
   const renderInput = () => {
