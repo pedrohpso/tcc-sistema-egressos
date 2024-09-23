@@ -4,13 +4,10 @@
     color: white;
     width: 100%;
     display: block;
-    flex-direction: column;
-    position: fixed;
+    position: relative;
     bottom: 0;
     left: 0;
     padding: 10px 0 10px 0;
-    justify-content: center; 
-    align-items: center;
     margin-top: auto;
 }
 

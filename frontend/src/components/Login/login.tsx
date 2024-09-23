@@ -8,44 +8,41 @@ const Login: React.FC = () => {
   const { user, setUser } = useUser();
   const navigate = useNavigate();
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    // Substituir aqui pela lógica de autenticação
-    // Precisa implementar o token JWT.
-    const form = event.target as HTMLFormElement;
-    const email = form.elements.namedItem('Email') as HTMLInputElement;
-    const name = email.value.split('@')[0];
-    const isAdmin = name === 'admin' ? true : false;
+  const handleSubmit = (formData: { [key: string]: string | string[] }) => {
+    const email = formData['Email'] as string;
+    const name = email.split('@')[0];
+    const isAdmin = name === 'admin';
 
-    setUser({ name: email.value.split('@')[0], email: email.value, is_admin: isAdmin });
+    // Configura o usuário no contexto
+    setUser({ name, email, is_admin: isAdmin });
     navigate('/');
   };
 
   useEffect(() => {
-    if(user){
+    if (user) {
       navigate('/');
     }
-  }, []);
+  }, [user, navigate]);
 
   const fields: FormFieldProps[] = [
     {
       type: 'email',
       label: 'Email',
       required: true,
-      name: 'Email'
+      name: 'Email',
     },
     {
       type: 'password',
       label: 'Senha',
       required: true,
-      name: 'Senha'
+      name: 'Senha',
     }
   ];
 
   return (
     <div className='box'>
       <h2>Login</h2>
-      <Form fields={fields} onSubmit={handleSubmit}/>
+      <Form fields={fields} onSubmit={handleSubmit} />
     </div>
   );
 };

@@ -35,6 +35,7 @@ CREATE TABLE `form` (
 
 CREATE TABLE `question` (
   `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `position` INT NOT NULL,
   `form_id` INT NOT NULL,
   `text` TEXT NOT NULL,
   `type` ENUM ('text', 'single_choice', 'multiple_choice', 'date') NOT NULL DEFAULT 'text',

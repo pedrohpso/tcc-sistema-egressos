@@ -39,7 +39,7 @@ const Header: React.FC = () => {
           <h1 className="title" onClick={handleHomeClick}>Sistema de Egressos</h1>
         </div>
         <div className= "image-container">
-          <img src='../../public/marca_if_campinas.png' alt='Logo' className='header-image'/>
+          <img src='/marca_if_campinas.png' alt='Logo' className='header-image'/>
         </div>
       </div>
       <div className="bar">

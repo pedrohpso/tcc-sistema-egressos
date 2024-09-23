@@ -1,0 +1,94 @@
+.admin-container {
+  font-family: "open_sansextrabold",'Open Sans',Arial,Helvetica,sans-serif;
+  display: flex;
+  height: 100%;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2), 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.filters-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-right: 2px solid #17882c; 
+  max-width: 300px; 
+}
+
+.select-container {
+  display: grid;
+  margin-bottom: 20px;
+  overflow: clip;
+}
+
+.select-container select {
+  padding: 2px;
+  border: 1px solid #17882c;
+  border-radius: 2px;
+  font-size: 0.7em;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 2px;
+  margin-bottom: 5px;
+}
+
+.select-container label {
+  margin-bottom: 5px;
+  justify-self: left;
+}
+
+.select-container Button {
+  max-width: 60px;
+  max-height: 50px;
+}
+
+.download-button-container{
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.select-container Button label {
+  background-color: grey;
+}
+
+.update-button {
+  padding: 10px 20px;
+  background-color: #17882c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.chart-container {
+  width: 65vw;
+  flex: 3;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chart-type-container{
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.chart-type-button {
+  cursor: pointer;
+  color: #17882c;
+}
+
+.chart-type-button.disabled {
+  cursor: not-allowed;
+  color: grey;
+}
+
+.loading {
+  position: absolute;
+  font-size: 20px;
+  color: #17882c;
+}

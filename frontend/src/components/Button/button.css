@@ -1,39 +1,39 @@
 .custom-button {
-    font-family: "open_sansextrabold",'Open Sans',Arial,Helvetica,sans-serif;
-    background-color: #17882c;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-  }
-  
-  .custom-button:hover {
-    background-color: #145d1f;
-  }
-  
-  .bar-button {
-    background-color: #00420c;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-    margin-right: 15px;
-  }
+  font-family: "open_sansextrabold", 'Open Sans', Arial, Helvetica, sans-serif;
+  background-color: #17882c;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
 
-  .form-button {
-    background-color: #00420c;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-    margin-top: 20px;
-  }
+.custom-button:hover {
+  background-color: #145d1f;
+}
+
+.bar-button {
+  background-color: #00420c;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  margin-right: 15px;
+}
+
+.form-button {
+  background-color: #00420c;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  margin-top: 20px;
+}

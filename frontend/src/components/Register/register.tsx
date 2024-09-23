@@ -6,8 +6,8 @@ import Form from '../Form/Form';
 const Register: React.FC = () => {
     const navigate = useNavigate();
 
-    const handleSubmit = (event: React.FormEvent) => {
-        event.preventDefault();
+    const handleSubmit = (formData: { [key: string]: string | string[] }) => {
+        console.log('Form Data: ', formData);
         //TODO: Implementar lógica de cadastro
         navigate('/')
     };
