@@ -6,6 +6,8 @@ form {
 }
 
 button[type="submit"] {
+  align-self: flex-end;
+  width: auto;
   background-color: #17882c;
   color: white;
   padding: 10px 20px;

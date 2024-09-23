@@ -39,7 +39,7 @@ const AlumniForm: React.FC = () => {
   }));
 
   return (
-    <div className='box'>
+    <div id='alumni-form' className='box'>
       <h2>{formData.title}</h2>
       <Form
         fields={fields}

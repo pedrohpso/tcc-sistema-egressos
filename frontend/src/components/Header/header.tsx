@@ -35,7 +35,7 @@ const Header: React.FC = () => {
   return (
     <header className="header">
       <div className='header-container'>
-        <div>
+        <div className='title-container'>
           <h1 className="title" onClick={handleHomeClick}>Sistema de Egressos</h1>
         </div>
         <div className= "image-container">

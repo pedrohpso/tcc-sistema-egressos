@@ -34,11 +34,8 @@
   margin-bottom: 5px;
 }
 
-.title h3 {
-  font-size: 1.5em;
-  line-height: .8em;
-  font-weight: 800;
-  letter-spacing: -1px;
+.title-container:hover {
+  cursor: pointer;
 }
 
 .username {
