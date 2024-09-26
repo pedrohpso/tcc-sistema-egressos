@@ -2,6 +2,8 @@ import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import './Chart.css';
 
+const COLORS = ['#004d00', '#17882c', '#90ee90', '#555555', '#b8b8b8'];
+
 interface ChartProps {
   data: Record<string, string>[];
   type: string;
@@ -36,7 +38,7 @@ const Chart: React.FC<ChartProps> = ({ data, type }) => {
                   dataKey={key}
                   stroke="#000000"
                   strokeWidth={1}
-                  fill={`#${Math.floor(Math.random() * 16777215).toString(16)}`}
+                  fill={COLORS[index % COLORS.length]}
                 />
               ))}
           </BarChart>
@@ -64,7 +66,7 @@ const Chart: React.FC<ChartProps> = ({ data, type }) => {
               label
             >
               {pieData.map((_entry, index) => (
-                <Cell key={`cell-${index}`} fill={`#${Math.floor(Math.random() * 16777215).toString(16)}`} />
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
             <Tooltip />

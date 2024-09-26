@@ -3,10 +3,12 @@ import './Header.css';
 import Button from '../Button/Button';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
+import { useCourse } from '../../context/CourseContext';
 
 const Header: React.FC = () => {
   const { user, setUser } = useUser();
-  
+  const { courses, selectedCourse, setSelectedCourse } = useCourse();
+
   const navigate = useNavigate();
 
   const handleLoginClick = () => {
@@ -49,8 +51,19 @@ const Header: React.FC = () => {
           <Button className="bar-button" onClick={handleRegisterClick} label="Registrar"/>
         </div>
         :
-          <div className='user-info'>
-            <p className="username">Olá, {user.name}!</p>
+          <div className='user-header'>
+             <div className="course-selector">
+              {user.is_admin ? courses.map(course => (
+                  <Button
+                    key={course.id}
+                    label={course.shortname}
+                    onClick={() => setSelectedCourse(course)}
+                    className={selectedCourse?.id === course.id ? 'selected' : ''}
+                  />
+                )) : (
+                  <p>Olá, {user.name}!</p>
+                )}
+              </div>
             <Button className="bar-button" onClick={handleLogoutClick} label="Logout"/> 
           </div>
         }

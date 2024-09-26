@@ -8,9 +8,8 @@
 table {
   width: 100%;
   border-collapse: collapse;
-  font-family: 'Arial', sans-serif;
+  font-family: "open_sansextrabold",'Open Sans',Arial,Helvetica,sans-serif;
   background-color: #f9f9f9;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 th, td {
@@ -21,8 +20,7 @@ th, td {
 }
 
 th {
-  background-color: #17882c; /* Cor principal usada no seu projeto */
-  color: white;
+  background-color: #17882c;
   text-transform: uppercase;
   font-weight: bold;
 }

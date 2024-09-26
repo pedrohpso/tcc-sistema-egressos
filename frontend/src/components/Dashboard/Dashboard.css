@@ -1,4 +1,4 @@
-.admin-container {
+.dashboard-container {
   display: flex;
   flex-direction: row;
   gap: 30px; 
@@ -57,6 +57,10 @@
 
 .select-container Button label {
   background-color: grey;
+}
+
+.year-range-container {
+  margin: 0 15px;
 }
 
 .update-button {
@@ -133,31 +137,31 @@
 }
 
 .value-label {
-  font-size: 1.2em; /* Tamanho do texto "Maior valor" e "Menor valor" */
+  font-size: 1.2em;
   font-weight: bold;
   margin-bottom: 50px;
   color: #333;
 }
 
 .value-number {
-  font-size: 2em; /* Tamanho maior para o valor centralizado */
+  font-size: 2em; 
   font-weight: bold;
   margin-bottom: 10px;
 }
 
 .value-info {
-  font-size: 0.8em; /* Tamanho menor para indicador e agrupamento */
+  font-size: 0.8em; 
   color: #666;
 }
 
 .value-info div {
-  margin-top: 2px; /* Reduz o espaçamento entre linhas */
+  margin-top: 2px;
 }
 
 .value-box:first-child {
-  background-color: #dff0d8; /* Cor verde claro para o maior valor */
+  background-color: #dff0d8; 
 }
 
 .value-box:last-child {
-  background-color: #f2dede; /* Cor vermelha clara para o menor valor */
+  background-color: #f2dede; 
 }

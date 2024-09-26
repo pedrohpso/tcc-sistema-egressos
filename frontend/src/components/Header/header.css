@@ -18,6 +18,10 @@
   width: 100%;
 }
 
+.course-selector {
+  margin-left: 20px; 
+}
+
 .title {
   font-family: "open_sansextrabold",'Open Sans',Arial,Helvetica,sans-serif;
   padding-left: 20px;
@@ -61,7 +65,14 @@
   flex-shrink: 0; 
 }
 
-.user-info {
+.bar Button {
+  margin-right: 10px;
+  padding: 8px 12px;
+  font-size: 0.85em;
+}
+
+
+.user-header {
   display: flex;
   align-items: center;
   width: 100%;

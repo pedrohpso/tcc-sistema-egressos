@@ -1,33 +1,27 @@
 const possibleAges = ['18-20', '21-23', '24-26', '27-29', '30+'];
-
 const possibleGenders = ['Homem Cis', 'Mulher Cis', 'Homem Trans', 'Mulher Trans', 'Não-binário', 'Outro'];
-
-const possibleRegions = ['Norte', 'Nordeste', 'Centro-Oeste', 'Sudeste', 'Sul'];
+const possibleEthnicities = ['Amarela', 'Branca', 'Parda', 'Preta', 'Indígena', 'Desejo não declarar'];
 
 const indicadorPos = ['Sim', 'Não', 'Estou cursando'];
-
 const indicadorEstadoAtual = ['Estudando', 'Trabalhando', 'Estudando e trabalhando', 'Nem estudando, nem trabalhando'];
-
 const indicadorSatisfacaoProfissao = ['Muito satisfeito', 'Satisfeito', 'Pouco satisfeito', 'Indiferente', 'Insatisfeito', 'Muito insatisfeito'];
 
-export const generateRandomData = (indicator: string, grouping: string): object[] => {
-  const possibleGroups = grouping === 'Por idade' 
+const indicatorsData: { [key: number]: string[] } = {
+  1: indicadorPos,
+  2: indicadorEstadoAtual,
+  3: indicadorSatisfacaoProfissao
+};
+
+export const generateRandomData = (indicatorId: number, grouping: string): object[] => {
+  const possibleGroups = grouping === 'age' 
     ? possibleAges 
-    : grouping === 'Por gênero' 
+    : grouping === 'gender' 
     ? possibleGenders 
-    : grouping === 'Por região' 
-    ? possibleRegions 
+    : grouping === 'ethnicity' 
+    ? possibleEthnicities 
     : null;
 
-    console.log('possibleGroups:', possibleGroups);
-
-  const chosenIndicator = indicator === 'Cursou pós graduação' 
-    ? indicadorPos 
-    : indicator === 'Estado atual' 
-    ? indicadorEstadoAtual 
-    : indicadorSatisfacaoProfissao;
-
-  console.log('chosenIndicator:', chosenIndicator);
+  const chosenIndicator = indicatorsData[indicatorId] || [];
 
   if (grouping === 'Total' || !possibleGroups) {
     return [{
@@ -48,13 +42,13 @@ export const generateRandomData = (indicator: string, grouping: string): object[
 }
 
 export const fetchGraphData = async (params: {
-  course: string,
+  courseId: number,
   year: string,
-  indicator: string,
+  indicatorId: number,
   grouping: string
 }): Promise<any> => {
   
-  const data = generateRandomData(params.indicator, params.grouping);
+  const data = generateRandomData(params.indicatorId, params.grouping);
   console.log('data:', data);
 
   // Simulação de dados do gráfico

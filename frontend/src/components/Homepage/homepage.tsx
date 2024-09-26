@@ -10,7 +10,7 @@ const Homepage: React.FC = () => {
   useEffect(() => {
     if(user) {
       if(user.is_admin) {
-        navigate('/admin')
+        navigate('/admin/dashboard')
       }
       else{
         navigate('/alumni')

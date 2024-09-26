@@ -11,7 +11,8 @@ CREATE TABLE `user` (
 
 CREATE TABLE `course` (
   `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NOT NULL,
+  `fullname` VARCHAR(255) NOT NULL,
+  `shortname` VARCHAR(255) NOT NULL,
   `created` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) COMMENT 'date this record was created',
   `modified` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP)
 );
@@ -26,6 +27,7 @@ CREATE TABLE `form` (
   `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `user_id` INT NOT NULL,
   `course_id` INT NOT NULL,
+  `status` ENUM ('draft', 'published') NOT NULL DEFAULT 'draft',
   `title` VARCHAR(255) NOT NULL,
   `description` TEXT,
   `created` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) COMMENT 'date this record was created',
@@ -43,6 +45,15 @@ CREATE TABLE `question` (
   `modified` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP),
   `deleted` datetime DEFAULT null COMMENT 'date this record was deleted'
 );
+
+CREATE TABLE `indicator`{
+  `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `question_id` INT NOT NULL,
+  `text` VARCHAR(255) NOT NULL,
+  `created` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) COMMENT 'date this record was created',
+  `modified` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  `deleted` datetime DEFAULT null COMMENT 'date this record was deleted'
+}
 
 CREATE TABLE `possible_answer` (
   `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
