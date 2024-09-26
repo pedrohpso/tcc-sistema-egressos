@@ -8,13 +8,36 @@ const indicadorPos = ['Sim', 'Não', 'Estou cursando'];
 
 const indicadorEstadoAtual = ['Estudando', 'Trabalhando', 'Estudando e trabalhando', 'Nem estudando, nem trabalhando'];
 
-const indicadorSatisfacaoProfissão = ['Muito satisfeito', 'Satisfeito', 'Pouco satisfeito', 'Indiferente', 'Insatisfeito', 'Muito insatisfeito'];
+const indicadorSatisfacaoProfissao = ['Muito satisfeito', 'Satisfeito', 'Pouco satisfeito', 'Indiferente', 'Insatisfeito', 'Muito insatisfeito'];
 
-
-// Função que gera os dados mockados para o gráfico:
 export const generateRandomData = (indicator: string, grouping: string): object[] => {
-  const possibleGroups = grouping === 'Por idade' ?  possibleAges : grouping === 'Por gênero' ? possibleGenders : possibleRegions;
-  const chosenIndicator = indicator === 'Cursou pós graduação' ? indicadorPos : indicator === 'Estado atual' ? indicadorEstadoAtual : indicadorSatisfacaoProfissão;
+  const possibleGroups = grouping === 'Por idade' 
+    ? possibleAges 
+    : grouping === 'Por gênero' 
+    ? possibleGenders 
+    : grouping === 'Por região' 
+    ? possibleRegions 
+    : null;
+
+    console.log('possibleGroups:', possibleGroups);
+
+  const chosenIndicator = indicator === 'Cursou pós graduação' 
+    ? indicadorPos 
+    : indicator === 'Estado atual' 
+    ? indicadorEstadoAtual 
+    : indicadorSatisfacaoProfissao;
+
+  console.log('chosenIndicator:', chosenIndicator);
+
+  if (grouping === 'Total' || !possibleGroups) {
+    return [{
+      name: 'Total',
+      ...chosenIndicator.reduce((acc: { [key: string]: number }, indicator) => {
+        acc[indicator] = Math.floor(Math.random() * 50);
+        return acc;
+      }, {})
+    }];
+  }
 
   return possibleGroups.map(group => {
     return chosenIndicator.reduce((acc: { [key: string]: any }, indicator) => {
@@ -23,7 +46,6 @@ export const generateRandomData = (indicator: string, grouping: string): object[
     }, { name: group });
   });
 }
-
 
 export const fetchGraphData = async (params: {
   course: string,

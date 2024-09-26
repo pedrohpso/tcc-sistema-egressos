@@ -1,4 +1,11 @@
 .admin-container {
+  display: flex;
+  flex-direction: row;
+  gap: 30px; 
+  max-width: 95vw;
+}
+
+.graph-container {
   font-family: "open_sansextrabold",'Open Sans',Arial,Helvetica,sans-serif;
   display: flex;
   height: 100%;
@@ -91,4 +98,66 @@
   position: absolute;
   font-size: 20px;
   color: #17882c;
+}
+
+.tiny-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%; 
+  width: 100%;  
+  max-width: 300px;  
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.value-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  width: 100%;
+  text-align: center;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #ffffff;
+}
+
+.value-box:first-child {
+  border-bottom: 1px solid #ddd; 
+}
+
+.value-label {
+  font-size: 1.2em; /* Tamanho do texto "Maior valor" e "Menor valor" */
+  font-weight: bold;
+  margin-bottom: 50px;
+  color: #333;
+}
+
+.value-number {
+  font-size: 2em; /* Tamanho maior para o valor centralizado */
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.value-info {
+  font-size: 0.8em; /* Tamanho menor para indicador e agrupamento */
+  color: #666;
+}
+
+.value-info div {
+  margin-top: 2px; /* Reduz o espaçamento entre linhas */
+}
+
+.value-box:first-child {
+  background-color: #dff0d8; /* Cor verde claro para o maior valor */
+}
+
+.value-box:last-child {
+  background-color: #f2dede; /* Cor vermelha clara para o menor valor */
 }
