@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { debounce } from 'lodash';
 import './Dashboard.css';
 import { fetchGraphData } from './mockData';
 import Chart from '../Chart/Chart';
@@ -11,6 +12,11 @@ import html2canvas from 'html2canvas-pro';
 import jsPDF from 'jspdf';
 import { useCourse } from '../../context/CourseContext';
 import { YearRangeSelector } from '../YearRangeSelector/YearRangeSelector';
+
+
+const debouncedFetchData = debounce(async (fetchData: Function) => {
+  await fetchData();
+}, 1500);
 
 const handleDownloadClick = async (type: 'pdf' | 'png') => {
   const input = document.getElementById('chart-container') as HTMLElement;
@@ -34,7 +40,7 @@ const handleDownloadClick = async (type: 'pdf' | 'png') => {
   } catch (error) {
     console.log('error: ', error);
   }
-}
+};
 
 const Dashboard: React.FC = () => {
   const { selectedCourse } = useCourse();
@@ -48,14 +54,9 @@ const Dashboard: React.FC = () => {
   const [maxValue, setMaxValue] = useState<{ value: number, group: string, indicator: string } | null>(null);
   const [yearRange, setYearRange] = useState([2014, 2024]);
 
-  const handleYearRangeChange = (newRange: number[]) => {
-    setYearRange(newRange);
-  };
-
   const [minYear, maxYear] = yearRange;
 
   const { forms, isLoading: loadingForms } = useForms(selectedCourse!.id || null);
-
   const { indicators, isLoading: loadingIndicators } = useIndicators(formId);
 
   useEffect(() => {
@@ -94,26 +95,30 @@ const Dashboard: React.FC = () => {
     setMaxValue(maxValue);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (selectedCourse && minYear && maxYear && indicator && grouping) {
-        setIsLoading(true);
-        const graphData = await fetchGraphData({
-          courseId: selectedCourse.id,
-          year: `${minYear}-${maxYear}`,
-          indicatorId: indicator,
-          grouping
-        });
-        setData(graphData);
-        setIsLoading(false);
-        findMinMaxValues(graphData);
-      }
-    };
-
-    if (selectedCourse && formId && indicator) {
-      fetchData();
+  const fetchData = useCallback(async () => {
+    if (selectedCourse && minYear && maxYear && indicator && grouping) {
+      setIsLoading(true);
+      const graphData = await fetchGraphData({
+        courseId: selectedCourse.id,
+        year: `${minYear}-${maxYear}`,
+        indicatorId: indicator,
+        grouping,
+      });
+      setData(graphData);
+      setIsLoading(false);
+      findMinMaxValues(graphData);
     }
-  }, [selectedCourse, formId, minYear, maxYear, indicator, grouping]);
+  }, [selectedCourse, minYear, maxYear, indicator, grouping]);
+
+   useEffect(() => {
+    if (selectedCourse && formId && indicator) {
+      debouncedFetchData(fetchData);
+    }
+  }, [selectedCourse, formId, minYear, maxYear, indicator, grouping, fetchData]);
+
+  const handleYearRangeChange = (newRange: number[]) => {
+    setYearRange(newRange);
+  };
 
   const handleChartTypeClick = (type: 'bar' | 'pie' | 'table') => {
     if (minYear && maxYear && indicator && grouping) {
