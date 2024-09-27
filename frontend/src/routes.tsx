@@ -6,6 +6,7 @@ import Error from './components/Error/Error';
 import Dashboard from './components/Dashboard/Dashboard';
 import Alumni from './components/Alumni/Alumni';
 import AlumniForm from './components/AlumniForm/AlumniForm'
+import AdminLayout from './components/AdminLayout/AdminLayout';
 
 export const routes = () => {
   return (
@@ -13,11 +14,13 @@ export const routes = () => {
         <Route path="/" element={<Homepage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path='/admin/dashboard' element={<Dashboard />} />
+        <Route path="/admin/*" element={<AdminLayout/>}>
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="forms" element={<></>} />
+        </Route>
         <Route path='/alumni' element={<Alumni />} />
         <Route path="/form/:id" element={<AlumniForm />} />
         <Route path="*" element={<Error name="Página não encontrada" />} />
     </Routes>
   );
 }
-

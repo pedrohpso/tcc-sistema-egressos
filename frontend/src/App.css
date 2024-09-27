@@ -1,15 +1,13 @@
 main.content {
-    padding-top: 2.5vh;
     font-family: "open_sansextrabold",'Open Sans',Arial,Helvetica,sans-serif;
     font-size: 1.5em;
     line-height: 1.5em;
     color: #00420c;
     text-align: center;
-    margin-bottom: 5vh;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    align-items: center;
+    align-items: flex-start;
     flex-grow: 1;
     width: 100%;
     box-sizing: border-box;
@@ -19,6 +17,7 @@ main.content {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    width: 100%;
 }
 
 .box {
