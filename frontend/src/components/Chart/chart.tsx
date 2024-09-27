@@ -2,7 +2,7 @@ import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import './Chart.css';
 
-const COLORS = ['#004d00', '#17882c', '#90ee90', '#555555', '#b8b8b8'];
+const COLORS = ["#00420C", "#9ACD32", "#2F4F4F", "#808080", "#36454F", "#C0C0C0"];
 
 interface ChartProps {
   data: Record<string, string>[];
@@ -11,6 +11,26 @@ interface ChartProps {
 
 const Chart: React.FC<ChartProps> = ({ data, type }) => {
   const isTotalGrouping = data.length === 1 && data[0].name === 'Total';
+
+  const renderLegend = (props: any) => {
+    const { payload } = props;
+    return (
+      <ul className="legend-container">
+        {payload.map((entry: any, index: number) => (
+          <li key={`item-${index}`} style={{ color: "#000" }}>
+            <span
+              className="legend-color-box"
+              style={{
+                backgroundColor: entry.color,
+                border: '1px solid black',
+              }}
+            ></span>
+            {entry.value}
+          </li>
+        ))}
+      </ul>
+    );
+  };  
 
   switch (type) {
     case 'bar':
@@ -29,7 +49,7 @@ const Chart: React.FC<ChartProps> = ({ data, type }) => {
             <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />
-            <Legend />
+            <Legend  content={renderLegend} />
             {Object.keys(data[0])
               .filter(key => key !== 'name')
               .map((key, index) => (
@@ -64,13 +84,15 @@ const Chart: React.FC<ChartProps> = ({ data, type }) => {
               outerRadius={120}
               fill="#8884d8"
               label
+              stroke="#000000"
+              strokeWidth={1}
             >
               {pieData.map((_entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
             <Tooltip />
-            <Legend />
+            <Legend content={renderLegend} />
           </PieChart>
         </ResponsiveContainer>
       );

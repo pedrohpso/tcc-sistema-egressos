@@ -46,3 +46,24 @@ tr:hover {
     padding: 8px;
   }
 }
+
+.legend-container {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.legend-container li {
+  display: flex;
+  align-items: center;
+}
+
+.legend-color-box {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  margin-right: 8px;
+  border: 1px solid black;
+}
