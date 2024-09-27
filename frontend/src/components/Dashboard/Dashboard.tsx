@@ -39,6 +39,7 @@ const handleDownloadClick = async (type: 'pdf' | 'png') => {
 const Dashboard: React.FC = () => {
   const { selectedCourse } = useCourse();
   const [indicator, setIndicator] = useState<number | null>(null);
+  const [formId, setFormId] = useState<number | null>(null);
   const [grouping, setGrouping] = useState<string>('total');
   const [chartType, setChartType] = useState<string>('');
   const [data, setData] = useState<Record<string, string>[]>([]);
@@ -46,16 +47,28 @@ const Dashboard: React.FC = () => {
   const [minValue, setMinValue] = useState<{ value: number, group: string, indicator: string } | null>(null);
   const [maxValue, setMaxValue] = useState<{ value: number, group: string, indicator: string } | null>(null);
   const [yearRange, setYearRange] = useState([2014, 2024]);
-  
+
   const handleYearRangeChange = (newRange: number[]) => {
     setYearRange(newRange);
   };
 
   const [minYear, maxYear] = yearRange;
 
-  const { forms, isLoading: loadingForms } = useForms(selectedCourse!.id);
+  const { forms, isLoading: loadingForms } = useForms(selectedCourse!.id || null);
 
-  const { indicators, isLoading: loadingIndicators } = useIndicators(forms?.[0]?.id || null); 
+  const { indicators, isLoading: loadingIndicators } = useIndicators(formId);
+
+  useEffect(() => {
+    if (forms.length > 0) {
+      setFormId(forms[0].id); 
+    }
+  }, [forms]);
+
+  useEffect(() => {
+    if (formId && indicators.length > 0) {
+      setIndicator(indicators[0].id);
+    }
+  }, [formId, indicators]);
 
   const chartTypeButtonClass = !minYear || !maxYear || !indicator || !grouping || loadingForms || loadingIndicators ? "chart-type-button disabled" : "chart-type-button";
 
@@ -82,23 +95,25 @@ const Dashboard: React.FC = () => {
   };
 
   useEffect(() => {
-  const fetchData = async () => {
-    if (selectedCourse && minYear && maxYear && indicator && grouping) {
-      setIsLoading(true);
-      const graphData = await fetchGraphData({ 
-        courseId: selectedCourse.id, 
-        year: `${minYear}-${maxYear}`, 
-        indicatorId: indicator, 
-        grouping 
-      });
-      setData(graphData);
-      setIsLoading(false);
-      findMinMaxValues(graphData);
-    }
-  };
+    const fetchData = async () => {
+      if (selectedCourse && minYear && maxYear && indicator && grouping) {
+        setIsLoading(true);
+        const graphData = await fetchGraphData({
+          courseId: selectedCourse.id,
+          year: `${minYear}-${maxYear}`,
+          indicatorId: indicator,
+          grouping
+        });
+        setData(graphData);
+        setIsLoading(false);
+        findMinMaxValues(graphData);
+      }
+    };
 
-  fetchData();
-}, [selectedCourse, minYear, maxYear, indicator, grouping]);
+    if (selectedCourse && formId && indicator) {
+      fetchData();
+    }
+  }, [selectedCourse, formId, minYear, maxYear, indicator, grouping]);
 
   const handleChartTypeClick = (type: 'bar' | 'pie' | 'table') => {
     if (minYear && maxYear && indicator && grouping) {
@@ -109,12 +124,12 @@ const Dashboard: React.FC = () => {
   return (
     <div className='dashboard-container'>
       <div className="graph-container">
-        <div className="filters-container"> 
+        <div className="filters-container">
           <div className="select-container">
             <label>Formulário</label>
             <select
-              value={forms?.[0]?.id || ''}
-              onChange={(e) => setIndicator(Number(e.target.value))}
+              value={formId || ''}
+              onChange={(e) => setFormId(Number(e.target.value))} 
               disabled={loadingForms || forms.length === 0}
             >
               {loadingForms ? (
@@ -132,13 +147,14 @@ const Dashboard: React.FC = () => {
           <div className="select-container">
             <label>Ano de graduação</label>
             <div className='year-range-container'>
-              <YearRangeSelector 
-                minYear={2014} 
-                maxYear={2024} 
+              <YearRangeSelector
+                minYear={2014}
+                maxYear={2024}
                 onChange={handleYearRangeChange}
               />
             </div>
           </div>
+
           <div className="select-container">
             <label>Indicador</label>
             <select
@@ -182,7 +198,7 @@ const Dashboard: React.FC = () => {
 
           {data.length > 0 && (chartType === 'bar' || chartType === 'pie' || chartType === 'table') ? (
             <div className='select-container'>
-              <label>Download</label> 
+              <label>Download</label>
               <div className='download-button-container'>
                 <Button label='PNG' icon={<IoMdDownload />} onClick={() => handleDownloadClick('png')} />
                 <Button label='PDF' icon={<IoMdDownload />} onClick={() => handleDownloadClick('pdf')} />
@@ -192,7 +208,7 @@ const Dashboard: React.FC = () => {
         </div>
 
         <div id="chart-container" className="chart-container">
-          {isLoading ? <div className="loading">Carregando...</div> : data.length > 0 && <Chart type={chartType} data={data}/>}
+          {isLoading ? <div className="loading">Carregando...</div> : data.length > 0 && <Chart type={chartType} data={data} />}
         </div>
       </div>
 
