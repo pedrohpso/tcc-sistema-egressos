@@ -211,23 +211,22 @@ const Dashboard: React.FC = () => {
           {isLoading ? <div className="loading">Carregando...</div> : data.length > 0 && <Chart type={chartType} data={data} />}
         </div>
       </div>
-
-      <div className='box'>
+      <div>
         <div className='tiny-content'>
           {minValue && maxValue && (
             <>
               <div className='value-box'>
-                <div className='value-label'>Maior valor</div>
-                <div className='value-number'>{maxValue.value}</div>
-                <div className='value-info'>
+                <div className='value-label max-value'>Maior valor</div>
+                <div className='value-number max-value'>{maxValue.value}</div>
+                <div className='value-info max-value'>
                   <div>Agrupamento: {maxValue.group}</div>
                   <div>Resposta: {maxValue.indicator}</div>
                 </div>
               </div>
               <div className='value-box'>
-                <div className='value-label'>Menor valor</div>
-                <div className='value-number'>{minValue.value}</div>
-                <div className='value-info'>
+                <div className='value-label min-value'>Menor valor</div>
+                <div className='value-number min-value'>{minValue.value}</div>
+                <div className='value-info min-value'>
                   <div>Agrupamento: {minValue.group}</div>
                   <div>Resposta: {minValue.indicator}</div>
                 </div>

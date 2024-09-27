@@ -1,13 +1,15 @@
 .dashboard-container {
   display: flex;
   flex-direction: row;
-  gap: 30px; 
+  gap: 20px; 
   max-width: 95vw;
 }
 
 .graph-container {
   font-family: "open_sansextrabold",'Open Sans',Arial,Helvetica,sans-serif;
   display: flex;
+  flex-direction: row;
+  flex-grow: 1;
   height: 100%;
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2), 0 6px 20px rgba(0,0,0,0.3);
@@ -19,7 +21,7 @@
   flex-direction: column;
   padding: 20px;
   border-right: 2px solid #17882c; 
-  max-width: 300px; 
+  max-width: 250px; 
 }
 
 .select-container {
@@ -32,7 +34,7 @@
   padding: 2px;
   border: 1px solid #17882c;
   border-radius: 2px;
-  font-size: 0.7em;
+  font-size: 0.75em;
   cursor: pointer;
   width: 100%;
   margin-top: 2px;
@@ -111,7 +113,7 @@
   align-items: center;
   height: 100%; 
   width: 100%;  
-  max-width: 300px;  
+  max-width: 250px;  
   background-color: #f9f9f9;
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -127,7 +129,7 @@
   flex-grow: 1;
   width: 100%;
   text-align: center;
-  padding: 20px;
+  padding: 10px;
   box-sizing: border-box;
   background-color: #ffffff;
 }
@@ -152,6 +154,14 @@
 .value-info {
   font-size: 0.8em; 
   color: #666;
+}
+
+.min-value{
+  color: #381413;
+}
+
+.max-value{
+  color: #00420c;
 }
 
 .value-info div {

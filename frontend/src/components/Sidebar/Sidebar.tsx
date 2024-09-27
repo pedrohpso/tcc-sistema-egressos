@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { FaHome, FaWpforms } from 'react-icons/fa';
 import './Sidebar.css';
 
@@ -8,20 +8,25 @@ const Sidebar: React.FC = () => {
     <div className="sidebar">
       <ul>
         <li>
-          <Link to="/admin/dashboard">
-            <FaHome className="sidebar-icon" />
-            <span>Dashboard</span>
-          </Link>
+          <NavLink 
+            to="/admin/dashboard"
+            className={({ isActive }) => isActive ? 'active' : ''}
+          >
+            <FaHome className="sidebar-icon" /> Dashboard
+          </NavLink>
         </li>
         <li>
-          <Link to="/admin/forms">
-            <FaWpforms className="sidebar-icon" />
-            <span>Formulários</span>
-          </Link>
+          <NavLink 
+            to="/admin/forms"
+            className={({ isActive }) => isActive ? 'active' : ''}
+          >
+            <FaWpforms className="sidebar-icon" /> Formulários
+          </NavLink>
         </li>
       </ul>
     </div>
-  );
-};
+  )
+}
+
 
 export default Sidebar;
