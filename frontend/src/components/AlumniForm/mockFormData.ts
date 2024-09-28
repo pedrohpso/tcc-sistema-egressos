@@ -20,6 +20,7 @@ export interface iField {
 export interface iForm {
   id: number;
   title: string;
+  status: 'draft' | 'published';
   fields: iField[];
 }
 
@@ -30,6 +31,7 @@ export async function getMockFormData(): Promise<iForm> {
 const egressoForm: iForm = {
   id: 1,
   title: "Formulário de Egressos do curso TADS do IFSP",
+  status: 'published',
   fields: [
     {
       id: 1,

@@ -7,6 +7,7 @@ import Dashboard from './components/Dashboard/Dashboard';
 import Alumni from './components/Alumni/Alumni';
 import AlumniForm from './components/AlumniForm/AlumniForm'
 import AdminLayout from './components/AdminLayout/AdminLayout';
+import AdminFormPage from './components/AdminFormPage/AdminFormPage';
 
 export const routes = () => {
   return (
@@ -16,7 +17,7 @@ export const routes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/admin/*" element={<AdminLayout/>}>
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="forms" element={<></>} />
+          <Route path="forms" element={<AdminFormPage />} />
         </Route>
         <Route path='/alumni' element={<Alumni />} />
         <Route path="/form/:id" element={<AlumniForm />} />
