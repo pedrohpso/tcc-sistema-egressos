@@ -15,6 +15,7 @@ export interface iField {
   options?: iOption[]; 
   position: number;
   dependencies?: iDependency[];
+  indicator?: string;
 }
 
 export interface iForm {
@@ -34,46 +35,6 @@ const egressoForm: iForm = {
   status: 'published',
   fields: [
     {
-      id: 1,
-      type: 'single_choice',
-      question: 'Qual é o seu gênero?',
-      options: [
-        { id: 1, text: 'Homem Cisgênero' },
-        { id: 2, text: 'Mulher Cisgênero' },
-        { id: 3, text: 'Homem Transgênero' },
-        { id: 4, text: 'Mulher Transgênero' },
-        { id: 5, text: 'Não-binário' },
-        { id: 6, text: 'Outro' }
-      ],
-      position: 1,
-    },
-    {
-      id: 2,
-      type: 'single_choice',
-      question: 'Cor',
-      options: [
-        { id: 1, text: 'Amarela' },
-        { id: 2, text: 'Branca' },
-        { id: 3, text: 'Parda' },
-        { id: 4, text: 'Preta' },
-        { id: 5, text: 'Indígena' },
-        { id: 6, text: 'Desejo não declarar' }
-      ],
-      position: 2,
-    },
-    {
-      id: 3,
-      type: 'date',
-      question: 'Data de ingresso',
-      position: 3,
-    },
-    {
-      id: 4,
-      type: 'date',
-      question: 'Data de conclusão',
-      position: 4,
-    },
-    {
       id: 5,
       type: 'single_choice',
       question: 'Quando você entrou no curso de TADS do IFSP, você trabalhava?',
@@ -82,6 +43,7 @@ const egressoForm: iForm = {
         { id: 2, text: 'Não' }
       ],
       position: 5,
+      indicator: 'Trabalhava quando ingressou'
     },
     {
       id: 6,
@@ -94,7 +56,8 @@ const egressoForm: iForm = {
       position: 6,
       dependencies: [
       { fieldId: 5, optionIds: [1] } 
-      ]
+      ],
+      indicator: 'Que área trabalhava quando ingressou'
     },
     {
       id: 7,
@@ -107,6 +70,7 @@ const egressoForm: iForm = {
         { id: 4, text: 'Nem estudando, nem trabalhando' }
       ],
       position: 7,
+      indicator: 'Situação atual'
     },
     {
       id: 8,
@@ -119,7 +83,8 @@ const egressoForm: iForm = {
       position: 8,
       dependencies: [
       { fieldId: 7, optionIds: [2, 3] }
-      ]
+      ],
+      indicator: 'Trabalha com T.I.'
     },
     {
       id: 9,
@@ -136,7 +101,8 @@ const egressoForm: iForm = {
       position: 9,
       dependencies: [
       { fieldId: 8, optionIds: [2] } 
-      ]
+      ],
+      indicator: 'Razão de não trabalhar com T.I.'
     },
     {
       id: 10,
@@ -156,7 +122,8 @@ const egressoForm: iForm = {
       position: 10,
       dependencies: [
       { fieldId: 8, optionIds: [1] } 
-      ]
+      ],
+      indicator: 'Área de atuação'
     },
     {
       id: 11,
@@ -173,7 +140,8 @@ const egressoForm: iForm = {
       position: 11,
       dependencies: [
       { fieldId: 8, optionIds: [1] } 
-      ]
+      ],
+      indicator: 'Faixa salarial'
     },
     {
       id: 12,
@@ -187,7 +155,8 @@ const egressoForm: iForm = {
       position: 12,
       dependencies: [
         { fieldId: 8, optionIds: [1] } 
-      ]
+      ],
+      indicator: 'Regime de trabalho'
     },
     {
       id: 13,
@@ -202,7 +171,8 @@ const egressoForm: iForm = {
       position: 13,
       dependencies: [
         { fieldId: 8, optionIds: [1] }
-      ]
+      ],
+      indicator: 'Porte da empresa'
     },
     {
       id: 14,
@@ -215,12 +185,13 @@ const egressoForm: iForm = {
       position: 14,
       dependencies: [
         { fieldId: 8, optionIds: [1] }
-      ]
+      ],
+      indicator: 'Empresa fora do país'
     },
     {
       id: 15,
       type: 'single_choice',
-      question: 'Você trabalha em que estado?',
+      question: 'Você vive em que estado?',
       options: [
         { id: 1, text: 'AC' },
         { id: 2, text: 'AL' },
@@ -253,7 +224,8 @@ const egressoForm: iForm = {
       position: 15,
       dependencies: [
         { fieldId: 14, optionIds: [2] } 
-      ]
+      ],
+      indicator: 'Estado'
     },
     {
       id: 16,
@@ -268,12 +240,13 @@ const egressoForm: iForm = {
       position: 16,
       dependencies: [
         { fieldId: 8, optionIds: [1] }
-      ]
+      ],
+      indicator: 'Tempo entre colação e início da atuação profissional'
     },
     {
       id: 17,
       type: 'multiple_choice',
-      question: 'Quais foram os maiores obstáculos à entrada no mundo do trabalho?',
+      question: 'Quais foram/são os maiores obstáculos à entrada no mundo do trabalho?',
       options: [
         { id: 1, text: 'Necessidade de prévia especialização' },
         { id: 2, text: 'Exigência de experiência' },
@@ -283,6 +256,7 @@ const egressoForm: iForm = {
         { id: 6, text: 'Outros' }
       ],
       position: 17,
+      indicator: 'Obstáculos à entrada no mundo do trabalho'
     },
     {
       id: 18,
@@ -297,6 +271,7 @@ const egressoForm: iForm = {
         { id: 6, text: 'Muito insatisfeito' }
       ],
       position: 18,
+      indicator: 'Satisfação com a profissão'
     },
     {
       id: 19,
@@ -310,6 +285,7 @@ const egressoForm: iForm = {
         { id: 5, text: 'Despreparado' }
       ],
       position: 19,
+      indicator: 'Preparo profissional ao se formar'
     },
     {
       id: 20,
@@ -322,6 +298,7 @@ const egressoForm: iForm = {
         { id: 4, text: 'Parcialmente incorreto' }
       ],
       position: 20,
+      indicator: 'Foco do conteúdo do curso em relação ao mercado de trabalho'
     },
     {
       id: 21,
@@ -333,6 +310,7 @@ const egressoForm: iForm = {
         { id: 3, text: 'Pior' }
       ],
       position: 21,
+      indicator: 'Situação profissional atual comparada àquela em que ingressou no curso'
     },
     {
       id: 22,
@@ -346,6 +324,7 @@ const egressoForm: iForm = {
         { id: 5, text: 'Não, foi completamente irrelevante' }
       ],
       position: 22,
+      indicator: 'Relevância da formação para entrar no mercado de trabalho'
     },
     {
       id: 23,
@@ -356,6 +335,7 @@ const egressoForm: iForm = {
         { id: 2, text: 'Não' }
       ],
       position: 23,
+      indicator: 'Interesse em ministrar palestras'
     },
     {
       id: 24,
@@ -367,6 +347,7 @@ const egressoForm: iForm = {
         { id: 3, text: 'Estou cursando' }
       ],
       position: 24,
+      indicator: 'Cursou pós-graduação'
     },
     {
       id: 25,
@@ -381,7 +362,8 @@ const egressoForm: iForm = {
       position: 25,
       dependencies: [
         { fieldId: 24, optionIds: [1, 3] }
-      ]
+      ],
+      indicator: 'Nível da pós-graduação'
     },
     {
       id: 26,
@@ -392,6 +374,7 @@ const egressoForm: iForm = {
         { id: 2, text: 'Não' }
       ],
       position: 26,
+      indicator: 'Mantém contato com o IFSP'
     },
     {
       id: 27,
@@ -410,7 +393,8 @@ const egressoForm: iForm = {
       position: 27,
       dependencies: [
         { fieldId: 26, optionIds: [1] } 
-      ]
+      ],
+      indicator: 'Tipo de contato mantido'
     }
   ]
 };
