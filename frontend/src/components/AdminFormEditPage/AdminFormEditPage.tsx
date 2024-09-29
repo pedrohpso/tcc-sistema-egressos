@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Button from '../Button/Button';
 import './AdminFormEditPage.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { createFormField, createFormFieldInput, getFormById, iForm, submitForm } from '../AlumniForm/mockFormData';
+import { createFormField, createFormFieldInput, getFormById, iForm, submitForm } from '../../mockFormData';
 import Modal from '../Modal/Modal';
 import RenameFormModal from '../RenameFormModal/RenameFormModal';
 import FieldItem from '../FieldItem/FieldItem';

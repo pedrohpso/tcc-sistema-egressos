@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaEdit, FaGripVertical } from 'react-icons/fa';
 import './FieldItem.css';
-import { iField } from '../AlumniForm/mockFormData';
+import { iField } from '../../mockFormData';
 
 interface FieldItemProps {
   field: iField;

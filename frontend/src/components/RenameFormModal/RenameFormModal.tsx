@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './RenameFormModal.css';
 import Button from '../Button/Button';
 import Modal from '../Modal/Modal';
-import { iForm, renameForm } from '../AlumniForm/mockFormData';
+import { iForm, renameForm } from '../../mockFormData';
 
 interface RenameFormModalProps {
   isOpen: boolean;

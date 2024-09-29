@@ -3,7 +3,7 @@ import { useCourse } from '../../context/CourseContext';
 import Button from '../Button/Button';
 import Modal from '../Modal/Modal';
 import './AdminFormPage.css';
-import { iForm, createForm, getFormsByCourseId } from '../AlumniForm/mockFormData';
+import { iForm, createForm, getFormsByCourseId } from '../../mockFormData';
 import { useNavigate } from 'react-router-dom';
 
 const AdminFormPage: React.FC = () => {

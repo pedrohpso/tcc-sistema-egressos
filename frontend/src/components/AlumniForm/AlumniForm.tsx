@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Form from '../Form/Form'; 
-import { getMockFormData, iForm, iField, iOption } from './mockFormData';
+import { getMockFormData, iForm, iField, iOption } from '../../mockFormData';
 import './AlumniForm.css';
 import { useNavigate } from 'react-router-dom';
 

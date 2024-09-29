@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './AddFieldModal.css';
-import { iField, FieldType, createFormFieldInput } from '../AlumniForm/mockFormData';
+import { iField, FieldType, createFormFieldInput } from '../../mockFormData';
 import Button from '../Button/Button';
 import Modal from '../Modal/Modal';
 
