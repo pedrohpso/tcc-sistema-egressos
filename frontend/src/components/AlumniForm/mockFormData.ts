@@ -25,6 +25,79 @@ export interface iForm {
   fields: iField[];
 }
 
+export async function createForm(title: string): Promise<iForm> {
+  // requisição pro backend
+  return Promise.resolve({
+    id: Date.now(),
+    title,
+    status: 'draft',
+    fields: []
+  });
+}
+
+export async function getFormsByCourseId(courseId: number): Promise<iForm[]> {
+  // requisição pro backend
+  console.log('Querying for forms of course with id:', courseId);
+  return Promise.resolve([]);
+}
+
+export async function getFormById(id: number): Promise<iForm | null> {
+  // requisição pro backend
+  return Promise.resolve({
+    id, 
+    title: 'Formulário de Egressos do curso TADS do IFSP', 
+    status: 'draft', 
+    fields: [
+      {
+        id: 1,
+        type: 'text',
+        question: 'Qual é o seu nome?',
+        position: 1,
+      },
+      {
+        id: 2,
+        type: 'single_choice',
+        question: 'Qual é a sua fruta favorita?',
+        options: [
+          { id: 1, text: 'Porga' },
+          { id: 2, text: 'Borga' },
+          { id: 3, text: 'Zorba' }
+        ],
+        position: 2,
+        indicator: 'Fruta favorita'
+      },
+      {
+        id: 3,
+        type: 'multiple_choice',
+        question: 'Quais são os seus hobbies?',
+        options: [
+          { id: 1, text: 'Leitura' },
+          { id: 2, text: 'Esportes' },
+          { id: 3, text: 'Música' },
+          { id: 4, text: 'Viagens' }
+        ],
+        position: 3,
+        indicator: 'Hobbies'
+      },
+      {
+        id: 4,
+        type: 'date',
+        question: 'Qual é a sua data de nascimento?',
+        position: 4,
+        indicator: 'Data de Nascimento'
+      },
+      {
+        id: 5,
+        type: 'text',
+        question: 'Qual é o seu endereço?',
+        position: 5,
+        dependencies: [
+          { fieldId: 2, optionIds: [1, 2] }
+        ],
+      }
+    ]});
+}
+
 export async function getMockFormData(): Promise<iForm> {
   return Promise.resolve(egressoForm);
 }

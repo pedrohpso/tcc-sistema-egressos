@@ -1,0 +1,26 @@
+.admin-form-edit-page {
+  padding: 20px;
+}
+
+.admin-form-edit-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.question-list {
+  list-style: none;
+  padding: 0;
+}
+
+p {
+  font-size: 1.2em;
+  color: #666;
+  text-align: center;
+}

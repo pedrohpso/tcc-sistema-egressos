@@ -1,0 +1,59 @@
+.field-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.field-item-left {
+  display: flex;
+  align-items: center;
+}
+
+.grip-icon {
+  margin-right: 10px;
+  cursor: move;
+}
+
+.field-item-position {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.field-item-title {
+  flex-grow: 1;
+  font-weight: bold;
+}
+
+.field-item-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.field-item-type {
+  color: #555;
+  font-size: 0.9em;
+}
+
+.field-item-indicator {
+  font-size: 0.8em;
+  color: #999;
+}
+
+.field-item-options {
+  font-size: 0.8em;
+}
+
+.edit-icon {
+  cursor: pointer;
+  color: #17882c;
+}
+
+.edit-icon:hover {
+  color: #145722;
+}

@@ -8,6 +8,7 @@ import Alumni from './components/Alumni/Alumni';
 import AlumniForm from './components/AlumniForm/AlumniForm'
 import AdminLayout from './components/AdminLayout/AdminLayout';
 import AdminFormPage from './components/AdminFormPage/AdminFormPage';
+import AdminFormEditPage from './components/AdminFormEditPage/AdminFormEditPage';
 
 export const routes = () => {
   return (
@@ -18,6 +19,7 @@ export const routes = () => {
         <Route path="/admin/*" element={<AdminLayout/>}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="forms" element={<AdminFormPage />} />
+          <Route path="forms/:formId" element={<AdminFormEditPage/>} />
         </Route>
         <Route path='/alumni' element={<Alumni />} />
         <Route path="/form/:id" element={<AlumniForm />} />

@@ -3,6 +3,9 @@ CREATE TABLE `user` (
   `name` VARCHAR(255) NOT NULL,
   `email` VARCHAR(255) UNIQUE NOT NULL,
   `password` VARCHAR(255) NOT NULL,
+  'birthdate' DATE NOT NULL,
+  `gender` ENUM ('male', 'female', 'trans_male', 'trans_female', 'non_binary', 'other') NOT NULL,
+  `ethnicity` ENUM ('white', 'black', 'brown', 'yellow', 'indigenous', 'not_declared') NOT NULL,
   `is_admin` TINYINT NOT NULL DEFAULT 0,
   `created` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) COMMENT 'date this record was created',
   `modified` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP),
@@ -73,6 +76,7 @@ CREATE TABLE `question_dependency` (
   `deleted` datetime DEFAULT null COMMENT 'date this record was deleted'
 );
 
+/* Idade do usuário é a birthdate do user com o created do form_answer (idade que ele preencheu o formulário)*/
 CREATE TABLE `form_answer` (
   `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `form_id` INT NOT NULL,

@@ -8,6 +8,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1100;
 }
 
 .modal-container {
@@ -23,40 +24,9 @@
   gap: 20px;
 }
 
-.modal-container input {
-  padding: 12px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-  margin-bottom: 20px;
-}
-
-.modal-close-button {
+.modal-container svg {
   position: absolute;
-  top: 10px;
+  cursor: pointer;
   right: 10px;
-  background: none;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.modal-container button {
-  background-color: #17882c;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  align-self: flex-end;
-}
-
-.modal-container button:hover {
-  background-color: #146622;
-}
-
-.modal-container p {
-  font-size: 14px;
-  color: #333;
+  top: 10px;
 }

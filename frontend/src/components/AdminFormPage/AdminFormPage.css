@@ -36,9 +36,15 @@
 
 .form-item-actions {
   margin-right: 20px;
+  gap: 10px;
 }
 
 .form-item-status {
   font-size: 0.9em;
   color: #555;
+}
+
+.add-form-modal-title {
+  margin-bottom: 20px;
+  font-size: 1.3em;
 }
