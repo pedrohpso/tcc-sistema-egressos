@@ -66,6 +66,13 @@ export async function createFormField(formId: number, field: createFormFieldInpu
 export async function renameForm(formId: number, newTitle: string): Promise<void> {
   // requisição pro backend
   console.log('Renaming form with id:', formId, 'to:', newTitle);
+  return Promise.resolve();
+}
+
+export async function submitForm(formId: number): Promise<void> {
+  // requisição pro backend
+  console.log('Submitting form with id:', formId);
+  return Promise.resolve();
 }
 
 export async function getFormById(id: number): Promise<iForm | null> {
