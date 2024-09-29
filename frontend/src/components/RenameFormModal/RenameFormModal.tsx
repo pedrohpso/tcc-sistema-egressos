@@ -2,16 +2,17 @@ import React, { useState } from 'react';
 import './RenameFormModal.css';
 import Button from '../Button/Button';
 import Modal from '../Modal/Modal';
-import { iForm } from '../AlumniForm/mockFormData';
+import { iForm, renameForm } from '../AlumniForm/mockFormData';
 
 interface RenameFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   currentTitle: string;
+  currentFormId: number;
   setCurrentForm: React.Dispatch<React.SetStateAction< iForm | null>>;
 }
 
-const RenameFormModal: React.FC<RenameFormModalProps> = ({ isOpen, onClose, currentTitle, setCurrentForm }) => {
+const RenameFormModal: React.FC<RenameFormModalProps> = ({ isOpen, onClose, currentTitle, currentFormId, setCurrentForm }) => {
   const [newTitle, setNewTitle] = useState(currentTitle);
   const [error, setError] = useState('');
 
@@ -28,6 +29,7 @@ const RenameFormModal: React.FC<RenameFormModalProps> = ({ isOpen, onClose, curr
 
     try {
       // requisição para renomear o formulário no backend
+      await renameForm(currentFormId, newTitle);
       setCurrentForm((prevForm) =>
         prevForm ? { ...prevForm, title: newTitle } : prevForm
       );

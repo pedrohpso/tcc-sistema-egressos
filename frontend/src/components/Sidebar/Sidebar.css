@@ -2,13 +2,13 @@
   position: relative;
   top: 0;
   left: 0;
-  height: 100vh;
-  width: 178px;
+  max-width: 178px;
   background-color: #00420c;
   color: white;
   display: flex;
   flex-direction: column;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  flex-grow: 1;
 }
 
 .sidebar ul {

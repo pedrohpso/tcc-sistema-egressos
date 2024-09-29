@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react';
 import Button from '../Button/Button';
 import './AdminFormEditPage.css';
 import { useParams } from 'react-router-dom';
-import { getFormById, iForm } from '../AlumniForm/mockFormData';
+import { createFormField, createFormFieldInput, getFormById, iForm } from '../AlumniForm/mockFormData';
 import Modal from '../Modal/Modal';
 import RenameFormModal from '../RenameFormModal/RenameFormModal';
 import FieldItem from '../FieldItem/FieldItem';
+import AddFieldModal from '../AddFieldModal/AddFieldModal';
 
 const AdminFormEditPage: React.FC = () => {
   const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
-  const [_isAddQuestionModalOpen, setIsAddQuestionModalOpen] = useState(false);
+  const [isAddFieldModalOpen, setIsAddFieldModalOpen] = useState(false);
   const [isReorderMode, setIsReorderMode] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   
@@ -28,13 +29,30 @@ const AdminFormEditPage: React.FC = () => {
     fetchForm();
   }, [formId]);
 
+  const handleSaveField = async (newField: Omit<createFormFieldInput, 'position'>) => {
+    if (currentForm) {
+      const position = currentForm.fields.length + 1;
+
+      const savedField = await createFormField(currentForm.id, { ...newField, position });
+
+      setCurrentForm({
+        ...currentForm,
+        fields: [...currentForm.fields, savedField],
+      });
+    }
+  };
+
+  if (!currentForm) {
+    return <p>Carregando...</p>;
+  }
+
   return (
     <div className="admin-form-edit-page">
       {currentForm && (<div className="admin-form-edit-page-header">
         <h2>{currentForm?.title}</h2>
         <div className="button-group">
           <Button label="Renomear Formulário" onClick={() => setIsRenameModalOpen(true)} />
-          <Button label="Adicionar questão" onClick={() => setIsAddQuestionModalOpen(true)} />
+          <Button label="Adicionar questão" onClick={() => setIsAddFieldModalOpen(true)} />
           <Button label="Alterar ordem" onClick={() => setIsReorderMode(!isReorderMode)} />
           <Button label="Enviar formulário" onClick={() => setIsConfirmModalOpen(true)} />
         </div>
@@ -48,8 +66,16 @@ const AdminFormEditPage: React.FC = () => {
             isOpen={isRenameModalOpen}
             onClose={() => setIsRenameModalOpen(false)}
             currentTitle={currentForm.title}
+            currentFormId={currentForm.id}
             setCurrentForm={setCurrentForm}
           />
+          
+        <AddFieldModal
+          isOpen={isAddFieldModalOpen}
+          onClose={() => setIsAddFieldModalOpen(false)}
+          onSave={handleSaveField}
+          existingFields={currentForm.fields}
+        />
       </div>
       )}
 
@@ -63,7 +89,7 @@ const AdminFormEditPage: React.FC = () => {
               field={field}
               position={index + 1}
               isReordering={isReorderMode}
-              onEdit={() => console.log('Editando questão', field.id)}
+              onEdit={() => console.log('Editando questão', field)}
             />
           ))
         )}

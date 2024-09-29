@@ -17,16 +17,21 @@
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   position: relative;
-  max-width: 400px;
+  max-width: 600px;
   width: 100%;
+  max-height: 80vh;
   display: flex;
   flex-direction: column;
-  gap: 20px;
 }
 
-.modal-container svg {
+.modal-close-icon {
   position: absolute;
-  cursor: pointer;
-  right: 10px;
   top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+.modal-content {
+  overflow-y: auto;
+  max-height: calc(80vh - 40px);
 }

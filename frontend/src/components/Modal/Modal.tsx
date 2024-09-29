@@ -8,15 +8,16 @@ interface ModalProps {
   isOpen: boolean;
 }
 
-
 const Modal: React.FC<ModalProps> = ({ children, onClose, isOpen }) => {
   if (!isOpen) return null;
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-container" onClick={(e) => e.stopPropagation()}>
-          <IoCloseOutline size={24} onClick={onClose} color='#00420c' />
-        {children}
+        <IoCloseOutline size={24} onClick={onClose} className="modal-close-icon" />
+        <div className="modal-content">
+          {children}
+        </div>
       </div>
     </div>
   );

@@ -1,3 +1,10 @@
+export enum FieldType {
+  TEXT = 'text',
+  SINGLE_CHOICE = 'single_choice',
+  MULTIPLE_CHOICE = 'multiple_choice',
+  DATE = 'date'
+}
+
 export interface iOption {
   id: number;
   text: string;
@@ -10,7 +17,7 @@ export interface iDependency {
 
 export interface iField {
   id: number;
-  type: 'text' | 'single_choice' | 'multiple_choice' | 'date';
+  type: FieldType;
   question: string;
   options?: iOption[]; 
   position: number;
@@ -41,6 +48,26 @@ export async function getFormsByCourseId(courseId: number): Promise<iForm[]> {
   return Promise.resolve([]);
 }
 
+export type createFormFieldInput = {
+  type: FieldType;
+  question: string;
+  options?: string[];
+  indicator?: string;
+  position: number;
+  dependencies?: iDependency[];
+}
+
+export async function createFormField(formId: number, field: createFormFieldInput): Promise<iField> {
+  // requisição pro backend
+  console.log('Creating field for form with id:', formId, 'field:', field);
+  return Promise.resolve({ ...field, id: Date.now(), options: field.options?.map((option, idx) => ({ id:  formId * 1000 + idx, text: option }) )});
+}
+
+export async function renameForm(formId: number, newTitle: string): Promise<void> {
+  // requisição pro backend
+  console.log('Renaming form with id:', formId, 'to:', newTitle);
+}
+
 export async function getFormById(id: number): Promise<iForm | null> {
   // requisição pro backend
   return Promise.resolve({
@@ -48,53 +75,53 @@ export async function getFormById(id: number): Promise<iForm | null> {
     title: 'Formulário de Egressos do curso TADS do IFSP', 
     status: 'draft', 
     fields: [
-      {
-        id: 1,
-        type: 'text',
-        question: 'Qual é o seu nome?',
-        position: 1,
-      },
-      {
-        id: 2,
-        type: 'single_choice',
-        question: 'Qual é a sua fruta favorita?',
-        options: [
-          { id: 1, text: 'Porga' },
-          { id: 2, text: 'Borga' },
-          { id: 3, text: 'Zorba' }
-        ],
-        position: 2,
-        indicator: 'Fruta favorita'
-      },
-      {
-        id: 3,
-        type: 'multiple_choice',
-        question: 'Quais são os seus hobbies?',
-        options: [
-          { id: 1, text: 'Leitura' },
-          { id: 2, text: 'Esportes' },
-          { id: 3, text: 'Música' },
-          { id: 4, text: 'Viagens' }
-        ],
-        position: 3,
-        indicator: 'Hobbies'
-      },
-      {
-        id: 4,
-        type: 'date',
-        question: 'Qual é a sua data de nascimento?',
-        position: 4,
-        indicator: 'Data de Nascimento'
-      },
-      {
-        id: 5,
-        type: 'text',
-        question: 'Qual é o seu endereço?',
-        position: 5,
-        dependencies: [
-          { fieldId: 2, optionIds: [1, 2] }
-        ],
-      }
+      // {
+      //   id: 1,
+      //   type: FieldType.TEXT,
+      //   question: 'Qual é o seu nome?',
+      //   position: 1,
+      // },
+      // {
+      //   id: 2,
+      //   type: FieldType.SINGLE_CHOICE,
+      //   question: 'Qual é a sua fruta favorita?',
+      //   options: [
+      //     { id: 1, text: 'Porga' },
+      //     { id: 2, text: 'Borga' },
+      //     { id: 3, text: 'Zorba' }
+      //   ],
+      //   position: 2,
+      //   indicator: 'Fruta favorita'
+      // },
+      // {
+      //   id: 3,
+      //   type: FieldType.MULTIPLE_CHOICE,
+      //   question: 'Quais são os seus hobbies?',
+      //   options: [
+      //     { id: 1, text: 'Leitura' },
+      //     { id: 2, text: 'Esportes' },
+      //     { id: 3, text: 'Música' },
+      //     { id: 4, text: 'Viagens' }
+      //   ],
+      //   position: 3,
+      //   indicator: 'Hobbies'
+      // },
+      // {
+      //   id: 4,
+      //   type: FieldType.DATE,
+      //   question: 'Qual é a sua data de nascimento?',
+      //   position: 4,
+      //   indicator: 'Data de Nascimento'
+      // },
+      // {
+      //   id: 5,
+      //   type: FieldType.TEXT,
+      //   question: 'Qual é o seu endereço?',
+      //   position: 5,
+      //   dependencies: [
+      //     { fieldId: 2, optionIds: [1, 2] }
+      //   ],
+      // }
     ]});
 }
 
@@ -109,7 +136,7 @@ const egressoForm: iForm = {
   fields: [
     {
       id: 5,
-      type: 'single_choice',
+      type: FieldType.SINGLE_CHOICE,
       question: 'Quando você entrou no curso de TADS do IFSP, você trabalhava?',
       options: [
         { id: 1, text: 'Sim' },
@@ -120,7 +147,7 @@ const egressoForm: iForm = {
     },
     {
       id: 6,
-      type: 'single_choice',
+      type: FieldType.SINGLE_CHOICE,
       question: 'Você trabalhava em?',
       options: [
         { id: 1, text: 'Na área de T.I.' },
@@ -134,7 +161,7 @@ const egressoForm: iForm = {
     },
     {
       id: 7,
-      type: 'single_choice',
+      type: FieldType.SINGLE_CHOICE,
       question: 'Atualmente, você se encontra?',
       options: [
         { id: 1, text: 'Estudando' },
@@ -147,7 +174,7 @@ const egressoForm: iForm = {
     },
     {
       id: 8,
-      type: 'single_choice',
+      type: FieldType.SINGLE_CHOICE,
       question: 'Atualmente você trabalha com T.I?',
       options: [
         { id: 1, text: 'Sim' },
@@ -161,7 +188,7 @@ const egressoForm: iForm = {
     },
     {
       id: 9,
-      type: 'single_choice',
+      type: FieldType.SINGLE_CHOICE,
       question: 'Indique a principal razão pela qual não esteja atuando em atividade relativa à sua área de formação:',
       options: [
         { id: 1, text: 'Não há oferecimento de vagas' },
@@ -179,7 +206,7 @@ const egressoForm: iForm = {
     },
     {
       id: 10,
-      type: 'single_choice',
+      type: FieldType.SINGLE_CHOICE,
       question: 'Que área da T.I você atua?',
       options: [
         { id: 1, text: 'Desenvolvimento' },
@@ -200,7 +227,7 @@ const egressoForm: iForm = {
     },
     {
       id: 11,
-      type: 'single_choice',
+      type: FieldType.SINGLE_CHOICE,
       question: 'Qual sua faixa de salário atual?',
       options: [
         { id: 1, text: 'Menos de R$ 2.000,00' },
@@ -218,7 +245,7 @@ const egressoForm: iForm = {
     },
     {
       id: 12,
-      type: 'single_choice',
+      type: FieldType.SINGLE_CHOICE,
       question: 'Qual o seu regime de trabalho atual?',
       options: [
         { id: 1, text: 'Presencial' },
@@ -233,7 +260,7 @@ const egressoForm: iForm = {
     },
     {
       id: 13,
-      type: 'single_choice',
+      type: FieldType.SINGLE_CHOICE,
       question: 'Qual é o porte da empresa da área de TI que você trabalha atualmente?',
       options: [
         { id: 1, text: 'Micro (Até 9 empregados)' },
@@ -249,7 +276,7 @@ const egressoForm: iForm = {
     },
     {
       id: 14,
-      type: 'single_choice',
+      type: FieldType.SINGLE_CHOICE,
       question: 'A empresa da área de TI que você trabalha se encontra fora do país?',
       options: [
         { id: 1, text: 'Sim' },
@@ -263,7 +290,7 @@ const egressoForm: iForm = {
     },
     {
       id: 15,
-      type: 'single_choice',
+      type: FieldType.SINGLE_CHOICE,
       question: 'Você vive em que estado?',
       options: [
         { id: 1, text: 'AC' },
@@ -302,7 +329,7 @@ const egressoForm: iForm = {
     },
     {
       id: 16,
-      type: 'single_choice',
+      type: FieldType.SINGLE_CHOICE,
       question: 'Quanto tempo decorreu entre a colação de grau e o início da atuação profissional na área de TI?',
       options: [
         { id: 1, text: 'Até 06 meses' },
@@ -318,7 +345,7 @@ const egressoForm: iForm = {
     },
     {
       id: 17,
-      type: 'multiple_choice',
+      type: FieldType.MULTIPLE_CHOICE,
       question: 'Quais foram/são os maiores obstáculos à entrada no mundo do trabalho?',
       options: [
         { id: 1, text: 'Necessidade de prévia especialização' },
@@ -333,7 +360,7 @@ const egressoForm: iForm = {
     },
     {
       id: 18,
-      type: 'single_choice',
+      type: FieldType.SINGLE_CHOICE,
       question: 'Em termos de realização pessoal, qual é o seu grau de satisfação com a sua profissão?',
       options: [
         { id: 1, text: 'Muito satisfeito' },
@@ -348,7 +375,7 @@ const egressoForm: iForm = {
     },
     {
       id: 19,
-      type: 'single_choice',
+      type: FieldType.SINGLE_CHOICE,
       question: 'Como você se sentiu, em relação à sua atuação profissional, logo que se formou?',
       options: [
         { id: 1, text: 'Totalmente preparado' },
@@ -362,7 +389,7 @@ const egressoForm: iForm = {
     },
     {
       id: 20,
-      type: 'single_choice',
+      type: FieldType.SINGLE_CHOICE,
       question: 'Como você classifica o foco do conteúdo de seu Curso, com relação às necessidades do mundo do trabalho?',
       options: [
         { id: 1, text: 'Correto' },
@@ -375,7 +402,7 @@ const egressoForm: iForm = {
     },
     {
       id: 21,
-      type: 'single_choice',
+      type: FieldType.SINGLE_CHOICE,
       question: 'Como você avalia sua situação profissional atual comparada àquela em que você se encontrava quando ingressou no curso no IFSP?',
       options: [
         { id: 1, text: 'Melhor' },
@@ -387,7 +414,7 @@ const egressoForm: iForm = {
     },
     {
       id: 22,
-      type: 'single_choice',
+      type: FieldType.SINGLE_CHOICE,
       question: 'Você considera que a sua formação em Análise e Desenvolvimento de Sistemas no IFSP foi relevante para entrar no mercado de trabalho?',
       options: [
         { id: 1, text: 'Sim, extremamente relevante' },
@@ -401,7 +428,7 @@ const egressoForm: iForm = {
     },
     {
       id: 23,
-      type: 'single_choice',
+      type: FieldType.SINGLE_CHOICE,
       question: 'Você tem interesse em ministrar palestras, sobre sua área de atuação profissional, aos atuais alunos de seu Curso?',
       options: [
         { id: 1, text: 'Sim' },
@@ -412,7 +439,7 @@ const egressoForm: iForm = {
     },
     {
       id: 24,
-      type: 'single_choice',
+      type: FieldType.SINGLE_CHOICE,
       question: 'Uma vez formado, você cursou pós-graduação?',
       options: [
         { id: 1, text: 'Sim' },
@@ -424,7 +451,7 @@ const egressoForm: iForm = {
     },
     {
       id: 25,
-      type: 'single_choice',
+      type: FieldType.SINGLE_CHOICE,
       question: 'Qual é o nível da pós-graduação que cursa/cursou?',
       options: [
         { id: 1, text: 'Especialização' },
@@ -440,7 +467,7 @@ const egressoForm: iForm = {
     },
     {
       id: 26,
-      type: 'single_choice',
+      type: FieldType.SINGLE_CHOICE,
       question: 'Você mantém contato com o IFSP, desde a sua colação de grau?',
       options: [
         { id: 1, text: 'Sim' },
@@ -451,7 +478,7 @@ const egressoForm: iForm = {
     },
     {
       id: 27,
-      type: 'multiple_choice',
+      type: FieldType.MULTIPLE_CHOICE,
       question: 'Indique o tipo de contato mantido:',
       options: [
         { id: 1, text: 'Visita' },

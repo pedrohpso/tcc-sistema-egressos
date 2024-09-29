@@ -1,17 +1,13 @@
 # Sistema de egressos 
 Sistema de Egressos do meu Projeto de TCC para o meu curso de TADS no IFSP
 
-## Banco
-### Como criar o schema e popular o banco para testes:
-- Executar o comando:
-```
-npm run populate
-```
-
-## Backend
+## Frontend
 ### Como executar
-- Executar o seguinte comando no terminal(na pasta backend):
+
+- Versão do Node utilizada: 22
+
+- Executar o seguinte comando no terminal(na pasta frontend):
 ```
 npm i
-npm start
+npm run dev
 ```
