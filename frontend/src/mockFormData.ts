@@ -75,12 +75,13 @@ export async function submitForm(formId: number): Promise<void> {
   return Promise.resolve();
 }
 
-export async function updateFormFieldOrder(formId: number, fields: iField[]): Promise<void> {
-  console.log('Atualizando ordem dos campos do formulário:', formId, fields);
+export async function updateFormFieldOrder(formId: number, fields: { fieldId: number, position: number }[]): Promise<void> {
+  console.log('Atualizando ordem das questões para o formulário:', formId);
+  console.log('Nova ordem:', fields);
   return Promise.resolve();
 }
 
-export async function getFormById(id: number): Promise<iForm | null> {
+export async function getFormById(id: number): Promise<iForm> {
   // requisição pro backend
   return Promise.resolve({
     id, 
@@ -136,6 +137,8 @@ export async function getFormById(id: number): Promise<iForm | null> {
       }
     ]});
 }
+
+
 
 export async function getMockFormData(): Promise<iForm> {
   return Promise.resolve(egressoForm);

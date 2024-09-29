@@ -27,7 +27,7 @@ const FieldItem: React.FC<FieldItemProps> = ({ field, position, isReordering, on
   };
 
   return (
-    <li className="field-item">
+    <div className="field-item">
       <div className="field-item-left">
         {isReordering && <FaGripVertical className="grip-icon" />}
         <span className="field-item-position">{position}.</span>
@@ -45,7 +45,7 @@ const FieldItem: React.FC<FieldItemProps> = ({ field, position, isReordering, on
           <FaEdit className="edit-icon" onClick={onEdit} />
         )}
       </div>
-    </li>
+    </div>
   );
 };
 
