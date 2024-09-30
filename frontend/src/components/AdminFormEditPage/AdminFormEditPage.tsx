@@ -107,10 +107,8 @@ const AdminFormEditPage: React.FC = () => {
       const dependentFieldPositions = dependentFields.map(f => f.position).join(', ');
       setDependentFieldMessage(`A questão ${fieldId} é uma dependência das questões nas posições: ${dependentFieldPositions}. Remova essas dependências antes de excluir.`);
     } else {
-      // Fazer o soft delete
       const updatedFields = fields.filter(f => f.id !== fieldId);
       setFields(updatedFields);
-      // Aqui faria a requisição de soft delete para o backend
       await deleteField(fieldId);
     }
   };

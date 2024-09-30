@@ -87,6 +87,12 @@ export async function deleteField(fieldId: number): Promise<void> {
   return Promise.resolve();
 }
 
+export async function deleteForm(formId: number): Promise<void> {
+  // requisição pro backend
+  console.log(`Form ${formId} excluído com soft delete`);
+  return Promise.resolve();
+}
+
 export async function getFormById(id: number): Promise<iForm> {
   // requisição pro backend
   return Promise.resolve({

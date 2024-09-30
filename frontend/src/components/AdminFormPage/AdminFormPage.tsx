@@ -3,7 +3,7 @@ import { useCourse } from '../../context/CourseContext';
 import Button from '../Button/Button';
 import Modal from '../Modal/Modal';
 import './AdminFormPage.css';
-import { iForm, createForm, getFormsByCourseId } from '../../mockFormData';
+import { iForm, createForm, getFormsByCourseId, deleteForm } from '../../mockFormData';
 import { useNavigate } from 'react-router-dom';
 
 const AdminFormPage: React.FC = () => {
@@ -11,6 +11,8 @@ const AdminFormPage: React.FC = () => {
   const [forms, setForms] = useState<iForm[]>([]);
   const [isAddFormModalOpen, setIsAddFormModalOpen] = useState(false);
   const [newFormTitle, setNewFormTitle] = useState('');
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [formToDelete, setFormToDelete] = useState<iForm | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,7 +31,7 @@ const AdminFormPage: React.FC = () => {
   const handleAddForm = async () => {
     if (newFormTitle.trim() === '') return;
     try {
-      const newForm = await createForm(newFormTitle)
+      const newForm = await createForm(newFormTitle);
       setForms([newForm, ...forms]);
     } catch (error) {
       console.error('Error creating new form:', error);
@@ -38,13 +40,30 @@ const AdminFormPage: React.FC = () => {
     setNewFormTitle('');
   };
 
-  const closeAddForModal = () => {
-    setIsAddFormModalOpen(false);
-    setNewFormTitle('');
-  }
-
   const handleEditForm = (formId: number) => {
     navigate(`/admin/forms/${formId}`);
+  };
+
+  const handleDeleteForm = async () => {
+    if (!formToDelete) return;
+    try {
+      await deleteForm(formToDelete.id);
+      setForms(forms.filter((form) => form.id !== formToDelete.id));
+      setIsDeleteModalOpen(false);
+      setFormToDelete(null);
+    } catch (error) {
+      console.error('Error deleting form:', error);
+    }
+  };
+
+  const openDeleteModal = (form: iForm) => {
+    setFormToDelete(form);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeAddFormModal = () => {
+    setIsAddFormModalOpen(false);
+    setNewFormTitle('');
   };
 
   return (
@@ -62,10 +81,8 @@ const AdminFormPage: React.FC = () => {
               <div className="form-item-title">{form.title}</div>
               {form.status === 'draft' ? (
                 <div className="form-item-actions">
-                  <Button
-                    label="Editar"
-                    onClick={() => handleEditForm(form.id)}
-                  />
+                  <Button label="Editar" onClick={() => handleEditForm(form.id)} />
+                  <Button label="Excluir" onClick={() => openDeleteModal(form)} />
                 </div>
               ) : (
                 <div className="form-item-status">Publicado</div>
@@ -74,15 +91,27 @@ const AdminFormPage: React.FC = () => {
           ))}
         </ul>
       )}
-      <Modal isOpen={isAddFormModalOpen} onClose={() => closeAddForModal()}>
-        <h2 className='add-form-modal-title'>Adicionar novo formulário</h2>
-        <input className='add-form-modal-input'
+
+      <Modal isOpen={isAddFormModalOpen} onClose={() => closeAddFormModal()}>
+        <h2 className="add-form-modal-title">Adicionar novo formulário</h2>
+        <input
+          className="add-form-modal-input"
           type="text"
           value={newFormTitle}
           onChange={(e) => setNewFormTitle(e.target.value)}
           placeholder="Digite o título do formulário"
         />
-        <Button className='add-form-modal-button' label="Adicionar" onClick={handleAddForm} />
+        <Button className="add-form-modal-button" label="Adicionar" onClick={handleAddForm} />
+      </Modal>
+
+      {/* Modal para Confirmar Exclusão */}
+      <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
+        <h2>Excluir Formulário</h2>
+        <p>Tem certeza que deseja excluir o formulário "{formToDelete?.title}"? Esta ação não pode ser desfeita.</p>
+        <div className="modal-buttons">
+          <Button label="Cancelar" onClick={() => setIsDeleteModalOpen(false)} />
+          <Button label="Excluir" onClick={handleDeleteForm} />
+        </div>
       </Modal>
     </div>
   );
