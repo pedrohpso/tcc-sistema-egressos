@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Button from '../Button/Button';
 import './AdminFormEditPage.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { createFormField, createFormFieldInput, getFormById, iForm, submitForm, updateFormFieldOrder } from '../../mockFormData';
+import { createFormField, createFormFieldInput, deleteField, getFormById, iForm, submitForm, updateFormFieldOrder } from '../../mockFormData';
 import Modal from '../Modal/Modal';
 import RenameFormModal from '../RenameFormModal/RenameFormModal';
 import FieldItem from '../FieldItem/FieldItem';
@@ -17,6 +17,7 @@ const AdminFormEditPage: React.FC = () => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [currentForm, setCurrentForm] = useState<iForm | null>(null);
   const [fields, setFields] = useState<iField[]>(currentForm?.fields || []);
+  const [dependentFieldMessage, setDependentFieldMessage] = useState<string | null>(null);
 
   const { formId } = useParams();
   const navigate = useNavigate();
@@ -94,6 +95,26 @@ const AdminFormEditPage: React.FC = () => {
     setFields(reorderedFields);
   };
 
+  const handleDeleteField = async (fieldId: number) => {
+    const fieldHasDependencies = fields.some(f =>
+      f.dependencies?.some(dep => dep.fieldId === fieldId)
+    );
+
+    if (fieldHasDependencies) {
+      const dependentFields = fields.filter(f =>
+        f.dependencies?.some(dep => dep.fieldId === fieldId)
+      );
+      const dependentFieldPositions = dependentFields.map(f => f.position).join(', ');
+      setDependentFieldMessage(`A questão ${fieldId} é uma dependência das questões nas posições: ${dependentFieldPositions}. Remova essas dependências antes de excluir.`);
+    } else {
+      // Fazer o soft delete
+      const updatedFields = fields.filter(f => f.id !== fieldId);
+      setFields(updatedFields);
+      // Aqui faria a requisição de soft delete para o backend
+      await deleteField(fieldId);
+    }
+  };
+
   if (!currentForm) {
     return <p>Carregando...</p>;
   }
@@ -139,6 +160,11 @@ const AdminFormEditPage: React.FC = () => {
             onSave={handleSaveField}
             existingFields={fields}
           />
+
+          <Modal isOpen={!!dependentFieldMessage} onClose={() => setDependentFieldMessage(null)}>
+            <p>{dependentFieldMessage}</p>
+            <Button label="Fechar" onClick={() => setDependentFieldMessage(null)} />
+          </Modal>
         </div>
       )}
 
@@ -160,6 +186,7 @@ const AdminFormEditPage: React.FC = () => {
                           position={index + 1}
                           isReordering={isReorderMode}
                           onEdit={() => console.log('Editando questão', field)}
+                          onDelete={() => handleDeleteField(field.id)}
                         />
                       </li>
                     )}
@@ -179,6 +206,7 @@ const AdminFormEditPage: React.FC = () => {
                 position={index + 1}
                 isReordering={false}
                 onEdit={() => console.log('Editando questão', field)}
+                onDelete={() => handleDeleteField(field.id)}
               />
             </li>
           ))}

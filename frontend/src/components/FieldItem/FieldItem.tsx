@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaEdit, FaGripVertical } from 'react-icons/fa';
+import { FaEdit, FaGripVertical, FaTrash } from 'react-icons/fa';
 import './FieldItem.css';
 import { iField } from '../../mockFormData';
 
@@ -8,9 +8,10 @@ interface FieldItemProps {
   position: number;
   isReordering: boolean;
   onEdit: () => void;
+  onDelete: () => void;
 }
 
-const FieldItem: React.FC<FieldItemProps> = ({ field, position, isReordering, onEdit }) => {
+const FieldItem: React.FC<FieldItemProps> = ({ field, position, isReordering, onEdit, onDelete }) => {
   const renderFieldType = () => {
     switch (field.type) {
       case 'text':
@@ -42,7 +43,10 @@ const FieldItem: React.FC<FieldItemProps> = ({ field, position, isReordering, on
           </>
         )}
         {!isReordering && (
-          <FaEdit className="edit-icon" onClick={onEdit} />
+          <>
+            <FaEdit className="edit-icon" onClick={onEdit} />
+            <FaTrash className="delete-icon" onClick={onDelete} />
+          </>
         )}
       </div>
     </div>

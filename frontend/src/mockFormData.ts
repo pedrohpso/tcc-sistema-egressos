@@ -81,6 +81,12 @@ export async function updateFormFieldOrder(formId: number, fields: { fieldId: nu
   return Promise.resolve();
 }
 
+export async function deleteField(fieldId: number): Promise<void> {
+  // requisição pro backend
+  console.log(`Field ${fieldId} excluído com soft delete`);
+  return Promise.resolve();
+}
+
 export async function getFormById(id: number): Promise<iForm> {
   // requisição pro backend
   return Promise.resolve({

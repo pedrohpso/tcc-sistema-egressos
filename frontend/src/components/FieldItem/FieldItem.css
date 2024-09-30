@@ -57,3 +57,13 @@
 .edit-icon:hover {
   color: #145722;
 }
+
+.delete-icon {
+  cursor: pointer;
+  color: #ff4d4d;
+  margin-left: 10px;
+}
+
+.delete-icon:hover {
+  color: #cc0000;
+}
