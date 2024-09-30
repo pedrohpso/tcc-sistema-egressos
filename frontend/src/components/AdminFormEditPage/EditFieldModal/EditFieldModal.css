@@ -1,0 +1,37 @@
+.edit-field-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.option-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.remove-option-button {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.remove-option-button:hover {
+  background-color: #ff1a1a;
+}
+
+.error-text {
+  color: red;
+  font-size: 12px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FormFieldProps } from '../FormField/FormField';
+import { FormFieldProps } from '../Form/FormField/FormField';
 import Form from '../Form/Form';
 
 const Register: React.FC = () => {

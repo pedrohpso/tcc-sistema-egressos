@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import './AddFieldModal.css';
-import { iField, FieldType, createFormFieldInput } from '../../mockFormData';
-import Button from '../Button/Button';
-import Modal from '../Modal/Modal';
+import { iField, FieldType, createFormFieldInput } from '../../../mockFormData';
+import Button from '../../Button/Button';
+import Modal from '../../Modal/Modal';
 
 interface AddFieldModalProps {
   isOpen: boolean;

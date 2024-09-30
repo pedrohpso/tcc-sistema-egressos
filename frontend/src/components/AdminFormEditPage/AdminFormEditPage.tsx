@@ -4,9 +4,9 @@ import './AdminFormEditPage.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import { createFormField, createFormFieldInput, deleteField, getFormById, iForm, submitForm, updateFormFieldOrder } from '../../mockFormData';
 import Modal from '../Modal/Modal';
-import RenameFormModal from '../RenameFormModal/RenameFormModal';
-import FieldItem from '../FieldItem/FieldItem';
-import AddFieldModal from '../AddFieldModal/AddFieldModal';
+import RenameFormModal from './RenameFormModal/RenameFormModal';
+import FieldItem from './FieldItem/FieldItem';
+import AddFieldModal from './AddFieldModal/AddFieldModal';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import { iField } from '../../mockFormData';
 

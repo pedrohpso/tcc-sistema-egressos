@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useUser } from '../../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import Form from '../Form/Form';
-import { FormFieldProps } from '../FormField/FormField';
+import { FormFieldProps } from '../Form/FormField/FormField';
 
 const Login: React.FC = () => {
   const { user, setUser } = useUser();

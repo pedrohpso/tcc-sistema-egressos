@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { debounce } from 'lodash';
 import './Dashboard.css';
 import { fetchGraphData } from './mockData';
-import Chart from '../Chart/Chart';
+import Chart from './Chart/Chart';
 import { FaChartPie, FaChartBar, FaTable } from "react-icons/fa";
 import { IoMdDownload } from "react-icons/io";
 import { useIndicators } from './hooks/useIndicators';
@@ -11,7 +11,7 @@ import Button from '../Button/Button';
 import html2canvas from 'html2canvas-pro';
 import jsPDF from 'jspdf';
 import { useCourse } from '../../context/CourseContext';
-import { YearRangeSelector } from '../YearRangeSelector/YearRangeSelector';
+import { YearRangeSelector } from './YearRangeSelector/YearRangeSelector';
 
 
 const debouncedFetchData = debounce(async (fetchData: Function) => {

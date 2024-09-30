@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import FormField, { FormFieldProps } from '../FormField/FormField';
+import FormField, { FormFieldProps } from './FormField/FormField';
 import './Form.css';
 
 interface FormProps {
