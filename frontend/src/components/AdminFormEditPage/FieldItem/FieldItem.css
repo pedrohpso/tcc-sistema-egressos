@@ -9,6 +9,10 @@
   margin-bottom: 10px;
 }
 
+.reordering {
+  background-color: #c5e9cd;
+}
+
 .field-item-left {
   display: flex;
   align-items: center;

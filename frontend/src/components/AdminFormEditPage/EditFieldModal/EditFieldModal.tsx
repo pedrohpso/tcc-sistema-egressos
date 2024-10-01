@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './EditFieldModal.css';
-import { iField, iOption, FieldType } from '../../../mockFormData';
+import { iField, FieldType, iEditableOption, updateFieldInput } from '../../../mockFormData';
 import Button from '../../Button/Button';
 import Modal from '../../Modal/Modal';
 
@@ -8,7 +8,7 @@ interface EditFieldModalProps {
   isOpen: boolean;
   onClose: () => void;
   field: iField;
-  onSave: (updatedField: iField) => void;
+  onSave: (field: iField, updateFieldInput: updateFieldInput) => void;
   existingFields: iField[];
 }
 
@@ -21,7 +21,7 @@ const EditFieldModal: React.FC<EditFieldModalProps> = ({
 }) => {
   const [question, setQuestion] = useState(field.question);
   const [type, setType] = useState<FieldType>(field.type);
-  const [options, setOptions] = useState<iOption[]>(field.options || []);
+  const [options, setOptions] = useState<iEditableOption[]>(field.options || []);
   const [indicator, setIndicator] = useState(field.indicator || '');
   const [hasDependency, setHasDependency] = useState(field.dependencies ? true : false);
   const [dependencyFieldId, setDependencyFieldId] = useState<number | null>(
@@ -70,21 +70,34 @@ const EditFieldModal: React.FC<EditFieldModalProps> = ({
 
   const handleSave = () => {
     if (!validate()) return;
+  
+    const updatedInput: updateFieldInput = {};
 
-    const updatedField: iField = {
-      ...field,
-      question,
-      type,
-      options: type !== FieldType.TEXT ? options : undefined,
-      indicator: type !== FieldType.TEXT ? indicator : undefined,
-      dependencies: hasDependency && dependencyFieldId
-        ? [{ fieldId: dependencyFieldId, optionIds: dependencyOptionIds }]
-        : undefined
-    };
-
-    onSave(updatedField);
+    if (question !== field.question) {
+      updatedInput.question = question;
+    }
+    if (type !== field.type) {
+      updatedInput.type = type;
+    }
+    if (type !== FieldType.TEXT) {
+      if (options !== field.options) {
+        updatedInput.options = options;
+      }
+      if (indicator !== field.indicator) {
+        updatedInput.indicator = indicator;
+      }
+    }
+    if (hasDependency) {
+      const newDependencies = dependencyFieldId && [{ fieldId: dependencyFieldId, optionIds: dependencyOptionIds }];
+      if (JSON.stringify(newDependencies) !== JSON.stringify(field.dependencies)) {
+        updatedInput.dependencies = newDependencies ? newDependencies : undefined;
+      }
+    }
+  
+    onSave(field, updatedInput);
     onClose();
   };
+  
 
   const handleOptionChange = (index: number, value: string) => {
     const updatedOptions = [...options];
@@ -93,7 +106,7 @@ const EditFieldModal: React.FC<EditFieldModalProps> = ({
   };
 
   const handleAddOption = () => {
-    setOptions([...options, { id: Date.now(), text: '' }]);
+    setOptions([...options, { id: undefined,  text: '' }]);
   };
 
   const handleRemoveOption = (index: number) => {

@@ -10,6 +10,11 @@ export interface iOption {
   text: string;
 }
 
+export interface iEditableOption {
+  id?: number;
+  text: string;
+}
+
 export interface iDependency { 
   fieldId: number;
   optionIds: number[];
@@ -45,7 +50,20 @@ export async function createForm(title: string): Promise<iForm> {
 export async function getFormsByCourseId(courseId: number): Promise<iForm[]> {
   // requisição pro backend
   console.log('Querying for forms of course with id:', courseId);
-  return Promise.resolve([]);
+  return Promise.resolve([
+    {
+      id: 1,
+      title: 'Formulário de Egressos do curso TADS do IFSP',
+      status: 'draft',
+      fields: []
+    },
+    {
+      id: 2,
+      title: 'Formulário de Egressos do curso ADS do IFSP',
+      status: 'published',
+      fields: []
+    }
+  ]);
 }
 
 export type createFormFieldInput = {
@@ -93,61 +111,84 @@ export async function deleteForm(formId: number): Promise<void> {
   return Promise.resolve();
 }
 
+export type updateFieldInput = {
+  type?: FieldType;
+  question?: string;
+  options?: iEditableOption[];
+  indicator?: string;
+  dependencies?: iDependency[];
+}
+
+export async function editField(field: iField, input: updateFieldInput): Promise<iField> {
+  // requisição pro backend
+  console.log('Editando field com id:', field, ' com:', input);
+
+  if(input.options) {
+    input.options= input.options.map((opt, idx) => ({ id: opt.id || field.id * 1000 + idx, text: opt.text }));
+  }
+
+  return Promise.resolve({ ...field, ...input} as iField);
+}
+
 export async function getFormById(id: number): Promise<iForm> {
   // requisição pro backend
-  return Promise.resolve({
-    id, 
-    title: 'Formulário de Egressos do curso TADS do IFSP', 
-    status: 'draft', 
-    fields: [
-      {
-        id: 1,
-        type: FieldType.TEXT,
-        question: 'Qual é o seu nome?',
-        position: 1,
-      },
-      {
-        id: 2,
-        type: FieldType.SINGLE_CHOICE,
-        question: 'Qual é a sua fruta favorita?',
-        options: [
-          { id: 1, text: 'Porga' },
-          { id: 2, text: 'Borga' },
-          { id: 3, text: 'Zorba' }
-        ],
-        position: 2,
-        indicator: 'Fruta favorita'
-      },
-      {
-        id: 3,
-        type: FieldType.MULTIPLE_CHOICE,
-        question: 'Quais são os seus hobbies?',
-        options: [
-          { id: 1, text: 'Leitura' },
-          { id: 2, text: 'Esportes' },
-          { id: 3, text: 'Música' },
-          { id: 4, text: 'Viagens' }
-        ],
-        position: 3,
-        indicator: 'Hobbies'
-      },
-      {
-        id: 4,
-        type: FieldType.DATE,
-        question: 'Qual é a sua data de nascimento?',
-        position: 4,
-        indicator: 'Data de Nascimento'
-      },
-      {
-        id: 5,
-        type: FieldType.TEXT,
-        question: 'Qual é o seu endereço?',
-        position: 5,
-        dependencies: [
-          { fieldId: 2, optionIds: [1, 2] }
-        ],
-      }
-    ]});
+  console.log('Fazendo query para pegar o form com id:', id);
+  return Promise.resolve(
+    egressoForm
+  // {
+  //   id, 
+  //   title: 'Formulário de Egressos do curso TADS do IFSP', 
+  //   status: 'draft', 
+  //   fields: [
+  //     // {
+  //     //   id: 1,
+  //     //   type: FieldType.TEXT,
+  //     //   question: 'Qual é o seu nome?',
+  //     //   position: 1,
+  //     // },
+  //     // {
+  //     //   id: 2,
+  //     //   type: FieldType.SINGLE_CHOICE,
+  //     //   question: 'Qual é a sua fruta favorita?',
+  //     //   options: [
+  //     //     { id: 1, text: 'Porga' },
+  //     //     { id: 2, text: 'Borga' },
+  //     //     { id: 3, text: 'Zorba' }
+  //     //   ],
+  //     //   position: 2,
+  //     //   indicator: 'Fruta favorita'
+  //     // },
+  //     // {
+  //     //   id: 3,
+  //     //   type: FieldType.MULTIPLE_CHOICE,
+  //     //   question: 'Quais são os seus hobbies?',
+  //     //   options: [
+  //     //     { id: 1, text: 'Leitura' },
+  //     //     { id: 2, text: 'Esportes' },
+  //     //     { id: 3, text: 'Música' },
+  //     //     { id: 4, text: 'Viagens' }
+  //     //   ],
+  //     //   position: 3,
+  //     //   indicator: 'Hobbies'
+  //     // },
+  //     // {
+  //     //   id: 4,
+  //     //   type: FieldType.DATE,
+  //     //   question: 'Qual é a sua data de nascimento?',
+  //     //   position: 4,
+  //     //   indicator: 'Data de Nascimento'
+  //     // },
+  //     // {
+  //     //   id: 5,
+  //     //   type: FieldType.TEXT,
+  //     //   question: 'Qual é o seu endereço?',
+  //     //   position: 5,
+  //     //   dependencies: [
+  //     //     { fieldId: 2, optionIds: [1, 2] }
+  //     //   ],
+  //     // }
+  //   ]}
+  );
 }
 
 

@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import Button from '../Button/Button';
 import './AdminFormEditPage.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { createFormField, createFormFieldInput, deleteField, getFormById, iForm, submitForm, updateFormFieldOrder } from '../../mockFormData';
+import { createFormField, createFormFieldInput, deleteField, getFormById, iForm, submitForm, updateFormFieldOrder, editField, updateFieldInput } from '../../mockFormData';
 import Modal from '../Modal/Modal';
 import RenameFormModal from './RenameFormModal/RenameFormModal';
 import FieldItem from './FieldItem/FieldItem';
 import AddFieldModal from './AddFieldModal/AddFieldModal';
+import EditFieldModal from './EditFieldModal/EditFieldModal';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import { iField } from '../../mockFormData';
 
@@ -15,13 +16,14 @@ const AdminFormEditPage: React.FC = () => {
   const [isAddFieldModalOpen, setIsAddFieldModalOpen] = useState(false);
   const [isReorderMode, setIsReorderMode] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isEditFieldModalOpen, setIsEditFieldModalOpen] = useState(false);
+  const [fieldBeingEdited, setFieldBeingEdited] = useState<iField | null>(null);
   const [currentForm, setCurrentForm] = useState<iForm | null>(null);
   const [fields, setFields] = useState<iField[]>(currentForm?.fields || []);
   const [dependentFieldMessage, setDependentFieldMessage] = useState<string | null>(null);
 
   const { formId } = useParams();
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const fetchForm = async () => {
@@ -39,8 +41,13 @@ const AdminFormEditPage: React.FC = () => {
   const handleSaveField = async (newField: Omit<createFormFieldInput, 'position'>) => {
     if (currentForm) {
       const position = fields.length + 1;
-      const savedField = await createFormField(currentForm.id, { ...newField, position });
-      setFields([...fields, savedField]);
+
+      try {
+        const savedField = await createFormField(currentForm.id, { ...newField, position });
+        setFields([...fields, savedField]);
+      } catch (error) {
+        console.error('Erro ao salvar a questão:', error);
+      }
     }
   };
 
@@ -105,13 +112,36 @@ const AdminFormEditPage: React.FC = () => {
         f.dependencies?.some(dep => dep.fieldId === fieldId)
       );
       const dependentFieldPositions = dependentFields.map(f => f.position).join(', ');
-      setDependentFieldMessage(`A questão ${fieldId} é uma dependência das questões nas posições: ${dependentFieldPositions}. Remova essas dependências antes de excluir.`);
+      setDependentFieldMessage(`A questão ${fieldId} é uma dependência das questões nas posições: ${dependentFieldPositions}.\nRemova essas dependências antes de excluir.`);
     } else {
-      const updatedFields = fields.filter(f => f.id !== fieldId);
-      setFields(updatedFields);
-      await deleteField(fieldId);
+      try {
+        await deleteField(fieldId);
+        const updatedFields = fields.filter(f => f.id !== fieldId);
+        setFields(updatedFields);
+      } catch (error) {
+        console.log('Erro ao excluir a questão:', error);
+      }
     }
   };
+
+  const handleEditField = (field: iField) => {
+    setFieldBeingEdited(field);
+    setIsEditFieldModalOpen(true);
+  };
+
+  // mudar de field para fieldId depois
+  const handleSaveFieldEdit = async (field: iField, updateFieldInput: updateFieldInput) => {
+    try {
+      const updatedField = await editField(fieldBeingEdited!, updateFieldInput);
+      const updatedFields = fields.map(f => f.id === field.id ? updatedField : f);
+      console.log('updatedFields: ', updatedFields);
+      setFields(updatedFields);
+    } catch (error) {
+      console.log('Erro ao editar a questão:', error);
+    }
+    setIsEditFieldModalOpen(false);
+  };
+
 
   if (!currentForm) {
     return <p>Carregando...</p>;
@@ -159,6 +189,16 @@ const AdminFormEditPage: React.FC = () => {
             existingFields={fields}
           />
 
+          {fieldBeingEdited && (
+            <EditFieldModal
+              isOpen={isEditFieldModalOpen}
+              onClose={() => setIsEditFieldModalOpen(false)}
+              field={fieldBeingEdited}
+              onSave={handleSaveFieldEdit}
+              existingFields={fields}
+            />
+          )}
+
           <Modal isOpen={!!dependentFieldMessage} onClose={() => setDependentFieldMessage(null)}>
             <p>{dependentFieldMessage}</p>
             <Button label="Fechar" onClick={() => setDependentFieldMessage(null)} />
@@ -166,6 +206,7 @@ const AdminFormEditPage: React.FC = () => {
         </div>
       )}
 
+      {fields.length === 0 && <p>Nenhuma questão adicionada.</p>}
       {isReorderMode ? (
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="fields">
@@ -183,7 +224,7 @@ const AdminFormEditPage: React.FC = () => {
                           field={field}
                           position={index + 1}
                           isReordering={isReorderMode}
-                          onEdit={() => console.log('Editando questão', field)}
+                          onEdit={() => handleEditField(field)}
                           onDelete={() => handleDeleteField(field.id)}
                         />
                       </li>
@@ -203,7 +244,7 @@ const AdminFormEditPage: React.FC = () => {
                 field={field}
                 position={index + 1}
                 isReordering={false}
-                onEdit={() => console.log('Editando questão', field)}
+                onEdit={() => handleEditField(field)}
                 onDelete={() => handleDeleteField(field.id)}
               />
             </li>

@@ -1,243 +1,68 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { debounce } from 'lodash';
-import './Dashboard.css';
-import { fetchGraphData } from './mockData';
-import Chart from './Chart/Chart';
-import { FaChartPie, FaChartBar, FaTable } from "react-icons/fa";
-import { IoMdDownload } from "react-icons/io";
-import { useIndicators } from './hooks/useIndicators';
-import { useForms } from './hooks/useForms';
-import Button from '../Button/Button';
-import html2canvas from 'html2canvas-pro';
-import jsPDF from 'jspdf';
+import React, { useState, useEffect } from 'react';
+import { getDashboardData } from '../../mockData';
 import { useCourse } from '../../context/CourseContext';
-import { YearRangeSelector } from './YearRangeSelector/YearRangeSelector';
-
-
-const debouncedFetchData = debounce(async (fetchData: Function) => {
-  await fetchData();
-}, 1500);
-
-const handleDownloadClick = async (type: 'pdf' | 'png') => {
-  const input = document.getElementById('chart-container') as HTMLElement;
-
-  try {
-    const canvas = await html2canvas(input);
-    const imgData = canvas.toDataURL('image/png');
-    if (type === 'pdf') {
-      const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: 'a4' });
-      const width = pdf.internal.pageSize.getWidth();
-      const height = (canvas.height * width) / canvas.width;
-
-      pdf.addImage(imgData, 'PNG', 0, 0, width, height);
-      pdf.save(`gráfico.${type}`);
-    } else {
-      const link = document.createElement('a');
-      link.href = imgData;
-      link.download = `gráfico.${type}`;
-      link.click();
-    }
-  } catch (error) {
-    console.log('error: ', error);
-  }
-};
+import './Dashboard.css'; // Estilos do grid e layout
 
 const Dashboard: React.FC = () => {
   const { selectedCourse } = useCourse();
-  const [indicator, setIndicator] = useState<number | null>(null);
-  const [formId, setFormId] = useState<number | null>(null);
-  const [grouping, setGrouping] = useState<string>('total');
-  const [chartType, setChartType] = useState<string>('');
-  const [data, setData] = useState<Record<string, string>[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [minValue, setMinValue] = useState<{ value: number, group: string, indicator: string } | null>(null);
-  const [maxValue, setMaxValue] = useState<{ value: number, group: string, indicator: string } | null>(null);
-  const [yearRange, setYearRange] = useState([2014, 2024]);
-
-  const [minYear, maxYear] = yearRange;
-
-  const { forms, isLoading: loadingForms } = useForms(selectedCourse!.id || null);
-  const { indicators, isLoading: loadingIndicators } = useIndicators(formId);
+  const [formCount, setFormCount] = useState<number>(0);
+  const [indicatorCount, setIndicatorCount] = useState<number>(0);
+  const [alumniCount, setAlumniCount] = useState<number>(0);
+  const [lastPublishedFormTitle, setLastPublishedFormTitle] = useState<string>('');
+  const [formReachAverage, setFormReachAverage] = useState<number>(0);
 
   useEffect(() => {
-    if (forms.length > 0) {
-      setFormId(forms[0].id); 
-    }
-  }, [forms]);
+    const fetchData = async () => {
+      if (!selectedCourse) return;
+      try {
+        const {
+          publishedFormsAmount,
+          indicatorsAmount,
+          registeredAlumniAmount,
+          lastPublishedFormTitle,
+          formReachAverage,
+        } = await getDashboardData(selectedCourse.id);
 
-  useEffect(() => {
-    if (formId && indicators.length > 0) {
-      setIndicator(indicators[0].id);
-    }
-  }, [formId, indicators]);
+        setFormCount(publishedFormsAmount);
+        setIndicatorCount(indicatorsAmount);
+        setAlumniCount(registeredAlumniAmount);
+        setLastPublishedFormTitle(lastPublishedFormTitle);
+        setFormReachAverage(formReachAverage); 
+      } catch (error) {
+        console.error('Erro ao buscar os dados do dashboard:', error);
+      }
+    };
 
-  const chartTypeButtonClass = !minYear || !maxYear || !indicator || !grouping || loadingForms || loadingIndicators ? "chart-type-button disabled" : "chart-type-button";
-
-  const findMinMaxValues = (data: Record<string, string | number>[]) => {
-    let minValue = { value: Infinity, group: '', indicator: '' };
-    let maxValue = { value: -Infinity, group: '', indicator: '' };
-
-    data.forEach((item) => {
-      Object.keys(item).forEach(key => {
-        if (key !== 'name' && typeof item[key] === 'number') {
-          const value = item[key] as number;
-          if (value < minValue.value) {
-            minValue = { value, group: item.name as string, indicator: key };
-          }
-          if (value > maxValue.value) {
-            maxValue = { value, group: item.name as string, indicator: key };
-          }
-        }
-      });
-    });
-
-    setMinValue(minValue);
-    setMaxValue(maxValue);
-  };
-
-  const fetchData = useCallback(async () => {
-    if (selectedCourse && minYear && maxYear && indicator && grouping) {
-      setIsLoading(true);
-      const graphData = await fetchGraphData({
-        courseId: selectedCourse.id,
-        year: `${minYear}-${maxYear}`,
-        indicatorId: indicator,
-        grouping,
-      });
-      setData(graphData);
-      setIsLoading(false);
-      findMinMaxValues(graphData);
-    }
-  }, [selectedCourse, minYear, maxYear, indicator, grouping]);
-
-   useEffect(() => {
-    if (selectedCourse && formId && indicator) {
-      debouncedFetchData(fetchData);
-    }
-  }, [selectedCourse, formId, minYear, maxYear, indicator, grouping, fetchData]);
-
-  const handleYearRangeChange = (newRange: number[]) => {
-    setYearRange(newRange);
-  };
-
-  const handleChartTypeClick = (type: 'bar' | 'pie' | 'table') => {
-    if (minYear && maxYear && indicator && grouping) {
-      setChartType(type);
-    }
-  };
+    fetchData();
+  }, [selectedCourse]);
 
   return (
-    <div className='dashboard-container'>
-      <div className="graph-container">
-        <div className="filters-container">
-          <div className="select-container">
-            <label>Formulário</label>
-            <select
-              value={formId || ''}
-              onChange={(e) => setFormId(Number(e.target.value))} 
-              disabled={loadingForms || forms.length === 0}
-            >
-              {loadingForms ? (
-                <option value="">Carregando...</option>
-              ) : (
-                <>
-                  {forms.map((form) => (
-                    <option key={form.id} value={form.id}>{form.title}</option>
-                  ))}
-                </>
-              )}
-            </select>
-          </div>
-
-          <div className="select-container">
-            <label>Ano de graduação</label>
-            <div className='year-range-container'>
-              <YearRangeSelector
-                minYear={2014}
-                maxYear={2024}
-                onChange={handleYearRangeChange}
-              />
-            </div>
-          </div>
-
-          <div className="select-container">
-            <label>Indicador</label>
-            <select
-              value={indicator || ''}
-              onChange={(e) => setIndicator(Number(e.target.value))}
-              disabled={loadingIndicators || indicators.length === 0}
-            >
-              {loadingIndicators ? (
-                <option value="">Carregando...</option>
-              ) : (
-                <>
-                  {indicators.map((ind) => (
-                    <option key={ind.id} value={ind.id}>{ind.text}</option>
-                  ))}
-                </>
-              )}
-            </select>
-          </div>
-
-          <div className="select-container">
-            <label>Agrupamento</label>
-            <select
-              value={grouping}
-              onChange={(e) => setGrouping(e.target.value)}
-            >
-              <option value="total">Total</option>
-              <option value="age">Faixa Etária</option>
-              <option value="gender">Gênero</option>
-              <option value="ethnicity">Etnia</option>
-            </select>
-          </div>
-
-          <div className="select-container">
-            <label>Tipo de visualização:</label>
-            <div className='chart-type-container'>
-              <FaChartBar className={chartTypeButtonClass} onClick={() => handleChartTypeClick('bar')} />
-              <FaChartPie className={chartTypeButtonClass} onClick={() => handleChartTypeClick('pie')} />
-              <FaTable className={chartTypeButtonClass} onClick={() => handleChartTypeClick('table')} />
-            </div>
-          </div>
-
-          {data.length > 0 && (chartType === 'bar' || chartType === 'pie' || chartType === 'table') ? (
-            <div className='select-container'>
-              <label>Download</label>
-              <div className='download-button-container'>
-                <Button label='PNG' icon={<IoMdDownload />} onClick={() => handleDownloadClick('png')} />
-                <Button label='PDF' icon={<IoMdDownload />} onClick={() => handleDownloadClick('pdf')} />
-              </div>
-            </div>
-          ) : null}
-        </div>
-
-        <div id="chart-container" className="chart-container">
-          {isLoading ? <div className="loading">Carregando...</div> : data.length > 0 && <Chart type={chartType} data={data} />}
-        </div>
+    <div className="dashboard-container">
+      <div className="dashboard-header">
+        <h1 className="dashboard-title">Dashboard</h1>
+        {selectedCourse && <p className="course-name">{selectedCourse.fullname}</p>}
       </div>
-      <div>
-        <div className='tiny-content'>
-          {minValue && maxValue && (
-            <>
-              <div className='value-box'>
-                <div className='value-label max-value'>Maior valor</div>
-                <div className='value-number max-value'>{maxValue.value}</div>
-                <div className='value-info max-value'>
-                  <div>Agrupamento: {maxValue.group}</div>
-                  <div>Resposta: {maxValue.indicator}</div>
-                </div>
-              </div>
-              <div className='value-box'>
-                <div className='value-label min-value'>Menor valor</div>
-                <div className='value-number min-value'>{minValue.value}</div>
-                <div className='value-info min-value'>
-                  <div>Agrupamento: {minValue.group}</div>
-                  <div>Resposta: {minValue.indicator}</div>
-                </div>
-              </div>
-            </>
-          )}
+
+      <div className="dashboard-grid">
+        <div className="dashboard-card">
+          <h2>Formulários Publicados</h2>
+          <p>{formCount}</p>
+        </div>
+        <div className="dashboard-card">
+          <h2>Indicadores</h2>
+          <p>{indicatorCount}</p>
+        </div>
+        <div className="dashboard-card">
+          <h2>Egressos Cadastrados</h2>
+          <p>{alumniCount}</p>
+        </div>
+        <div className="dashboard-card">
+          <h2>Último Formulário Publicado</h2>
+          <p>{lastPublishedFormTitle}</p>
+        </div>
+        <div className="dashboard-card">
+          <h2>Média de alcance dos Formulários</h2>
+          <p>{formReachAverage.toFixed(1)}%</p>
         </div>
       </div>
     </div>

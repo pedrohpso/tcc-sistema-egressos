@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { FaHome, FaWpforms } from 'react-icons/fa';
+import { FaMagnifyingGlassChart } from "react-icons/fa6";
 import './Sidebar.css';
 
 const Sidebar: React.FC = () => {
@@ -13,6 +14,14 @@ const Sidebar: React.FC = () => {
             className={({ isActive }) => isActive ? 'active' : ''}
           >
             <FaHome className="sidebar-icon" /> Dashboard
+          </NavLink>
+        </li>
+        <li>
+          <NavLink 
+            to="/admin/data"
+            className={({ isActive }) => isActive ? 'active' : ''}
+          >
+            <FaMagnifyingGlassChart className="sidebar-icon" /> Dados
           </NavLink>
         </li>
         <li>

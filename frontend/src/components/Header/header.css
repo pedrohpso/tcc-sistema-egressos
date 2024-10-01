@@ -1,4 +1,5 @@
 .header {
+  font-family: "open_sansextrabold",'Open Sans',Arial,Helvetica,sans-serif;
   background-color: #17882c;
   background-image: radial-gradient(ellipse at center,#17882c 1%,#00510f 100%);
   color: white;
@@ -23,7 +24,6 @@
 }
 
 .title {
-  font-family: "open_sansextrabold",'Open Sans',Arial,Helvetica,sans-serif;
   padding-left: 20px;
   margin-top: 10px;
   flex-grow: 1; 
@@ -43,7 +43,6 @@
 }
 
 .username {
-  font-family: "open_sansextrabold",'Open Sans',Arial,Helvetica,sans-serif;
   font-size: 20px; 
   margin: 0;
   padding: 15px 10px;
@@ -77,6 +76,11 @@
   align-items: center;
   width: 100%;
   justify-content: space-between;
+}
+.bar p {
+  margin-right: 10px;
+  font-weight: 600;
+  color: white;
 }
 
 .image-container {

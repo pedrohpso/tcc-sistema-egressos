@@ -19,12 +19,10 @@ const Homepage: React.FC = () => {
   })
   
   return (
-    <div>
         <div className="homepage">
           <h2>Boas-vindas ao Sistema de Egressos do IFSP - Campus Campinas!</h2>
           <p>Se você ainda não tem uma conta, registre-se.</p>
         </div>
-    </div> 
   );
 };
 

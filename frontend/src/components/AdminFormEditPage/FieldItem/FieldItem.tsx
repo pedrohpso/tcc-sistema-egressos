@@ -28,7 +28,7 @@ const FieldItem: React.FC<FieldItemProps> = ({ field, position, isReordering, on
   };
 
   return (
-    <div className="field-item">
+    <div className={isReordering? "field-item reordering" : "field-item"}>
       <div className="field-item-left">
         {isReordering && <FaGripVertical className="grip-icon" />}
         <span className="field-item-position">{position}.</span>
