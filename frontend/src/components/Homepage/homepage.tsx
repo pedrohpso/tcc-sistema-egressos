@@ -21,7 +21,12 @@ const Homepage: React.FC = () => {
   return (
         <div className="homepage">
           <h2>Boas-vindas ao Sistema de Egressos do IFSP - Campus Campinas!</h2>
-          <p>Se você ainda não tem uma conta, registre-se.</p>
+          <p className="homepage-description">
+          Estudo dos dados dos egressados do curso de Análise e Desenvolvimetno de Sistemas. A pesquisa visa mapear o perfil e trajetória profissional dos ex-alunos, coletando informações diretamente dos egressos.
+          </p>
+          <p className="homepage-description">
+          O sistema auxilia no acompanhamento dos indicadores sobre empregabilidade e evolução acadêmica, oferecendo dados essenciais para melhorias no curso.
+          </p>
         </div>
   );
 };

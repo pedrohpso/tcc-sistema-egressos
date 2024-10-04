@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: row;
   width: 100%;
-  min-height: 100vh;
   background-color: #f4f4f9;
+  flex-grow: 1;
 }
 
 .admin-content {
@@ -13,5 +13,5 @@
   border-left: 1px solid #e0e0e0;
   flex-grow: 1;
   background-color: #f9f9f9;
-  min-height: 100vh;
+  height: 100%;
 }

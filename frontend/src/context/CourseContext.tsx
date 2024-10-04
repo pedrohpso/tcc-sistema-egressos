@@ -23,7 +23,7 @@ export const CourseProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const fetchCourses = () => {
       const courseList = [
         { id: 1, shortname: 'TADS', fullname: 'Tecnologia em Análise e Desenvolvimento de Sistemas' },
-        { id: 2, shortname: 'XYZ', fullname: 'Curso 2' },
+        { id: 2, shortname: 'Curso 2', fullname: 'Curso 2' },
       ];
       setCourses(courseList);
       setSelectedCourse(courseList[0]); 

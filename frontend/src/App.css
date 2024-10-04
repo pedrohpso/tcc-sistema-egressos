@@ -11,8 +11,6 @@ main.content {
     flex-grow: 1;
     width: 100%;
     box-sizing: border-box;
-    max-height: fit-content;
-    min-height: 100vh;
 }
 
 .app-container {

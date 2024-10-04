@@ -3,6 +3,7 @@ import { useUser } from '../../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import Form from '../Form/Form';
 import { FormFieldProps } from '../Form/FormField/FormField';
+import './Login.css'; 
 
 const Login: React.FC = () => {
   const { user, setUser } = useUser();
@@ -41,8 +42,10 @@ const Login: React.FC = () => {
 
   return (
     <div className='box'>
-      <h2>Login</h2>
-      <Form fields={fields} onSubmit={handleSubmit} />
+      <div className='login-container'>
+        <h2>Login</h2>
+        <Form fields={fields} onSubmit={handleSubmit} />
+        </div>
     </div>
   );
 };

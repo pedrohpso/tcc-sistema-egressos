@@ -20,7 +20,7 @@ const Register: React.FC = () => {
             type: 'text',
             label: 'Nome Completo',
             required: true,
-            name: 'nome'
+            name: 'name'
         },
         {
             type: 'email',
@@ -32,19 +32,25 @@ const Register: React.FC = () => {
             type: 'password',
             label: 'Senha',
             required: true,
-            name: 'senha'
+            name: 'password'
         },
         {
             type: 'date',
             label: 'Data de Nascimento',
             required: true,
-            name: 'data_nascimento'
+            name: 'birthdate'
+        },
+        {
+            type: 'date',
+            label: 'Data de conclusão do curso',
+            required: true,
+            name: 'graduation_date'
         },
         {
             type: 'single_choice',
             label: 'Gênero',
             required: true,
-            name: 'genero',
+            name: 'gender',
             options: [
                 { id: 1, text: 'Masculino' },
                 { id: 2, text: 'Feminino' },
@@ -59,7 +65,7 @@ const Register: React.FC = () => {
             type: 'single_choice',
             label: 'Etnia',
             required: true,
-            name: 'etnia',
+            name: 'ethnicity',
             options: [
                 { id: 1, text: 'Branca' },
                 { id: 2, text: 'Preta' },
@@ -73,7 +79,7 @@ const Register: React.FC = () => {
             type: 'single_choice',
             label: 'Curso',
             required: true,
-            name: 'curso',
+            name: 'course',
             options: courses.map(course => ({ id: course.id, text: course.fullname }))
         }
     ];
