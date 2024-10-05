@@ -4,6 +4,7 @@ import { FormFieldProps } from '../Form/FormField/FormField';
 import Form from '../Form/Form';
 import { useCourse } from '../../context/CourseContext';
 import './Register.css';
+import { iOption } from '../../mockFormData';
 
 const Register: React.FC = () => {
     const navigate = useNavigate();
@@ -14,6 +15,8 @@ const Register: React.FC = () => {
         // TODO: Implementar lógica de cadastro
         navigate('/');
     };
+
+    const graduationYearArray: iOption[] = Array.from({ length: new Date().getFullYear() - 2016 }, (_, i) => ({ id: i + 2017, text: (i + 2017).toString() }));
 
     const fields: FormFieldProps[] = [
         {
@@ -39,12 +42,6 @@ const Register: React.FC = () => {
             label: 'Data de Nascimento',
             required: true,
             name: 'birthdate'
-        },
-        {
-            type: 'date',
-            label: 'Data de conclusão do curso',
-            required: true,
-            name: 'graduation_date'
         },
         {
             type: 'single_choice',
@@ -80,7 +77,14 @@ const Register: React.FC = () => {
             label: 'Curso',
             required: true,
             name: 'course',
-            options: courses.map(course => ({ id: course.id, text: course.fullname }))
+            options: courses.map(course => ({ id: course.id, text: course.name }))
+        },
+        {
+            type: 'single_choice',
+            label: 'Ano de Graduação',
+            name: 'graduation_year',
+            options: graduationYearArray,
+            required: true,
         }
     ];
 

@@ -2,7 +2,13 @@ import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import './Chart.css';
 
-const COLORS = ["#00420C", "#9ACD32", "#2F4F4F", "#808080", "#36454F", "#C0C0C0"];
+const COLORS = [
+  "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", 
+  "#8dd3c7", "#ffed6f", "#aec7e8", "#ffbb78", "#98df8a", 
+  "#ff9896", "#c5b0d5", "#c49c94", "#e377c2", "#f7b6d2", 
+  "#ffffb3", "#bebada", "#fb8072", "#80b1d3", "#fdb462", 
+  "#b3de69", "#fccde5", "#d9d9d9", "#bc80bd", "#ccebc5"
+];
 
 interface ChartProps {
   data: Record<string, string>[];

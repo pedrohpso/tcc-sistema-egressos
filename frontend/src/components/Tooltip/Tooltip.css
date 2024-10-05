@@ -1,0 +1,43 @@
+.tooltip-container {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.tooltip-icon {
+  font-size: 0.9em;
+  color: #555;
+  vertical-align: baseline;
+}
+
+.tooltip-message {
+  position: fixed;
+  background-color: white;
+  color: black;
+  padding: 5px;
+  border-radius: 4px;
+  white-space: normal;
+  max-width: 400px;
+  text-align: end;
+  line-height: 1.1;
+  font-size: 0.7em;
+  text-align: justify;
+  text-justify: inter-word;
+  z-index: 1000;
+  opacity: 0.95;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  border: 1px solid #ccc;
+  transform: translate(-50%, -75%);
+}
+
+.tooltip-message::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: white transparent transparent transparent;
+}

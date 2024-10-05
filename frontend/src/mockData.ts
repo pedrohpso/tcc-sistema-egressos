@@ -77,7 +77,7 @@ export async function getDashboardData(courseId: number): Promise<DashboardData>
         publishedFormsAmount: 2,
         indicatorsAmount: 36,
         registeredAlumniAmount: 150,
-        lastPublishedFormTitle: 'Formulário de Egressos 2024',
+        lastPublishedFormTitle: 'Formulário de Egressos TADS Edição 2024',
         formReachAverage: 67.5
       });
     }, 1000);

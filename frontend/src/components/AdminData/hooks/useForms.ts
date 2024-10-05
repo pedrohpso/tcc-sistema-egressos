@@ -25,7 +25,6 @@ export const useForms = (courseId: number | null) => {
 
 async function fetchForms(_courseId: number): Promise<FormData[]> {
   return new Promise(resolve => setTimeout(() => resolve([
-    { id: 1, title: 'Formulário de Egressos Edição 2023', status: 'published' }, 
-    { id: 2, title: 'Formulário de Egressos Edição 2022', status: 'published' }
+    { id: 1, title: 'Formulário de Egressos TADS Edição 2024', status: 'published' }, 
   ]), 1000));
 }

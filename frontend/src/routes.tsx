@@ -10,6 +10,7 @@ import AdminLayout from './components/AdminLayout/AdminLayout';
 import AdminFormPage from './components/AdminFormPage/AdminFormPage';
 import AdminFormEditPage from './components/AdminFormEditPage/AdminFormEditPage';
 import Dashboard from './components/Dashboard/Dashboard';
+import PasswordRecovery from './components/PasswordRecovery/PasswordRecovery';
 
 export const routes = () => {
   return (
@@ -17,6 +18,7 @@ export const routes = () => {
         <Route path="/" element={<Homepage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/password-recovery" element={<PasswordRecovery />} />
         <Route path="/admin/*" element={<AdminLayout/>}>
           <Route path="dashboard" element={<Dashboard/>} />
           <Route path="data" element={<AdminData />} />

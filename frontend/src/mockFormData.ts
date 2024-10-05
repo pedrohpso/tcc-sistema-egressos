@@ -53,13 +53,13 @@ export async function getFormsByCourseId(courseId: number): Promise<iForm[]> {
   return Promise.resolve([
     {
       id: 1,
-      title: 'Formulário de Egressos do curso TADS do IFSP',
+      title: 'Formulário de Egressos TADS Edição 2025',
       status: 'draft',
       fields: []
     },
     {
       id: 2,
-      title: 'Formulário de Egressos do curso ADS do IFSP',
+      title: 'Formulário de Egressos TADS Edição 2024',
       status: 'published',
       fields: []
     }
@@ -199,7 +199,7 @@ export async function getMockFormData(): Promise<iForm> {
 
 const egressoForm: iForm = {
   id: 1,
-  title: "Formulário de Egressos do curso TADS do IFSP",
+  title: "Formulário de Egressos TADS Edição 2024",
   status: 'published',
   fields: [
     {

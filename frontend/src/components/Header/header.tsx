@@ -56,7 +56,7 @@ const Header: React.FC = () => {
               {user.is_admin ? courses.map(course => (
                   <Button
                     key={course.id}
-                    label={course.shortname}
+                    label={course.name}
                     onClick={() => setSelectedCourse(course)}
                     className={selectedCourse?.id === course.id ? 'selected' : ''}
                   />

@@ -12,34 +12,27 @@ import html2canvas from 'html2canvas-pro';
 import jsPDF from 'jspdf';
 import { useCourse } from '../../context/CourseContext';
 import { YearRangeSelector } from './YearRangeSelector/YearRangeSelector';
+import Tooltip from '../Tooltip/Tooltip';
 
 
 const debouncedFetchData = debounce(async (fetchData: Function) => {
   await fetchData();
 }, 1500);
 
-const handleDownloadClick = async (type: 'pdf' | 'png') => {
-  const input = document.getElementById('chart-container') as HTMLElement;
+const convertToCSV = (data: Record<string, string>[]) => {
+  if (data.length === 0) return '';
 
-  try {
-    const canvas = await html2canvas(input);
-    const imgData = canvas.toDataURL('image/png');
-    if (type === 'pdf') {
-      const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: 'a4' });
-      const width = pdf.internal.pageSize.getWidth();
-      const height = (canvas.height * width) / canvas.width;
+  const headers = Object.keys(data[0]).filter(key => key !== 'name');
+  const csvRows = [];
 
-      pdf.addImage(imgData, 'PNG', 0, 0, width, height);
-      pdf.save(`gráfico.${type}`);
-    } else {
-      const link = document.createElement('a');
-      link.href = imgData;
-      link.download = `gráfico.${type}`;
-      link.click();
-    }
-  } catch (error) {
-    console.log('error: ', error);
-  }
+  csvRows.push(['', ...headers].join(','));
+
+  data.forEach((row) => {
+    const values = headers.map(header => row[header] || '');
+    csvRows.push([row.name, ...values].join(','));
+  });
+
+  return csvRows.join('\n');
 };
 
 const AdminData: React.FC = () => {
@@ -52,7 +45,7 @@ const AdminData: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [minValue, setMinValue] = useState<{ value: number, group: string, indicator: string } | null>(null);
   const [maxValue, setMaxValue] = useState<{ value: number, group: string, indicator: string } | null>(null);
-  const [yearRange, setYearRange] = useState([2014, 2024]);
+  const [yearRange, setYearRange] = useState([2017, 2024]);
 
   const [minYear, maxYear] = yearRange;
 
@@ -126,6 +119,45 @@ const AdminData: React.FC = () => {
     }
   };
 
+  const handleDownloadClick = async (type: 'pdf' | 'png' | 'csv') => {
+    const input = document.getElementById('chart-container') as HTMLElement;
+  
+    if(type !== 'csv') {
+      try {
+        const canvas = await html2canvas(input);
+        const imgData = canvas.toDataURL('image/png');
+        if (type === 'pdf') {
+          const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: 'a4' });
+          const width = pdf.internal.pageSize.getWidth();
+          const height = (canvas.height * width) / canvas.width;
+  
+          pdf.addImage(imgData, 'PNG', 0, 0, width, height);
+          pdf.save(`gráfico.${type}`);
+        } else {
+          const link = document.createElement('a');
+          link.href = imgData;
+          link.download = `gráfico.${type}`;
+          link.click();
+        }
+      } catch (error) {
+        console.log('error: ', error);
+      }
+    }else {
+      const csvContent = convertToCSV(data);
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+
+      link.setAttribute('href', url);
+      link.setAttribute('download', `${Date.now()}-${indicator}-${grouping}.csv`);
+      document.body.appendChild(link);
+
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
+  
   return (
     <div className='admin-data-container'>
       <div className="graph-container">
@@ -150,10 +182,13 @@ const AdminData: React.FC = () => {
           </div>
 
           <div className="select-container">
-            <label>Ano de graduação</label>
+            <div className='label-tooltip-container'>
+              <label>Ano de graduação</label>
+              <Tooltip message="O primeiro curso (ADS) do campus Campinas do IFSP começou em 2014, e a primeira turma se formou em 2017. Por isso, 2017 é o ano mínimo para a seleção de graduação. Esse dado é utilizado no sistema para agrupar e analisar os egressos com base no ano de conclusão do curso." />
+            </div>
             <div className='year-range-container'>
               <YearRangeSelector
-                minYear={2014}
+                minYear={2017}
                 maxYear={2024}
                 onChange={handleYearRangeChange}
               />
@@ -161,7 +196,10 @@ const AdminData: React.FC = () => {
           </div>
 
           <div className="select-container">
-            <label>Indicador</label>
+          <div className='label-tooltip-container'>
+              <label>Indicador</label>
+              <Tooltip message="Indicador é uma métrica ou dado coletado a partir das respostas dos egressos. No sistema, os indicadores são usados para medir aspectos como satisfação com o curso, situação profissional ou educacional após a formatura, e outros dados importantes para análise institucional." />
+            </div>
             <select
               value={indicator || ''}
               onChange={(e) => setIndicator(Number(e.target.value))}
@@ -180,7 +218,10 @@ const AdminData: React.FC = () => {
           </div>
 
           <div className="select-container">
-            <label>Agrupamento</label>
+            <div className='label-tooltip-container'>
+              <label>Agrupamento</label>
+              <Tooltip message="Agrupamento refere-se à forma como os dados são organizados para análise, como por faixa etária, gênero ou etnia. No sistema, você pode escolher diferentes critérios de agrupamento para visualizar como os egressos se distribuem entre esses critérios em relação a um determinado indicador." />
+            </div>
             <select
               value={grouping}
               onChange={(e) => setGrouping(e.target.value)}
@@ -207,6 +248,7 @@ const AdminData: React.FC = () => {
               <div className='download-button-container'>
                 <Button label='PNG' icon={<IoMdDownload />} onClick={() => handleDownloadClick('png')} />
                 <Button label='PDF' icon={<IoMdDownload />} onClick={() => handleDownloadClick('pdf')} />
+                <Button label='CSV' icon={<IoMdDownload />} onClick={() => handleDownloadClick('csv')} />
               </div>
             </div>
           ) : null}

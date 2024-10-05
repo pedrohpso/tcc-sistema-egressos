@@ -1,6 +1,7 @@
 .admin-data-container {
   display: flex;
   flex-direction: row;
+  align-items: center;
   gap: 20px; 
   max-width: 95vw;
 }
@@ -12,6 +13,7 @@
   flex-grow: 1;
   height: 100%;
   padding: 20px;
+  max-width: 75vw;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2), 0 6px 20px rgba(0,0,0,0.3);
 }
 
@@ -50,6 +52,13 @@
   max-width: 60px;
   max-height: 50px;
 }
+
+.label-tooltip-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 
 .download-button-container{
   display: flex;
@@ -113,7 +122,6 @@
   align-items: center;
   height: 100%; 
   width: 100%;  
-  max-width: 250px;  
   background-color: #f9f9f9;
   border: 1px solid #ddd;
   border-radius: 8px;

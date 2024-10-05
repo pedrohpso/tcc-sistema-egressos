@@ -39,8 +39,8 @@ const Dashboard: React.FC = () => {
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
-        <h1 className="dashboard-title">Dashboard</h1>
-        {selectedCourse && <p className="course-name">{selectedCourse.fullname}</p>}
+        <h1 className="dashboard-title">Resumo</h1>
+        {selectedCourse && <p className="course-name">{selectedCourse.name}</p>}
       </div>
 
       <div className="dashboard-grid">

@@ -13,7 +13,7 @@ const Sidebar: React.FC = () => {
             to="/admin/dashboard"
             className={({ isActive }) => isActive ? 'active' : ''}
           >
-            <FaHome className="sidebar-icon" /> Dashboard
+            <FaHome className="sidebar-icon" /> Resumo
           </NavLink>
         </li>
         <li>

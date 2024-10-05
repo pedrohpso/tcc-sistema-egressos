@@ -6,6 +6,7 @@ CREATE TABLE `user` (
   'birthdate' DATE NOT NULL,
   `gender` ENUM ('male', 'female', 'trans_male', 'trans_female', 'non_binary', 'other') NOT NULL,
   `ethnicity` ENUM ('white', 'black', 'brown', 'yellow', 'indigenous', 'not_declared') NOT NULL,
+  `graduation_year` YEAR NOT NULL,
   `is_admin` TINYINT NOT NULL DEFAULT 0,
   `created` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) COMMENT 'date this record was created',
   `modified` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP),
@@ -14,8 +15,7 @@ CREATE TABLE `user` (
 
 CREATE TABLE `course` (
   `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `fullname` VARCHAR(255) NOT NULL,
-  `shortname` VARCHAR(255) NOT NULL,
+  `name` VARCHAR(255) NOT NULL,
   `created` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) COMMENT 'date this record was created',
   `modified` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP)
 );
@@ -32,7 +32,6 @@ CREATE TABLE `form` (
   `course_id` INT NOT NULL,
   `status` ENUM ('draft', 'published') NOT NULL DEFAULT 'draft',
   `title` VARCHAR(255) NOT NULL,
-  `description` TEXT,
   `created` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) COMMENT 'date this record was created',
   `modified` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP),
   `deleted` datetime DEFAULT null COMMENT 'date this record was deleted'

@@ -2,8 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export interface CourseData {
   id: number;
-  shortname: string;
-  fullname: string;
+  name: string;
 }
 
 interface CourseContextType {
@@ -22,8 +21,7 @@ export const CourseProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     // Trocar depois para uma chamada pro backend
     const fetchCourses = () => {
       const courseList = [
-        { id: 1, shortname: 'TADS', fullname: 'Tecnologia em Análise e Desenvolvimento de Sistemas' },
-        { id: 2, shortname: 'Curso 2', fullname: 'Curso 2' },
+        { id: 1, name: 'Análise e Desenvolvimento de Sistemas' },
       ];
       setCourses(courseList);
       setSelectedCourse(courseList[0]); 

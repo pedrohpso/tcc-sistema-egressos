@@ -25,6 +25,10 @@ const Login: React.FC = () => {
     }
   }, [user, navigate]);
 
+  const handleForgotPassword = () => {
+    navigate('/password-recovery');
+  };
+
   const fields: FormFieldProps[] = [
     {
       type: 'email',
@@ -45,7 +49,12 @@ const Login: React.FC = () => {
       <div className='login-container'>
         <h2>Login</h2>
         <Form fields={fields} onSubmit={handleSubmit} />
+        <div className='forgot-password-container'>
+          <a className='forgot-password-link' onClick={handleForgotPassword}>
+            Esqueceu sua senha?
+          </a>
         </div>
+      </div>
     </div>
   );
 };
