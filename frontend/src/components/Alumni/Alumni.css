@@ -1,6 +1,8 @@
 .alumni-container {
   padding: 20px;
   background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
 }
 
 .forms-list {
@@ -21,7 +23,7 @@
   background-color: #fff3cd;
 }
 
-.form-item.completed {
+.form-item.answered {
   background-color: #d4edda;
 }
 

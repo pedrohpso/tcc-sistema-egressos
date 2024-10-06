@@ -5,7 +5,7 @@ import './Alumni.css';
 interface Form {
   id: number;
   title: string;
-  status: 'pending' | 'completed';
+  status: 'pending' | 'answered';
 }
 
 const Alumni: React.FC = () => {
@@ -16,13 +16,13 @@ const Alumni: React.FC = () => {
     setForms([
       {
         id: 1,
-        title: "Formulário de Egresso TESTE",
+        title: "Formulário de Egressos TADS Edição 2024",
         status: 'pending',
       },
       {
         id: 2,
-        title: "Formulário de Egresso TESTE 2",
-        status: 'completed',
+        title: "Formulário de Egressos TADS Edição 2023",
+        status: 'answered',
       },
     ]);
   }, []);
