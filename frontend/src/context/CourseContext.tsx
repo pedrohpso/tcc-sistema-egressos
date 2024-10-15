@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { fetchAllCourses } from '../services/courseService';
 
 export interface CourseData {
   id: number;
@@ -18,11 +19,8 @@ export const CourseProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [courses, setCourses] = useState<CourseData[]>([]);
 
   useEffect(() => {
-    // Trocar depois para uma chamada pro backend
-    const fetchCourses = () => {
-      const courseList = [
-        { id: 1, name: 'Análise e Desenvolvimento de Sistemas' },
-      ];
+    const fetchCourses = async () => {
+      const courseList = await fetchAllCourses();
       setCourses(courseList);
       setSelectedCourse(courseList[0]); 
     };

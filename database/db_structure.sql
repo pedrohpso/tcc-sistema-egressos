@@ -1,12 +1,16 @@
+CREATE SCHEMA `alumni_system`;
+
+USE `alumni_system`;
+
 CREATE TABLE `user` (
   `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `email` VARCHAR(255) UNIQUE NOT NULL,
   `password` VARCHAR(255) NOT NULL,
-  'birthdate' DATE NOT NULL,
-  `gender` ENUM ('male', 'female', 'trans_male', 'trans_female', 'non_binary', 'other') NOT NULL,
-  `ethnicity` ENUM ('white', 'black', 'brown', 'yellow', 'indigenous', 'not_declared') NOT NULL,
-  `graduation_year` YEAR NOT NULL,
+  `birthdate` DATE,
+  `gender` ENUM ('male', 'female', 'trans_male', 'trans_female', 'non_binary', 'other'),
+  `ethnicity` ENUM ('white', 'black', 'brown', 'yellow', 'indigenous', 'not_declared'),
+  `graduation_year` YEAR,
   `is_admin` TINYINT NOT NULL DEFAULT 0,
   `created` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) COMMENT 'date this record was created',
   `modified` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP),
@@ -48,14 +52,14 @@ CREATE TABLE `field` (
   `deleted` datetime DEFAULT null COMMENT 'date this record was deleted'
 );
 
-CREATE TABLE `indicator`{
+CREATE TABLE `indicator`(
   `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `field_id` INT NOT NULL,
   `text` VARCHAR(255) NOT NULL,
   `created` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) COMMENT 'date this record was created',
   `modified` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP),
   `deleted` datetime DEFAULT null COMMENT 'date this record was deleted'
-}
+);
 
 CREATE TABLE `field_option` (
   `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
