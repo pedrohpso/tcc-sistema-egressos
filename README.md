@@ -3,7 +3,9 @@ Sistema de Egressos do meu Projeto de TCC para o meu curso de TADS no IFSP
 
 ## Banco de dados
 MySQL 8 é obrigatório
+  
 Executar o seguinte script da pasta database: `db_structure.sql`
+  
 (Recomendado) Executar o script de população de dados para teste: `db_test.sql`
 
 - Usuário administrador de teste:
