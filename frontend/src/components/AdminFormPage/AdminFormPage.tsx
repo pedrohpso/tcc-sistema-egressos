@@ -3,8 +3,9 @@ import { useCourse } from '../../context/CourseContext';
 import Button from '../Button/Button';
 import Modal from '../Modal/Modal';
 import './AdminFormPage.css';
-import { iForm, createForm, getFormsByCourseId, deleteForm } from '../../mockFormData';
+import { iForm } from '../../mockFormData';
 import { useNavigate } from 'react-router-dom';
+import { getFormsByCourse, createForm, deleteForm } from '../../services/formService';
 
 const AdminFormPage: React.FC = () => {
   const { selectedCourse } = useCourse();
@@ -19,7 +20,7 @@ const AdminFormPage: React.FC = () => {
     const fetchForms = async () => {
       try {
         if (!selectedCourse) return;
-        const mockForms = await getFormsByCourseId(selectedCourse!.id);
+        const mockForms = await getFormsByCourse(selectedCourse.id);
         setForms(mockForms);
       } catch (error) {
         console.error('Error fetching forms:', error);
@@ -31,7 +32,7 @@ const AdminFormPage: React.FC = () => {
   const handleAddForm = async () => {
     if (newFormTitle.trim() === '') return;
     try {
-      const newForm = await createForm(newFormTitle);
+      const newForm = await createForm(newFormTitle, selectedCourse!.id);
       setForms([newForm, ...forms]);
     } catch (error) {
       console.error('Error creating new form:', error);
@@ -69,7 +70,7 @@ const AdminFormPage: React.FC = () => {
   return (
     <div className="admin-form-page">
       <div className="admin-form-page-header">
-        <h1>Formulários do Curso {selectedCourse?.shortname}</h1>
+        <h1>Formulários do Curso {selectedCourse?.name}</h1>
         <Button label="Adicionar Formulário" onClick={() => setIsAddFormModalOpen(true)} />
       </div>
       {forms.length === 0 ? (
@@ -104,7 +105,6 @@ const AdminFormPage: React.FC = () => {
         <Button className="add-form-modal-button" label="Adicionar" onClick={handleAddForm} />
       </Modal>
 
-      {/* Modal para Confirmar Exclusão */}
       <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
         <h2>Excluir Formulário</h2>
         <p>Tem certeza que deseja excluir o formulário "{formToDelete?.title}"? Esta ação não pode ser desfeita.</p>
