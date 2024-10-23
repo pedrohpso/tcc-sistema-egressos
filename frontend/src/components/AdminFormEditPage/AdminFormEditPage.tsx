@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Button from '../Button/Button';
 import './AdminFormEditPage.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { createFormField, createFormFieldInput, deleteField, getFormById, iForm, submitForm, updateFormFieldOrder, editField, updateFieldInput } from '../../mockFormData';
+import { createFormField, createFormFieldInput, deleteField, iForm, submitForm, updateFormFieldOrder, editField, updateFieldInput } from '../../mockFormData';
 import Modal from '../Modal/Modal';
 import RenameFormModal from './RenameFormModal/RenameFormModal';
 import FieldItem from './FieldItem/FieldItem';
@@ -10,6 +10,7 @@ import AddFieldModal from './AddFieldModal/AddFieldModal';
 import EditFieldModal from './EditFieldModal/EditFieldModal';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import { iField } from '../../mockFormData';
+import { getFormById } from '../../services/formService';
 
 const AdminFormEditPage: React.FC = () => {
   const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
@@ -33,6 +34,7 @@ const AdminFormEditPage: React.FC = () => {
         setFields(fetchedForm.fields);
       } catch (error) {
         console.error('Erro ao buscar o formulário:', error);
+        navigate('/admin/forms');
       }
     };
     fetchForm();

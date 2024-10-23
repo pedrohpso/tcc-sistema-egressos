@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import './RenameFormModal.css';
 import Button from '../../Button/Button';
 import Modal from '../../Modal/Modal';
-import { iForm, renameForm } from '../../../mockFormData';
+import { iForm } from '../../../mockFormData';
+import { renameForm } from '../../../services/formService';
 
 interface RenameFormModalProps {
   isOpen: boolean;
@@ -28,7 +29,6 @@ const RenameFormModal: React.FC<RenameFormModalProps> = ({ isOpen, onClose, curr
     }
 
     try {
-      // requisição para renomear o formulário no backend
       await renameForm(currentFormId, newTitle);
       setCurrentForm((prevForm) =>
         prevForm ? { ...prevForm, title: newTitle } : prevForm
