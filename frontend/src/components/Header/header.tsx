@@ -20,6 +20,7 @@ const Header: React.FC = () => {
   }
 
   const handleLogoutClick = () => {
+    localStorage.removeItem('token');
     setUser(null);
     navigate('/');
   }

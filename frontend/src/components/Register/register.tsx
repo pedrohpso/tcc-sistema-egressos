@@ -5,15 +5,52 @@ import Form from '../Form/Form';
 import { useCourse } from '../../context/CourseContext';
 import './Register.css';
 import { iOption } from '../../mockFormData';
+import { registerUser } from '../../services/userService';
+
+const genderMapping: { [key: string]: string } = {
+    1: 'male',
+    2: 'female',
+    3: 'trans_male',
+    4: 'trans_female',
+    5: 'non_binary',
+    6: 'other'
+};
+
+const ethnicityMapping: { [key: string]: string } = {
+    1: 'white',
+    2: 'black',
+    3: 'brown',
+    4: 'yellow',
+    5: 'indigenous',
+    6: 'not_declared'
+};
 
 const Register: React.FC = () => {
     const navigate = useNavigate();
     const { courses } = useCourse();
 
-    const handleSubmit = (formData: { [key: string]: string | string[] }) => {
-        console.log('Form Data: ', formData);
-        // TODO: Implementar lógica de cadastro
-        navigate('/');
+    const handleSubmit = async (formData: { [key: string]: string | string[] }) => {
+        try {
+            console.log('formData: ', formData);
+
+            const gender = genderMapping[formData.gender as string];
+            const ethnicity = ethnicityMapping[formData.ethnicity as string];
+            
+            const userData = {
+                ...formData,
+                gender,
+                ethnicity,
+                course_id: Number(formData.course)
+            };
+
+            console.log('userData:', userData)
+
+            const response = await registerUser(userData); 
+            console.log('Usuário registrado com sucesso:', response);
+            navigate('/');
+        } catch (error) {
+            console.error('Erro ao registrar o usuário:', error);
+        }
     };
 
     const graduationYearArray: iOption[] = Array.from({ length: new Date().getFullYear() - 2016 }, (_, i) => ({ id: i + 2017, text: (i + 2017).toString() }));

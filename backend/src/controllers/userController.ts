@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { userModel } from '../models/userModel';
-import { hashPassword } from '../utils/hashUtils';
+import { comparePassword } from '../utils/hashUtils';
 
 interface RegisterRequestBody {
   name: string;
@@ -48,5 +48,55 @@ export const registerController = async (req: FastifyRequest<{ Body: RegisterReq
   } catch (error) {
     req.log.error(error);
     return res.status(500).send({ message: 'Erro interno do servidor.' });
+  }
+};
+
+interface LoginRequestBody {
+  email: string;
+  password: string;
+}
+
+export const loginController = async (req: FastifyRequest<{ Body: LoginRequestBody }>, res: FastifyReply) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).send({ error: 'Email e senha são obrigatórios' });
+  }
+
+  try {
+    const user = await userModel.findByEmail(email);
+    if (!user) {
+      return res.status(401).send({ error: 'Email não registrado' });
+    }
+
+    const isPasswordCorrect = await comparePassword(password, user.password);
+    if (!isPasswordCorrect) {
+      return res.status(401).send({ error: 'Senha inválida' });
+    }
+
+    const token = await res.jwtSign({ id: user.id, is_admin: user.is_admin });
+
+    const { password: _, ...userWithoutPassword } = user;
+    return res.status(200).send({ token, user: userWithoutPassword });
+  } catch (error) {
+    req.log.error(error);
+    return res.status(500).send({ error: 'Erro interno do servidor' });
+  }
+};
+
+export const getUserProfile = async (req: FastifyRequest, res: FastifyReply) => {
+  try {
+    const userId = (req.user as {id: number}).id;
+
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).send({ message: 'Usuário não encontrado.' });
+    }
+
+    const { password, ...userWithoutPassword } = user;
+    return res.send(userWithoutPassword);
+  } catch (error) {
+    req.log.error(error);
+    return res.status(500).send({ message: 'Erro ao buscar o perfil do usuário.' });
   }
 };

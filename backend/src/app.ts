@@ -1,8 +1,14 @@
+/// <reference path="./types/fastify.d.ts" />
+
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes';
 import courseRoutes from './routes/courseRoutes';
+import fastifyJwt from '@fastify/jwt';
+import { FastifyRequest } from 'fastify/types/request';
+import { FastifyReply } from 'fastify/types/reply';
+import formRoutes from './routes/formRoutes';
 
 dotenv.config();
 
@@ -16,8 +22,22 @@ server.register(cors, {
   }
 });
 
+server.register(fastifyJwt, {
+  secret: process.env.JWT_SECRET || 'supersecretkey'
+});
+
+server.decorate('authenticate', async (req, res) => {
+  try {
+    await req.jwtVerify();
+    req.user = req.user;
+  } catch (err) {
+    return res.status(401).send({ message: 'Not authorized.' });
+  }
+});
+
 server.register(userRoutes, { prefix: '/api/users' });
 server.register(courseRoutes, { prefix: '/api/courses' });
+server.register(formRoutes, { prefix: '/api/forms' });
 
 const start = async () => {
   try {
