@@ -41,6 +41,15 @@ export interface iForm {
   fields: iField[];
 }
 
+export interface createFormFieldInput {
+  question: string;
+  type: 'text' | 'single_choice' | 'multiple_choice' | 'date';
+  options?: { text: string }[];
+  position: number;
+  indicator?: string;
+  dependencies?: { fieldId: number; optionIds: number[] }[];
+}
+
 export const getFormsByCourse = async (courseId: number) => {
   try {
     const token = localStorage.getItem('token');
@@ -119,6 +128,21 @@ export const getFormById = async (formId: number): Promise<iForm> => {
     return response.data;
   } catch (error) {
     console.error('Erro ao buscar o formulário:', error);
+    throw error;
+  }
+};
+
+export const createFormField = async (formId: number, fieldData: createFormFieldInput): Promise<iField> => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.post(`${API_URL}/forms/${formId}/fields`, fieldData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao criar a questão:', error);
     throw error;
   }
 };

@@ -56,8 +56,7 @@ export const updateForm = async (
   const formId = parseInt((req.params as {id: string}).id, 10);
   const { title } = req.body as UpdateFormBody;
   const user = req.user as {id: number, is_admin: boolean}
-  
-  console.log('user: ', user);
+
   if (isNaN(formId) || !title || !user) {
     return res.status(400).send({ message: 'Dados inválidos' });
   }

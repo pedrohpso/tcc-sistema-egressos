@@ -1,6 +1,15 @@
 import { db } from '../utils/db';
 import { iField, iOption, iDependency } from '../types/formTypes';
-import { RowDataPacket } from 'mysql2';
+
+interface FieldData {
+  formId: number;
+  question: string;
+  type: 'text' | 'single_choice' | 'multiple_choice' | 'date';
+  position: number;
+  options?: { text: string }[];
+  dependencies?: { fieldId: number; optionIds: number[] }[];
+  indicator?: string; 
+}
 
 export const fieldModel = {
   async getFieldsByForm(formId: number): Promise<iField[]> {
@@ -41,5 +50,49 @@ export const fieldModel = {
     }
 
     return fields;
+  },
+
+  async createField(fieldData: FieldData) {
+    const { formId, question, type, position, options, dependencies, indicator } = fieldData;
+
+    const [fieldResult] = await db.execute(
+      `INSERT INTO \`field\` (form_id, question, type, position) VALUES (?, ?, ?, ?)`,
+      [formId, question, type, position]
+    );
+    const fieldId = (fieldResult as any).insertId;
+
+    if (options && options.length > 0) {
+      const optionQueries = options.map((opt) =>
+        db.execute(
+          `INSERT INTO \`field_option\` (field_id, text) VALUES (?, ?)`,
+          [fieldId, opt.text]
+        )
+      );
+      await Promise.all(optionQueries);
+    }
+
+    if (dependencies && dependencies.length > 0) {
+      const dependencyQueries = dependencies.map((dep) =>
+        dep.optionIds.map((optionId) =>
+          db.execute(
+            `INSERT INTO \`field_dependency\` (field_id, dependent_field_id, field_option_id) VALUES (?, ?, ?)`,
+            [fieldId, dep.fieldId, optionId]
+          )
+        )
+      );
+      await Promise.all(dependencyQueries.flat());
+    }
+
+    console.log('type: ', type);
+    if ((type === 'single_choice' || type === 'multiple_choice') && indicator) {
+      console.log('indicator: ', indicator);
+      await db.execute(
+        `INSERT INTO \`indicator\` (field_id, text) VALUES (?, ?)`,
+        [fieldId, indicator]
+      );
+    }
+
+    const [newFieldRows] = await db.execute('SELECT * FROM `field` WHERE id = ?', [fieldId]);
+    return (newFieldRows as any)[0];
   },
 };

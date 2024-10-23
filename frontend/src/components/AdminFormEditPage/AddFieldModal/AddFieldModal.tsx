@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './AddFieldModal.css';
-import { iField, FieldType, createFormFieldInput } from '../../../mockFormData';
+import { iField, FieldType, createFormFieldInput } from '../../../services/formService';
 import Button from '../../Button/Button';
 import Modal from '../../Modal/Modal';
 
@@ -19,7 +19,7 @@ const AddFieldModal: React.FC<AddFieldModalProps> = ({
 }) => {
   const [question, setQuestion] = useState('');
   const [type, setType] = useState<FieldType>(FieldType.TEXT);
-  const [options, setOptions] = useState<string[]>(['']);
+  const [options, setOptions] = useState<{ text: string }[]>([{ text: '' }, { text: '' }]);
   const [indicator, setIndicator] = useState('');
   const [hasDependency, setHasDependency] = useState(false);
   const [dependencyFieldId, setDependencyFieldId] = useState<number | null>(null);
@@ -38,12 +38,12 @@ const AddFieldModal: React.FC<AddFieldModalProps> = ({
         validationErrors.indicator = 'O indicador é obrigatório para questões de escolha única ou múltipla.';
       }
 
-      if (options.filter(opt => opt.trim()).length < 2) {
+      if (options.filter(opt => opt.text.trim()).length < 2) {
         validationErrors.options = 'É necessário adicionar pelo menos duas opções.';
       }
 
       options.forEach((option, idx) => {
-        if (!option.trim()) {
+        if (!option.text.trim()) {
           validationErrors[`option_${idx}`] = `A opção ${idx + 1} não pode estar vazia.`;
         }
       });
@@ -74,7 +74,7 @@ const AddFieldModal: React.FC<AddFieldModalProps> = ({
   const resetForm = () => {
     setQuestion('');
     setType(FieldType.TEXT);
-    setOptions(['']);
+    setOptions([]);
     setIndicator('');
     setHasDependency(false);
     setDependencyFieldId(null);
@@ -84,12 +84,12 @@ const AddFieldModal: React.FC<AddFieldModalProps> = ({
 
   const handleOptionChange = (index: number, value: string) => {
     const updatedOptions = [...options];
-    updatedOptions[index] = value;
+    updatedOptions[index].text = value;
     setOptions(updatedOptions);
   };
 
   const handleAddOption = () => {
-    setOptions([...options, '']);
+    setOptions([...options, { text: '' }]);
   };
 
   const handleRemoveOption = (index: number) => {
@@ -140,7 +140,7 @@ const AddFieldModal: React.FC<AddFieldModalProps> = ({
               <div className="option-row" key={idx}>
                 <input
                   type="text"
-                  value={option}
+                  value={option.text}
                   onChange={(e) => handleOptionChange(idx, e.target.value)}
                   placeholder={`Opção ${idx + 1}`}
                 />
