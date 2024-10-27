@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import './AddFieldModal.css';
-import { iField, FieldType, createFormFieldInput } from '../../../services/formService';
+import { iField, FieldType, CreateFormFieldInput } from '../../../services/formService';
 import Button from '../../Button/Button';
 import Modal from '../../Modal/Modal';
 
 interface AddFieldModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (field: Omit<createFormFieldInput, 'position'>) => void;
+  onSave: (field: Omit<CreateFormFieldInput, 'position'>) => void;
   existingFields: iField[];
 }
 
@@ -56,11 +56,11 @@ const AddFieldModal: React.FC<AddFieldModalProps> = ({
   const handleSave = () => {
     if (!validate()) return;
 
-    const newField: Omit<createFormFieldInput, 'position'> = {
+    const newField: Omit<CreateFormFieldInput, 'position'> = {
       question,
       type,
-      options: type !== FieldType.TEXT ? options : undefined,
-      indicator: type !== FieldType.TEXT ? indicator : undefined,
+      options: type !== FieldType.TEXT && type !== FieldType.DATE ? options : undefined,
+      indicator: type !== FieldType.TEXT && type !== FieldType.DATE ? indicator : undefined,
       dependencies: hasDependency && dependencyFieldId
       ? [{ fieldId: dependencyFieldId, optionIds: dependencyOptionIds }]
       : undefined
@@ -124,7 +124,7 @@ const AddFieldModal: React.FC<AddFieldModalProps> = ({
           <option value={FieldType.DATE}>Data</option>
         </select>
 
-        {type !== FieldType.TEXT && (
+        {(type !== FieldType.TEXT && type !== FieldType.DATE) && (
           <>
             <label>Indicador</label>
             <input

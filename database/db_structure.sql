@@ -13,7 +13,7 @@ CREATE TABLE `user` (
   `graduation_year` YEAR,
   `is_admin` TINYINT NOT NULL DEFAULT 0,
   `created` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) COMMENT 'date this record was created',
-  `modified` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+  `modified` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) ON UPDATE CURRENT_TIMESTAMP,
   `deleted` datetime DEFAULT null COMMENT 'date this record was deleted'
 );
 
@@ -21,13 +21,15 @@ CREATE TABLE `course` (
   `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `created` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) COMMENT 'date this record was created',
-  `modified` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP)
+  `modified` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `user_course` (
   `user_id` INT NOT NULL,
   `course_id` INT NOT NULL,
-  PRIMARY KEY (`user_id`, `course_id`)
+  PRIMARY KEY (`user_id`, `course_id`),
+  CONSTRAINT `fk_user_course_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_user_course_course` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `form` (
@@ -37,8 +39,10 @@ CREATE TABLE `form` (
   `status` ENUM ('draft', 'published') NOT NULL DEFAULT 'draft',
   `title` VARCHAR(255) NOT NULL,
   `created` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) COMMENT 'date this record was created',
-  `modified` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP),
-  `deleted` datetime DEFAULT null COMMENT 'date this record was deleted'
+  `modified` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) ON UPDATE CURRENT_TIMESTAMP,
+  `deleted` datetime DEFAULT null COMMENT 'date this record was deleted',
+  CONSTRAINT `fk_form_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_form_course` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `field` (
@@ -48,17 +52,19 @@ CREATE TABLE `field` (
   `question` TEXT NOT NULL,
   `type` ENUM ('text', 'single_choice', 'multiple_choice', 'date') NOT NULL DEFAULT 'text',
   `created` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) COMMENT 'date this record was created',
-  `modified` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP),
-  `deleted` datetime DEFAULT null COMMENT 'date this record was deleted'
+  `modified` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) ON UPDATE CURRENT_TIMESTAMP,
+  `deleted` datetime DEFAULT null COMMENT 'date this record was deleted',
+  CONSTRAINT `fk_field_form` FOREIGN KEY (`form_id`) REFERENCES `form` (`id`) ON DELETE CASCADE
 );
 
-CREATE TABLE `indicator`(
+CREATE TABLE `indicator` (
   `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `field_id` INT NOT NULL,
   `text` VARCHAR(255) NOT NULL,
   `created` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) COMMENT 'date this record was created',
-  `modified` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP),
-  `deleted` datetime DEFAULT null COMMENT 'date this record was deleted'
+  `modified` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) ON UPDATE CURRENT_TIMESTAMP,
+  `deleted` datetime DEFAULT null COMMENT 'date this record was deleted',
+  CONSTRAINT `fk_indicator_field` FOREIGN KEY (`field_id`) REFERENCES `field` (`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `field_option` (
@@ -66,8 +72,9 @@ CREATE TABLE `field_option` (
   `field_id` INT NOT NULL,
   `text` VARCHAR(255) NOT NULL,
   `created` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) COMMENT 'date this record was created',
-  `modified` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP),
-  `deleted` datetime DEFAULT null COMMENT 'date this record was deleted'
+  `modified` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) ON UPDATE CURRENT_TIMESTAMP,
+  `deleted` datetime DEFAULT null COMMENT 'date this record was deleted',
+  CONSTRAINT `fk_field_option_field` FOREIGN KEY (`field_id`) REFERENCES `field` (`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `field_dependency` (
@@ -75,18 +82,22 @@ CREATE TABLE `field_dependency` (
   `dependent_field_id` INT NOT NULL,
   `field_option_id` INT NOT NULL,
   `created` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) COMMENT 'date this record was created',
-  `modified` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP),
-  `deleted` datetime DEFAULT null COMMENT 'date this record was deleted'
+  `modified` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) ON UPDATE CURRENT_TIMESTAMP,
+  `deleted` datetime DEFAULT null COMMENT 'date this record was deleted',
+  CONSTRAINT `fk_field_dependency_field` FOREIGN KEY (`field_id`) REFERENCES `field` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_field_dependency_dependent_field` FOREIGN KEY (`dependent_field_id`) REFERENCES `field` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_field_dependency_field_option` FOREIGN KEY (`field_option_id`) REFERENCES `field_option` (`id`) ON DELETE CASCADE
 );
 
-/* Idade do usuário é a birthdate do user com o created do form_answer (idade que ele preencheu o formulário)*/
 CREATE TABLE `form_answer` (
   `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `form_id` INT NOT NULL,
   `user_id` INT NOT NULL,
   `created` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) COMMENT 'date this record was created',
-  `modified` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP),
-  `deleted` datetime DEFAULT null COMMENT 'date this record was deleted'
+  `modified` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) ON UPDATE CURRENT_TIMESTAMP,
+  `deleted` datetime DEFAULT null COMMENT 'date this record was deleted',
+  CONSTRAINT `fk_form_answer_form` FOREIGN KEY (`form_id`) REFERENCES `form` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_form_answer_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `answer` (
@@ -96,32 +107,9 @@ CREATE TABLE `answer` (
   `form_answer_id` INT NOT NULL,
   `text` TEXT,
   `created` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) COMMENT 'date this record was created',
-  `modified` timestamp NOT NULL DEFAULT (CURRENT_TIMESTAMP),
-  `deleted` datetime DEFAULT null COMMENT 'date this record was deleted'
+  `modified` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) ON UPDATE CURRENT_TIMESTAMP,
+  `deleted` datetime DEFAULT null COMMENT 'date this record was deleted',
+  CONSTRAINT `fk_answer_field` FOREIGN KEY (`field_id`) REFERENCES `field` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_answer_field_option` FOREIGN KEY (`field_option_id`) REFERENCES `field_option` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_answer_form_answer` FOREIGN KEY (`form_answer_id`) REFERENCES `form_answer` (`id`) ON DELETE CASCADE
 );
-
-ALTER TABLE `user_course` ADD FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE;
-
-ALTER TABLE `user_course` ADD FOREIGN KEY (`course_id`) REFERENCES `course` (`id`) ON DELETE CASCADE;
-
-ALTER TABLE `form` ADD CONSTRAINT `form_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE;
-
-ALTER TABLE `field` ADD CONSTRAINT `field_ibfk_1` FOREIGN KEY (`form_id`) REFERENCES `form` (`id`) ON DELETE CASCADE;
-
-ALTER TABLE `field_option` ADD CONSTRAINT `field_option_ibfk_1` FOREIGN KEY (`field_id`) REFERENCES `field` (`id`) ON DELETE CASCADE;
-
-ALTER TABLE `field_dependency` ADD CONSTRAINT `field_dependency_ibfk_1` FOREIGN KEY (`field_id`) REFERENCES `field` (`id`) ON DELETE CASCADE;
-
-ALTER TABLE `field_dependency` ADD CONSTRAINT `field_dependency_ibfk_2` FOREIGN KEY (`dependent_field_id`) REFERENCES `field` (`id`) ON DELETE CASCADE;
-
-ALTER TABLE `field_dependency` ADD CONSTRAINT `field_dependency_ibfk_3` FOREIGN KEY (`field_option_id`) REFERENCES `field_option` (`id`) ON DELETE CASCADE;
-
-ALTER TABLE `form_answer` ADD CONSTRAINT `form_answer_ibfk_1` FOREIGN KEY (`form_id`) REFERENCES `form` (`id`) ON DELETE CASCADE;
-
-ALTER TABLE `form_answer` ADD CONSTRAINT `form_answer_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE;
-
-ALTER TABLE `answer` ADD CONSTRAINT `answer_ibfk_1` FOREIGN KEY (`field_id`) REFERENCES `field` (`id`) ON DELETE CASCADE;
-
-ALTER TABLE `answer` ADD CONSTRAINT `answer_ibfk_2` FOREIGN KEY (`field_option_id`) REFERENCES `field_option` (`id`) ON DELETE CASCADE;
-
-ALTER TABLE `answer` ADD CONSTRAINT `answer_ibfk_3` FOREIGN KEY (`form_answer_id`) REFERENCES `form_answer` (`id`) ON DELETE CASCADE;

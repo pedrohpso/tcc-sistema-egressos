@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Button from '../Button/Button';
 import './AdminFormEditPage.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { deleteField, iForm, submitForm, updateFormFieldOrder, editField, updateFieldInput } from '../../mockFormData';
+import { iForm, submitForm, updateFieldInput } from '../../mockFormData';
 import Modal from '../Modal/Modal';
 import RenameFormModal from './RenameFormModal/RenameFormModal';
 import FieldItem from './FieldItem/FieldItem';
@@ -10,7 +10,7 @@ import AddFieldModal from './AddFieldModal/AddFieldModal';
 import EditFieldModal from './EditFieldModal/EditFieldModal';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import { iField } from '../../mockFormData';
-import { getFormById, createFormField, createFormFieldInput } from '../../services/formService';
+import { getFormById, createFormField, CreateFormFieldInput, editField, deleteField, updateFormFieldOrder } from '../../services/formService';
 
 const AdminFormEditPage: React.FC = () => {
   const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
@@ -20,6 +20,7 @@ const AdminFormEditPage: React.FC = () => {
   const [isEditFieldModalOpen, setIsEditFieldModalOpen] = useState(false);
   const [fieldBeingEdited, setFieldBeingEdited] = useState<iField | null>(null);
   const [currentForm, setCurrentForm] = useState<iForm | null>(null);
+  const [initialFields, setInitialFields] = useState<iField[]>([]);
   const [fields, setFields] = useState<iField[]>(currentForm?.fields || []);
   const [dependentFieldMessage, setDependentFieldMessage] = useState<string | null>(null);
 
@@ -32,6 +33,7 @@ const AdminFormEditPage: React.FC = () => {
         const fetchedForm = await getFormById(Number(formId));
         setCurrentForm(fetchedForm);
         setFields(fetchedForm.fields);
+        setInitialFields(fetchedForm.fields);
       } catch (error) {
         console.error('Erro ao buscar o formulário:', error);
         navigate('/admin/forms');
@@ -40,7 +42,7 @@ const AdminFormEditPage: React.FC = () => {
     fetchForm();
   }, [formId]);
 
-  const handleSaveField = async (newField: Omit<createFormFieldInput, 'position'>) => {
+  const handleSaveField = async (newField: Omit<CreateFormFieldInput, 'position'>) => {
     if (currentForm) {
       const position = fields.length + 1;
 
@@ -67,12 +69,20 @@ const AdminFormEditPage: React.FC = () => {
 
   const handleReorderEnd = async () => {
     if (currentForm) {
+      const orderChanged = fields.some((field, index) => field.id !== initialFields[index]?.id);
+
+      if (!orderChanged) {
+        setIsReorderMode(false);
+        return;
+      }
+
       try {
         const updatedOrder = fields.map((field, index) => ({
           fieldId: field.id,
           position: index + 1
         }));
         await updateFormFieldOrder(currentForm.id, updatedOrder);
+        setInitialFields([...fields]);
         setIsReorderMode(false);
       } catch (error) {
         console.error('Erro ao atualizar a ordem das questões:', error);
@@ -117,9 +127,9 @@ const AdminFormEditPage: React.FC = () => {
       setDependentFieldMessage(`A questão ${fieldId} é uma dependência das questões nas posições: ${dependentFieldPositions}.\nRemova essas dependências antes de excluir.`);
     } else {
       try {
-        await deleteField(fieldId);
-        const updatedFields = fields.filter(f => f.id !== fieldId);
-        setFields(updatedFields);
+        await deleteField(currentForm!.id, fieldId);        
+        const fetchedForm = await getFormById(Number(formId));
+        setFields(fetchedForm.fields);
       } catch (error) {
         console.log('Erro ao excluir a questão:', error);
       }
@@ -131,13 +141,14 @@ const AdminFormEditPage: React.FC = () => {
     setIsEditFieldModalOpen(true);
   };
 
-  // mudar de field para fieldId depois
-  const handleSaveFieldEdit = async (field: iField, updateFieldInput: updateFieldInput) => {
+  const handleSaveFieldEdit = async (updateFieldInput: updateFieldInput) => {
     try {
-      const updatedField = await editField(fieldBeingEdited!, updateFieldInput);
-      const updatedFields = fields.map(f => f.id === field.id ? updatedField : f);
-      console.log('updatedFields: ', updatedFields);
-      setFields(updatedFields);
+      if (Object.keys(updateFieldInput).length > 0) {
+        await editField(currentForm!.id,fieldBeingEdited!.id, updateFieldInput);
+        const fetchedForm = await getFormById(Number(formId));
+
+        setFields(fetchedForm.fields);
+      }
     } catch (error) {
       console.log('Erro ao editar a questão:', error);
     }

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { updateFieldInput } from '../mockFormData';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -41,13 +42,21 @@ export interface iForm {
   fields: iField[];
 }
 
-export interface createFormFieldInput {
+export type CreateFormFieldInput = {
   question: string;
   type: 'text' | 'single_choice' | 'multiple_choice' | 'date';
   options?: { text: string }[];
   position: number;
   indicator?: string;
   dependencies?: { fieldId: number; optionIds: number[] }[];
+}
+
+export type UpdateFieldInput = {
+  question?: string;
+  type?: 'text' | 'single_choice' | 'multiple_choice' | 'date';
+  indicator?: string;
+  dependencies?: { fieldId: number; optionIds: number[] }[];
+  options?: { id?: number; text: string }[];
 }
 
 export const getFormsByCourse = async (courseId: number) => {
@@ -132,7 +141,7 @@ export const getFormById = async (formId: number): Promise<iForm> => {
   }
 };
 
-export const createFormField = async (formId: number, fieldData: createFormFieldInput): Promise<iField> => {
+export const createFormField = async (formId: number, fieldData: CreateFormFieldInput): Promise<iField> => {
   try {
     const token = localStorage.getItem('token');
     const response = await axios.post(`${API_URL}/forms/${formId}/fields`, fieldData, {
@@ -146,3 +155,46 @@ export const createFormField = async (formId: number, fieldData: createFormField
     throw error;
   }
 };
+
+export const editField = async (formId: number, fieldId: number, updates: updateFieldInput): Promise<iField> => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.put(`${API_URL}/forms/${formId}/fields/${fieldId}`, updates, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao editar o campo:', error);
+    throw error;
+  }
+};
+
+export const deleteField = async (formId: number, fieldId: number) => {
+  try {
+    const token = localStorage.getItem('token');
+    await axios.delete(`${API_URL}/forms/${formId}/fields/${fieldId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } catch (error) {
+    console.error('Erro ao excluir o campo:', error);
+    throw error;
+  }
+}
+
+export const updateFormFieldOrder = (formId: number, fields: { fieldId: number, position: number }[]) => {
+  try {
+    const token = localStorage.getItem('token');
+    return axios.post(`${API_URL}/forms/${formId}/order`, { fields }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } catch (error) {
+    console.error('Erro ao atualizar a ordem dos campos:', error);
+    throw error;
+  }
+}

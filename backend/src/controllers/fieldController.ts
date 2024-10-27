@@ -1,18 +1,21 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { fieldModel } from '../models/fieldModel';
+import { CreateFieldInput, fieldModel, UpdateFieldInput } from '../models/fieldModel';
 
-interface CreateFieldBody {
-  question: string;
-  type: 'text' | 'single_choice' | 'multiple_choice' | 'date';
-  position: number;
-  options?: { text: string }[];
-  dependencies?: { fieldId: number; optionIds: number[] }[];
-  indicator?: string;
+const defaultUpdateFields = {
+  question: null,
+  type: null,
+  indicator: null,
+  dependencies: null,
+  options: null,
+};
+
+function normalizeData<T>(data: Partial<T>, defaultFields: Partial<T>) {
+  return { ...defaultFields, ...data };
 }
 
 export const createField = async (req: FastifyRequest, res: FastifyReply) => {
   const { formId } = req.params as { formId: string };
-  const { question, type, position, options, dependencies, indicator } = req.body as CreateFieldBody;
+  const { question, type, position, options, dependencies, indicator } = req.body as CreateFieldInput;
   const user = req.user as { is_admin: boolean };
 
   if (!user?.is_admin) {
@@ -40,3 +43,57 @@ export const createField = async (req: FastifyRequest, res: FastifyReply) => {
     return res.status(500).send({ message: 'Erro ao adicionar a questão.' });
   }
 };
+
+export const updateField = async (req: FastifyRequest, res: FastifyReply) => {
+  const { fieldId } = req.params as { fieldId: string };
+  const updates = req.body as UpdateFieldInput
+  const normalizedUpdates  = normalizeData(updates, defaultUpdateFields);
+  const user = req.user as { is_admin: boolean };
+
+  if (!user?.is_admin) {
+    return res.status(403).send({ message: 'Acesso negado.' });
+  }
+
+  try {
+    const updatedField = await fieldModel.updateField(Number(fieldId), normalizedUpdates);
+    res.send(updatedField);
+  } catch (error) {
+    req.log.error(error);
+    res.status(500).send({ message: 'Erro ao atualizar o campo.' });
+  }
+};
+
+export const deleteField = async (req: FastifyRequest, res: FastifyReply) => {
+  const { fieldId } = req.params as { fieldId: string };
+  const user = req.user as { is_admin: boolean };
+
+  if (!user?.is_admin) {
+    return res.status(403).send({ message: 'Acesso negado.' });
+  }
+
+  try {
+    await fieldModel.deleteField(Number(fieldId));
+    res.send({ message: 'Campo deletado com sucesso.' });
+  } catch (error) {
+    req.log.error(error);
+    res.status(500).send({ message: 'Erro ao deletar o campo.' });
+  }
+}
+
+export const updateFieldOrder = async (req: FastifyRequest, res: FastifyReply) => {
+  const { formId } = req.params as { formId: string };
+  const { fields } = req.body as { fields: { fieldId: number, position: number }[] };
+  const user = req.user as { is_admin: boolean };
+
+  if (!user?.is_admin) {
+    return res.status(403).send({ message: 'Acesso negado.' });
+  }
+
+  try {
+    await fieldModel.updateFieldOrder(Number(formId), fields);
+    res.send({ message: 'Ordem atualizada com sucesso.' });
+  } catch (error) {
+    req.log.error(error);
+    res.status(500).send({ message: 'Erro ao atualizar a ordem dos campos.' });
+  }
+}

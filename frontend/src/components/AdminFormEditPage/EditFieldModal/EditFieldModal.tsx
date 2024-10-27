@@ -8,7 +8,7 @@ interface EditFieldModalProps {
   isOpen: boolean;
   onClose: () => void;
   field: iField;
-  onSave: (field: iField, updateFieldInput: updateFieldInput) => void;
+  onSave: (updateFieldInput: updateFieldInput) => void;
   existingFields: iField[];
 }
 
@@ -25,10 +25,10 @@ const EditFieldModal: React.FC<EditFieldModalProps> = ({
   const [indicator, setIndicator] = useState(field.indicator || '');
   const [hasDependency, setHasDependency] = useState(field.dependencies ? true : false);
   const [dependencyFieldId, setDependencyFieldId] = useState<number | null>(
-    field.dependencies ? field.dependencies[0].fieldId : null
+    field.dependencies && field.dependencies.length ? field.dependencies[0].fieldId : null
   );
   const [dependencyOptionIds, setDependencyOptionIds] = useState<number[]>(
-    field.dependencies ? field.dependencies[0].optionIds : []
+    field.dependencies && field.dependencies.length ? field.dependencies[0].optionIds : []
   );
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -37,9 +37,9 @@ const EditFieldModal: React.FC<EditFieldModalProps> = ({
     setType(field.type);
     setOptions(field.options || []);
     setIndicator(field.indicator || '');
-    setHasDependency(field.dependencies ? true : false);
-    setDependencyFieldId(field.dependencies ? field.dependencies[0].fieldId : null);
-    setDependencyOptionIds(field.dependencies ? field.dependencies[0].optionIds : []);
+    setHasDependency(field.dependencies && field.dependencies.length ? true : false);
+    setDependencyFieldId(field.dependencies && field.dependencies.length ? field.dependencies[0].fieldId : null);
+    setDependencyOptionIds(field.dependencies && field.dependencies.length ? field.dependencies[0].optionIds : []);
   }, [field]);
 
   const validate = () => {
@@ -68,6 +68,13 @@ const EditFieldModal: React.FC<EditFieldModalProps> = ({
     return Object.keys(validationErrors).length === 0;
   };
 
+  useEffect(() => {
+    if (!hasDependency) {
+      setDependencyFieldId(null);
+      setDependencyOptionIds([]);
+    }
+  }, [hasDependency]);
+
   const handleSave = () => {
     if (!validate()) return;
   
@@ -79,7 +86,7 @@ const EditFieldModal: React.FC<EditFieldModalProps> = ({
     if (type !== field.type) {
       updatedInput.type = type;
     }
-    if (type !== FieldType.TEXT) {
+    if (type !== FieldType.TEXT && type !== FieldType.DATE) {
       if (options !== field.options) {
         updatedInput.options = options;
       }
@@ -92,9 +99,11 @@ const EditFieldModal: React.FC<EditFieldModalProps> = ({
       if (JSON.stringify(newDependencies) !== JSON.stringify(field.dependencies)) {
         updatedInput.dependencies = newDependencies ? newDependencies : undefined;
       }
+    } else if (field.dependencies && field.dependencies.length) {
+      updatedInput.dependencies = [];
     }
   
-    onSave(field, updatedInput);
+    onSave(updatedInput);
     onClose();
   };
   
@@ -143,7 +152,7 @@ const EditFieldModal: React.FC<EditFieldModalProps> = ({
           <option value={FieldType.DATE}>Data</option>
         </select>
 
-        {type !== FieldType.TEXT && (
+        {(type !== FieldType.TEXT && type !== FieldType.DATE) && (
           <>
             <label>Indicador</label>
             <input
