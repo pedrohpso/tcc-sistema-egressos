@@ -37,7 +37,7 @@ export const formModel = {
   },
 
   async deleteForm(id: number): Promise<void> {
-    await db.execute(`UPDATE \`form\` SET \`deleted\` = NOW() WHERE id = ?`, [id]);
+    await db.execute(`UPDATE \`form\` SET \`deleted\` = CURRENT_TIMESTAMP WHERE id = ?`, [id]);
   },
 
   async getFormById(id: number): Promise<iForm | null> {
@@ -48,8 +48,18 @@ export const formModel = {
 
   async updateFormTitle(formId: number, newTitle: string): Promise<iForm | null> {
     await db.execute(
-      `UPDATE form SET title = ?, modified = CURRENT_TIMESTAMP WHERE id = ? AND deleted IS NULL`,
+      `UPDATE form SET title = ? WHERE id = ? AND deleted IS NULL`,
       [newTitle, formId]
+    );
+
+    const form = await this.getFormById(formId);
+    return form || null;
+  },
+
+  async publishForm(formId: number): Promise<iForm | null> {
+    await db.execute(
+      `UPDATE form SET status = 'published' WHERE id = ? AND deleted IS NULL`,
+      [formId]
     );
 
     const form = await this.getFormById(formId);

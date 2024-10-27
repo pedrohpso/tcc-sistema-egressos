@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Button from '../Button/Button';
 import './AdminFormEditPage.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import { iForm, submitForm, updateFieldInput } from '../../mockFormData';
 import Modal from '../Modal/Modal';
 import RenameFormModal from './RenameFormModal/RenameFormModal';
 import FieldItem from './FieldItem/FieldItem';
@@ -10,7 +9,7 @@ import AddFieldModal from './AddFieldModal/AddFieldModal';
 import EditFieldModal from './EditFieldModal/EditFieldModal';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import { iField } from '../../mockFormData';
-import { getFormById, createFormField, CreateFormFieldInput, editField, deleteField, updateFormFieldOrder } from '../../services/formService';
+import { iForm, getFormById, createFormField, CreateFormFieldInput, editField, UpdateFieldInput, deleteField, updateFormFieldOrder, publishForm } from '../../services/formService';
 
 const AdminFormEditPage: React.FC = () => {
   const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
@@ -55,10 +54,10 @@ const AdminFormEditPage: React.FC = () => {
     }
   };
 
-  const handleSubmitForm = async () => {
+  const handlePublishForm = async () => {
     if (currentForm) {
       try {
-        await submitForm(currentForm.id);
+        await publishForm(currentForm.id);
         setIsConfirmModalOpen(false);
         navigate('/admin/forms');
       } catch (error) {
@@ -141,7 +140,7 @@ const AdminFormEditPage: React.FC = () => {
     setIsEditFieldModalOpen(true);
   };
 
-  const handleSaveFieldEdit = async (updateFieldInput: updateFieldInput) => {
+  const handleSaveFieldEdit = async (updateFieldInput: UpdateFieldInput) => {
     try {
       if (Object.keys(updateFieldInput).length > 0) {
         await editField(currentForm!.id,fieldBeingEdited!.id, updateFieldInput);
@@ -184,7 +183,7 @@ const AdminFormEditPage: React.FC = () => {
 
           <Modal isOpen={isConfirmModalOpen} onClose={() => setIsConfirmModalOpen(false)}>
             <p>Você tem certeza que deseja enviar o formulário? Uma vez enviado, não será possível editá-lo.</p>
-            <Button label="Confirmar" onClick={handleSubmitForm} />
+            <Button label="Confirmar" onClick={handlePublishForm} />
           </Modal>
 
           <RenameFormModal

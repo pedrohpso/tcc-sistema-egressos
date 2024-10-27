@@ -13,6 +13,11 @@ interface UpdateFormBody {
 
 export const getFormsByCourse = async (req: FastifyRequest, res: FastifyReply) => {
   const courseId = (req.params as { courseId: string }).courseId as string;
+  const user = req.user as { is_admin: boolean };
+
+  if (!user?.is_admin) {
+    return res.status(403).send({ message: 'Acesso negado.' });
+  }
 
   if (!courseId) {
     return res.status(400).send({ message: 'O ID do curso é necessário.' });
@@ -28,8 +33,14 @@ export const getFormsByCourse = async (req: FastifyRequest, res: FastifyReply) =
 };
 
 export const createForm = async (req: FastifyRequest, res: FastifyReply) => {
+  const { title, course_id } = req.body as CreateFormBody
+  const user = req.user as { is_admin: boolean };
+
+  if (!user?.is_admin) {
+    return res.status(403).send({ message: 'Acesso negado.' });
+  }
+
   try {
-    const { title, course_id } = req.body as CreateFormBody
 
     if(title.trim() === ''){
       return res.status(400).send({ message: 'O título do formulário é obrigatório.' });
@@ -85,6 +96,11 @@ export const updateForm = async (
 
 export const deleteForm = async (req: FastifyRequest, res: FastifyReply) => {
   const { id } = req.params as { id: string };
+  const user = req.user as { is_admin: boolean };
+
+  if (!user?.is_admin) {
+    return res.status(403).send({ message: 'Acesso negado.' });
+  }
 
   const form = await formModel.getFormById(Number(id));
   if (!form) {
@@ -105,6 +121,7 @@ export const deleteForm = async (req: FastifyRequest, res: FastifyReply) => {
 
 export const getFormById = async (req: FastifyRequest, res: FastifyReply) => {
   const formId = parseInt((req.params as {id: string}).id, 10);
+  
   if (isNaN(formId)) {
     return res.status(400).send({ message: 'ID do formulário inválido' });
   }
@@ -124,3 +141,33 @@ export const getFormById = async (req: FastifyRequest, res: FastifyReply) => {
     return res.status(500).send({ message: 'Erro ao buscar o formulário' });
   }
 };
+
+export const publishForm = async (req: FastifyRequest, res: FastifyReply) => {
+  const formId = parseInt((req.params as {id: string}).id, 10);
+  const user = req.user as { is_admin: boolean };
+
+  if (!user?.is_admin) {
+    return res.status(403).send({ message: 'Acesso negado.' });
+  }
+
+  if (isNaN(formId)) {
+    return res.status(400).send({ message: 'ID do formulário inválido' });
+  }
+
+  try {
+    const form = await formModel.getFormById(formId);
+    if (!form) {
+      return res.status(404).send({ message: 'Formulário não encontrado' });
+    }
+
+    if (form.status === 'published') {
+      return res.status(400).send({ message: 'Formulário já publicado' });
+    }
+
+    await formModel.publishForm(formId);
+    return res.status(200).send({ message: 'Formulário publicado com sucesso' });
+  } catch (error) {
+    req.log.error(error);
+    return res.status(500).send({ message: 'Erro ao publicar o formulário' });
+  }
+}

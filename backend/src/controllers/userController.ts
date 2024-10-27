@@ -15,8 +15,6 @@ interface RegisterRequestBody {
 
 export const registerController = async (req: FastifyRequest<{ Body: RegisterRequestBody }>, res: FastifyReply) => {
   const { name, email, password, birthdate, gender, ethnicity, graduation_year, course_id } = req.body;
-
-  console.log({ name, email, password, birthdate, gender, ethnicity, graduation_year });
   
   if (!name || !email || !password) {
     return res.status(400).send({ error: 'Campos obrigatórios faltando' });

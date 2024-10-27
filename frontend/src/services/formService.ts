@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { updateFieldInput } from '../mockFormData';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -44,7 +43,7 @@ export interface iForm {
 
 export type CreateFormFieldInput = {
   question: string;
-  type: 'text' | 'single_choice' | 'multiple_choice' | 'date';
+  type: FieldType;
   options?: { text: string }[];
   position: number;
   indicator?: string;
@@ -53,7 +52,7 @@ export type CreateFormFieldInput = {
 
 export type UpdateFieldInput = {
   question?: string;
-  type?: 'text' | 'single_choice' | 'multiple_choice' | 'date';
+  type?: FieldType;
   indicator?: string;
   dependencies?: { fieldId: number; optionIds: number[] }[];
   options?: { id?: number; text: string }[];
@@ -156,7 +155,7 @@ export const createFormField = async (formId: number, fieldData: CreateFormField
   }
 };
 
-export const editField = async (formId: number, fieldId: number, updates: updateFieldInput): Promise<iField> => {
+export const editField = async (formId: number, fieldId: number, updates: UpdateFieldInput): Promise<iField> => {
   try {
     const token = localStorage.getItem('token');
     const response = await axios.put(`${API_URL}/forms/${formId}/fields/${fieldId}`, updates, {
@@ -195,6 +194,20 @@ export const updateFormFieldOrder = (formId: number, fields: { fieldId: number, 
     });
   } catch (error) {
     console.error('Erro ao atualizar a ordem dos campos:', error);
+    throw error;
+  }
+}
+
+export const publishForm = async (formId: number) => {
+  try {
+    const token = localStorage.getItem('token');
+    await axios.post(`${API_URL}/forms/${formId}/publish`, {}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } catch (error) {
+    console.error('Erro ao publicar o formulário:', error);
     throw error;
   }
 }
