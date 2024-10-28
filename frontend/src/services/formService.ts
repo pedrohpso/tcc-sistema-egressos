@@ -211,3 +211,32 @@ export const publishForm = async (formId: number) => {
     throw error;
   }
 }
+
+export const getUserForms = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.get(`${API_URL}/forms`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar os formulários do usuário:', error);
+    throw error;
+  }
+}
+
+export const saveAnswers = async (formId: number, answers: Record<string, string | string[]>) => {
+  try {
+    const token = localStorage.getItem('token');
+    await axios.post(`${API_URL}/forms/${formId}/answers`, answers, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } catch (error) {
+    console.error('Erro ao salvar as respostas:', error);
+    throw error;
+  }
+}

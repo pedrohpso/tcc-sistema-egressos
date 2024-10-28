@@ -17,6 +17,16 @@ CREATE TABLE `user` (
   `deleted` datetime DEFAULT null COMMENT 'date this record was deleted'
 );
 
+CREATE TABLE `password_reset_token` (
+  `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `token` VARCHAR(255) NOT NULL,
+  `expires_at` datetime NOT NULL,	
+  `used_at` datetime DEFAULT null COMMENT 'date this token was used',
+  `created` datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP) COMMENT 'date this record was created',
+  CONSTRAINT `fk_password_reset_token_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
+);
+
 CREATE TABLE `course` (
   `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,

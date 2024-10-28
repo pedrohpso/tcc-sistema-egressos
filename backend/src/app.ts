@@ -6,8 +6,6 @@ import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes';
 import courseRoutes from './routes/courseRoutes';
 import fastifyJwt from '@fastify/jwt';
-import { FastifyRequest } from 'fastify/types/request';
-import { FastifyReply } from 'fastify/types/reply';
 import formRoutes from './routes/formRoutes';
 
 dotenv.config();

@@ -3,9 +3,8 @@ import { useCourse } from '../../context/CourseContext';
 import Button from '../Button/Button';
 import Modal from '../Modal/Modal';
 import './AdminFormPage.css';
-import { iForm } from '../../mockFormData';
 import { useNavigate } from 'react-router-dom';
-import { getFormsByCourse, createForm, deleteForm } from '../../services/formService';
+import { iForm, getFormsByCourse, createForm, deleteForm } from '../../services/formService';
 
 const AdminFormPage: React.FC = () => {
   const { selectedCourse } = useCourse();

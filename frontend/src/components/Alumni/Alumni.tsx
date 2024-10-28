@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Alumni.css';
+import { getUserForms } from '../../services/formService';
 
 interface Form {
   id: number;
@@ -13,18 +14,15 @@ const Alumni: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setForms([
-      {
-        id: 1,
-        title: "Formulário de Egressos TADS Edição 2024",
-        status: 'pending',
-      },
-      {
-        id: 2,
-        title: "Formulário de Egressos TADS Edição 2023",
-        status: 'answered',
-      },
-    ]);
+    const fetchForms = async () => {
+      try {
+        const userForms = await getUserForms();
+        setForms(userForms);
+      } catch (error) {
+        console.error('Erro ao buscar formulários:', error);
+      }
+    };
+    fetchForms();
   }, []);
 
   const handleFormClick = (id: number) => {

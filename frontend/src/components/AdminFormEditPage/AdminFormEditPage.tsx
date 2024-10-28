@@ -8,8 +8,7 @@ import FieldItem from './FieldItem/FieldItem';
 import AddFieldModal from './AddFieldModal/AddFieldModal';
 import EditFieldModal from './EditFieldModal/EditFieldModal';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
-import { iField } from '../../mockFormData';
-import { iForm, getFormById, createFormField, CreateFormFieldInput, editField, UpdateFieldInput, deleteField, updateFormFieldOrder, publishForm } from '../../services/formService';
+import { iField, iForm, getFormById, createFormField, CreateFormFieldInput, editField, UpdateFieldInput, deleteField, updateFormFieldOrder, publishForm } from '../../services/formService';
 
 const AdminFormEditPage: React.FC = () => {
   const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);

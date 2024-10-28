@@ -50,8 +50,7 @@ const Form: React.FC<FormProps> = ({ fields, onSubmit, initialValues = {}, saveT
 
   const checkDependencies = (fieldName: string) => {
     const field = fields.find(f => f.name === fieldName);
-    if (!field || !field.dependencies) return true;
-
+    if (!field || (!field.dependencies || field.dependencies.length === 0)) return true;
     return field.dependencies.some(dep => {
       const dependentValue = formData[dep.fieldId];
       if (Array.isArray(dependentValue)) {

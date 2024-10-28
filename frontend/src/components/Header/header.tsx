@@ -29,12 +29,6 @@ const Header: React.FC = () => {
     navigate('/');
   }
 
-  useEffect(() => {
-    if(!user){
-      navigate("/");
-    };
-  }, []);
-
   return (
     <header className="header">
       <div className='header-container'>

@@ -39,3 +39,28 @@ export const getUserData = async (token: string) => {
     throw error;
   }
 }
+
+export const requestPasswordReset = async (email: string) => {
+  try {
+    const response = await axios.post(`${API_URL}/users/request-password-reset`, {
+      email,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao solicitar a redefinição de senha:', error);
+    throw error;
+  }
+}
+
+export const passwordReset = async (token: string, newPassword: string) => {
+  try {
+    const response = await axios.post(`${API_URL}/users/reset-password`, {
+      token,
+      newPassword,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao redefinir a senha:', error);
+    throw error;
+  }
+}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './EditFieldModal.css';
-import { iField, FieldType, iEditableOption, updateFieldInput } from '../../../mockFormData';
+import { iField, FieldType, iEditableOption, UpdateFieldInput } from '../../../services/formService';
 import Button from '../../Button/Button';
 import Modal from '../../Modal/Modal';
 
@@ -8,7 +8,7 @@ interface EditFieldModalProps {
   isOpen: boolean;
   onClose: () => void;
   field: iField;
-  onSave: (updateFieldInput: updateFieldInput) => void;
+  onSave: (updateFieldInput: UpdateFieldInput) => void;
   existingFields: iField[];
 }
 
@@ -78,7 +78,7 @@ const EditFieldModal: React.FC<EditFieldModalProps> = ({
   const handleSave = () => {
     if (!validate()) return;
   
-    const updatedInput: updateFieldInput = {};
+    const updatedInput: UpdateFieldInput = {};
 
     if (question !== field.question) {
       updatedInput.question = question;

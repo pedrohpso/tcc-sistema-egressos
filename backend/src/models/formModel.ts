@@ -65,4 +65,18 @@ export const formModel = {
     const form = await this.getFormById(formId);
     return form || null;
   },
+
+  async getFormsByUserId(userId: number) {
+    const [rows] = await db.execute(
+      `SELECT f.id, f.title, 
+      CASE WHEN fa.form_id IS NOT NULL THEN 'answered' ELSE 'pending' END AS status
+      FROM form f
+      JOIN user_course uc ON f.course_id = uc.course_id
+      LEFT JOIN form_answer fa ON f.id = fa.form_id AND fa.user_id = uc.user_id
+      WHERE uc.user_id = ? AND f.status = 'published' AND f.deleted IS NULL
+      Order by fa.created ASC`,
+      [userId]
+    );
+    return rows;
+  },
 };

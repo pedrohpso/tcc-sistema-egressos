@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaEdit, FaGripVertical, FaTrash } from 'react-icons/fa';
 import './FieldItem.css';
-import { iField } from '../../../mockFormData';
+import { iField } from '../../../services/formService';
 
 interface FieldItemProps {
   field: iField;

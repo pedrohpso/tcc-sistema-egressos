@@ -4,7 +4,7 @@ import { FormFieldProps } from '../Form/FormField/FormField';
 import Form from '../Form/Form';
 import { useCourse } from '../../context/CourseContext';
 import './Register.css';
-import { iOption } from '../../mockFormData';
+import { iOption } from '../../services/formService';
 import { registerUser } from '../../services/userService';
 
 const genderMapping: { [key: string]: string } = {
@@ -31,8 +31,6 @@ const Register: React.FC = () => {
 
     const handleSubmit = async (formData: { [key: string]: string | string[] }) => {
         try {
-            console.log('formData: ', formData);
-
             const gender = genderMapping[formData.gender as string];
             const ethnicity = ethnicityMapping[formData.ethnicity as string];
             

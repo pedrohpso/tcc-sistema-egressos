@@ -1,6 +1,8 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { userModel } from '../models/userModel';
-import { comparePassword } from '../utils/hashUtils';
+import { comparePassword, hashPassword } from '../utils/hashUtils';
+import crypto from 'crypto';
+import { sendPasswordResetEmail } from '../utils/email';
 
 interface RegisterRequestBody {
   name: string;
@@ -13,7 +15,7 @@ interface RegisterRequestBody {
   course_id?: number;
 }
 
-export const registerController = async (req: FastifyRequest<{ Body: RegisterRequestBody }>, res: FastifyReply) => {
+export const registerUser = async (req: FastifyRequest<{ Body: RegisterRequestBody }>, res: FastifyReply) => {
   const { name, email, password, birthdate, gender, ethnicity, graduation_year, course_id } = req.body;
   
   if (!name || !email || !password) {
@@ -54,7 +56,7 @@ interface LoginRequestBody {
   password: string;
 }
 
-export const loginController = async (req: FastifyRequest<{ Body: LoginRequestBody }>, res: FastifyReply) => {
+export const loginUser = async (req: FastifyRequest<{ Body: LoginRequestBody }>, res: FastifyReply) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -96,5 +98,58 @@ export const getUserProfile = async (req: FastifyRequest, res: FastifyReply) => 
   } catch (error) {
     req.log.error(error);
     return res.status(500).send({ message: 'Erro ao buscar o perfil do usuário.' });
+  }
+};
+
+export const requestPasswordReset = async (req: FastifyRequest, res: FastifyReply) => {
+  const { email } = req.body as { email: string };
+
+  try {
+    const user = await userModel.findByEmail(email);
+    // Não informa se o e-mail não existe, pra não expor informações
+    if (!user) return res.status(200).send({ message: 'Token de recuperação gerado e e-mail enviado, se o usuário existir.' });
+
+    const token = crypto.randomBytes(32).toString('hex');
+
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // Expira em 1 hora
+
+    await userModel.savePasswordResetToken(user.id, token, expiresAt);
+    
+    await sendPasswordResetEmail(email, token);
+
+    return res.status(200).send({ message: 'Token de recuperação gerado e e-mail enviado, se o usuário existir.' });
+  } catch (error) {
+    req.log.error(error);
+    return res.status(500).send({ message: 'Erro ao solicitar a recuperação de senha.' });
+  }
+};
+
+interface ResetPasswordBody {
+  token: string;
+  newPassword: string;
+}
+
+export const resetPassword = async (req: FastifyRequest<{ Body: ResetPasswordBody }>, res: FastifyReply) => {
+  const { token, newPassword } = req.body;
+
+  if (!token || !newPassword) {
+    return res.status(400).send({ message: 'Token e nova senha são obrigatórios.' });
+  }
+
+  try {
+    const resetToken = await userModel.findValidPasswordResetToken(token);
+    if (!resetToken) {
+      return res.status(400).send({ message: 'Token inválido ou expirado.' });
+    }
+
+    const hashedPassword = await hashPassword(newPassword);
+    await userModel.updateUserPassword(resetToken.user_id, hashedPassword);
+
+    await userModel.markTokenAsUsed(resetToken.id);
+
+    return res.status(200).send({ message: 'Senha redefinida com sucesso.' });
+  } catch (error) {
+    req.log.error(error);
+    return res.status(500).send({ message: 'Erro ao redefinir a senha.' });
   }
 };

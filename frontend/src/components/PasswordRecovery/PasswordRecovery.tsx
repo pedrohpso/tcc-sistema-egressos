@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import Form from '../Form/Form';
 import { FormFieldProps } from '../Form/FormField/FormField';
 import './PasswordRecovery.css';
+import { requestPasswordReset } from '../../services/userService';
 
 const PasswordRecovery: React.FC = () => {
   const [emailSent, setEmailSent] = useState(false);
 
-  const handleSubmit = (formData: { [key: string]: string | string[] }) => {
+  const handleSubmit = async (formData: { [key: string]: string | string[] }) => {
     const email = formData['Email'] as string;
+    await requestPasswordReset(email);
     console.log(`Enviar link de recuperação de senha para o email: ${email}`);
     setEmailSent(true);
   };

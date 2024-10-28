@@ -171,3 +171,19 @@ export const publishForm = async (req: FastifyRequest, res: FastifyReply) => {
     return res.status(500).send({ message: 'Erro ao publicar o formulário' });
   }
 }
+
+export const getUserForms = async (req: FastifyRequest, res: FastifyReply) => {
+  const user = req.user as { id: number };
+
+  if (!user) {
+    return res.status(401).send({ message: 'Usuário não autorizado' });
+  }
+
+  try {
+    const forms = await formModel.getFormsByUserId(user.id);
+    return res.send(forms);
+  } catch (error) {
+    req.log.error(error);
+    return res.status(500).send({ message: 'Erro ao buscar formulários' });
+  }
+}

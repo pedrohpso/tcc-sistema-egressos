@@ -1,21 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import Form from '../Form/Form'; 
-import { getMockFormData, iForm, iField, iOption } from '../../mockFormData';
+import { iForm, iField, iOption, getFormById, saveAnswers } from '../../services/formService';
 import './AlumniForm.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const AlumniForm: React.FC = () => {
   const [formData, setFormData] = useState<iForm | null>(null);
   const navigate = useNavigate();
 
-  const saveAnswer = (answers: { [key: string]: string | string[] }) => {
-    console.log('Form Answers: ', answers);
-    navigate('/alumni');
+  const { id: formId } = useParams();
+
+  const saveAnswer = async (answers: { [key: string]: string | string[] }) => {
+    try {
+      await saveAnswers(Number(formId!), answers);
+      navigate('/alumni')
+    } catch (error) {
+      console.error('Erro ao salvar respostas:', error);
+    }
   };
   
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getMockFormData();
+      const data = await getFormById(Number(formId!));
       setFormData(data);
     };
 
