@@ -97,3 +97,23 @@ export const updateFieldOrder = async (req: FastifyRequest, res: FastifyReply) =
     res.status(500).send({ message: 'Erro ao atualizar a ordem dos campos.' });
   }
 }
+
+export const getIndicatorsByForm = async (req: FastifyRequest, res: FastifyReply) => {
+  const { formId } = req.params as { formId: string };
+  const user = req.user as { is_admin: boolean };
+
+  if (!user?.is_admin) {
+    return res.status(403).send({ message: 'Acesso negado.' });
+  }
+
+  try {
+    const indicators = await fieldModel.getIndicatorsByForm(Number(formId));
+    if (!indicators.length) {
+      return res.status(404).send({ message: 'Nenhum indicador encontrado para este formulário.' });
+    }
+    return res.status(200).send(indicators);
+  } catch (error) {
+    req.log.error(error);
+    return res.status(500).send({ message: 'Erro ao buscar indicadores.' });
+  }
+};

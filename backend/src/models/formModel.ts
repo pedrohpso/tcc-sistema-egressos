@@ -1,3 +1,4 @@
+import { RowDataPacket } from 'mysql2';
 import { iForm } from '../types/formTypes';
 import { db } from '../utils/db';
 
@@ -13,11 +14,6 @@ interface Form {
 }
 
 export const formModel = {
-  async getAllForms(): Promise<Form[]> {
-    const [rows] = await db.execute('SELECT * FROM `form` WHERE `deleted` IS NULL');
-    return rows as Form[];
-  },
-
   async getFormsByCourseId(courseId: number) {
     const [rows] = await db.execute(
       'SELECT id, title, status FROM form WHERE course_id = ? AND deleted IS NULL',
@@ -53,7 +49,7 @@ export const formModel = {
     );
 
     const form = await this.getFormById(formId);
-    return form || null;
+    return form;
   },
 
   async publishForm(formId: number): Promise<iForm | null> {
@@ -63,7 +59,7 @@ export const formModel = {
     );
 
     const form = await this.getFormById(formId);
-    return form || null;
+    return form;
   },
 
   async getFormsByUserId(userId: number) {
@@ -73,10 +69,80 @@ export const formModel = {
       FROM form f
       JOIN user_course uc ON f.course_id = uc.course_id
       LEFT JOIN form_answer fa ON f.id = fa.form_id AND fa.user_id = uc.user_id
-      WHERE uc.user_id = ? AND f.status = 'published' AND f.deleted IS NULL
+      WHERE uc.user_id = ? AND f.status = 'published' 
+        AND f.deleted IS NULL AND uc.deleted IS NULL AND fa.deleted IS NULL
       Order by fa.created ASC`,
       [userId]
     );
     return rows;
   },
+
+  async getPublishedFormsByCourse(courseId: number) {
+    const [rows] = await db.execute<RowDataPacket[]>(
+      `SELECT f.id, f.title, f.status
+     FROM form f
+     JOIN field fld ON fld.form_id = f.id
+     WHERE f.course_id = ? AND f.status = 'published' 
+      AND fld.type IN ('single_choice', 'multiple_choice') 
+      AND f.deleted IS NULL
+      AND fld.deleted IS NULL
+     GROUP BY f.id
+     HAVING COUNT(fld.id) > 0`,
+      [courseId]
+    );
+
+    return rows;
+  },
+
+  async getGroupedDataByIndicator({ courseId, startYear, endYear, indicatorId, grouping }: { courseId: number, startYear: number, endYear: number, indicatorId: number, grouping: string }) {
+
+    let groupingColumn;
+    switch (grouping) {
+      case 'gender':
+        groupingColumn = 'user.gender';
+        break;
+      case 'ethnicity':
+        groupingColumn = 'user.ethnicity';
+        break;
+      case 'age':
+        groupingColumn = `CASE 
+                            WHEN TIMESTAMPDIFF(YEAR, user.birthdate, form_answer.created) < 20 THEN '20-'
+                            WHEN TIMESTAMPDIFF(YEAR, user.birthdate, form_answer.created) BETWEEN 20 AND 23 THEN '21-23'
+                            WHEN TIMESTAMPDIFF(YEAR, user.birthdate, form_answer.created) BETWEEN 24 AND 26 THEN '24-26'
+                            WHEN TIMESTAMPDIFF(YEAR, user.birthdate, form_answer.created) BETWEEN 27 AND 29 THEN '27-29'
+                            ELSE '30+' 
+                          END`;
+        break;
+      default:
+        groupingColumn = `'Total'`;
+        break;
+    }
+
+    const [rows] = await db.execute<RowDataPacket[]>(
+      `SELECT ${groupingColumn} AS group_label, COUNT(answer.field_option_id) AS response_count, field_option.text AS option_text
+   FROM form
+   JOIN form_answer ON form.id = form_answer.form_id
+   JOIN answer ON form_answer.id = answer.form_answer_id
+   JOIN field ON answer.field_id = field.id
+   JOIN field_option ON answer.field_option_id = field_option.id
+   JOIN user ON form_answer.user_id = user.id
+   JOIN indicator ON indicator.field_id = field.id
+   WHERE form.course_id = ?
+     AND form.status = 'published'
+     AND indicator.id = ?
+     AND user.graduation_year BETWEEN ? AND ?
+     AND form.deleted IS NULL
+     AND form_answer.deleted IS NULL
+     AND answer.deleted IS NULL
+     AND user.deleted IS NULL
+     AND field.deleted IS NULL
+     AND field_option.deleted IS NULL
+   GROUP BY group_label, answer.field_option_id
+   ORDER BY group_label, response_count DESC`,
+      [courseId, indicatorId, startYear, endYear]
+    );
+
+    return rows;
+  }
+
 };

@@ -73,6 +73,52 @@ export const getFormsByCourse = async (courseId: number) => {
   }
 };
 
+export const getPublishedFormsByCourse = async (courseId: number) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.get(`${API_URL}/forms/course/${courseId}/published`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar formulários publicados:', error);
+    throw error;
+  }
+}
+
+export const getIndicatorsByForm = async (formId: number) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.get(`${API_URL}/forms/${formId}/indicators`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar os indicadores:', error);
+    throw error;
+  }
+}
+
+export const getGroupedDataByIndicator = async (params: { courseId: number, year: string, indicatorId: number, grouping: string }) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.get(`${API_URL}/forms/data`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar os dados agrupados:', error);
+    throw error;
+  }
+}
+
 export const createForm = async (title: string, courseId: number) => {
   try {
     const token = localStorage.getItem('token');

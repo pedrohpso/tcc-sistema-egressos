@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { getPublishedFormsByCourse } from '../../../services/formService';
 
 export interface FormData {
   id: number;
@@ -13,7 +14,7 @@ export const useForms = (courseId: number | null) => {
   useEffect(() => {
     if (courseId) {
       setIsLoading(true);
-      fetchForms(courseId).then(fetchedForms => {
+      getPublishedFormsByCourse(courseId).then(fetchedForms => {
         setForms(fetchedForms);
         setIsLoading(false);
       });
@@ -23,8 +24,3 @@ export const useForms = (courseId: number | null) => {
   return { forms, isLoading };
 };
 
-async function fetchForms(_courseId: number): Promise<FormData[]> {
-  return new Promise(resolve => setTimeout(() => resolve([
-    { id: 1, title: 'Formulário de Egressos TADS Edição 2024', status: 'published' }, 
-  ]), 1000));
-}

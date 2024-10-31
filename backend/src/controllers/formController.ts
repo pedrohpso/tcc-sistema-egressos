@@ -121,7 +121,12 @@ export const deleteForm = async (req: FastifyRequest, res: FastifyReply) => {
 
 export const getFormById = async (req: FastifyRequest, res: FastifyReply) => {
   const formId = parseInt((req.params as {id: string}).id, 10);
-  
+  const user = req.user as { id: number };
+
+  if (!user) {
+    return res.status(401).send({ message: 'Usuário não autorizado' });
+  }
+
   if (isNaN(formId)) {
     return res.status(400).send({ message: 'ID do formulário inválido' });
   }
@@ -187,3 +192,88 @@ export const getUserForms = async (req: FastifyRequest, res: FastifyReply) => {
     return res.status(500).send({ message: 'Erro ao buscar formulários' });
   }
 }
+
+export const getPublishedFormsByCourse = async (req: FastifyRequest, res: FastifyReply) => {
+  const { courseId } = req.params as { courseId: string };
+  const user = req.user as { is_admin: boolean };
+
+  if (!user?.is_admin) {
+    return res.status(403).send({ message: 'Acesso negado.' });
+  }
+
+  try {
+    const forms = await formModel.getPublishedFormsByCourse(Number(courseId));
+
+    if (forms.length === 0) {
+      return res.status(404).send({ message: 'Nenhum formulário publicado encontrado para este curso.' });
+    }
+
+    return res.status(200).send(forms);
+  } catch (error) {
+    req.log.error(error);
+    return res.status(500).send({ message: 'Erro ao buscar os formulários publicados.' });
+  }
+};
+
+const genderTranslations: { [key: string]: string } = {
+  male: 'Homem Cis',
+  female: 'Mulher Cis',
+  trans_male: 'Homem Trans',
+  trans_female: 'Mulher Trans',
+  non_binary: 'Não-binário',
+  other: 'Outro'
+};
+
+const ethnicityTranslations: { [key: string]: string } = {
+  white: 'Branca',
+  black: 'Preta',
+  brown: 'Parda',
+  yellow: 'Amarela',
+  indigenous: 'Indígena',
+  not_declared: 'Desejo não declarar'
+};
+
+export const getIndicatorData = async (req: FastifyRequest, res: FastifyReply) => {
+  const { courseId, year, indicatorId, grouping } = req.query as {
+    courseId: number;
+    year: string;
+    indicatorId: number;
+    grouping: string;
+  };
+  const user = req.user as { is_admin: boolean };
+
+  if (!user?.is_admin) {
+    return res.status(403).send({ message: 'Acesso negado.' });
+  }
+
+  const [startYear, endYear] = year.split('-').map(Number);
+
+  try {
+    const rawData = await formModel.getGroupedDataByIndicator({courseId, indicatorId, startYear, endYear, grouping});
+
+    const formattedData = rawData.reduce((acc: any[], row: any) => {
+      let groupName = row.group_label;
+
+      if (grouping === 'gender') {
+        groupName = genderTranslations[groupName] || groupName;
+      } else if (grouping === 'ethnicity') {
+        groupName = ethnicityTranslations[groupName] || groupName;
+      }
+
+      let group = acc.find((g) => g.name === groupName);
+
+      if (!group) {
+        group = { name: groupName };
+        acc.push(group);
+      }
+
+      group[row.option_text] = row.response_count;
+      return acc;
+    }, []);
+
+    return res.send(formattedData);
+  } catch (error) {
+    req.log.error(error);
+    return res.status(500).send({ message: 'Erro ao obter dados agrupados.' });
+  }
+};

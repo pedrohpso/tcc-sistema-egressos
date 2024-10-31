@@ -300,8 +300,6 @@ export const fieldModel = {
     if (fieldsToUpdate.length === 0) {
       return;
     }
-  
-    console.log('fieldsToUpdate: ', fieldsToUpdate);
 
     const updateQueries = fieldsToUpdate.map(({ fieldId, position }) =>
       db.execute(
@@ -311,5 +309,18 @@ export const fieldModel = {
     );
   
     await Promise.all(updateQueries);
+  },
+
+  async getIndicatorsByForm(formId: number) {
+    const [rows] = await db.execute<RowDataPacket[]>(
+      `SELECT i.id AS id, i.text AS text, field.id as fieldId
+       FROM field
+       INNER JOIN indicator i ON field.id = i.field_id
+       WHERE field.form_id = ? AND field.type IN ('single_choice', 'multiple_choice') AND field.deleted IS NULL
+       ORDER BY field.position ASC`,
+      [formId]
+    );
+
+    return rows;
   },
 };

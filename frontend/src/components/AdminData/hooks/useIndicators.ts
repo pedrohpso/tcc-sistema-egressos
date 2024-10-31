@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
+import { getIndicatorsByForm } from '../../../services/formService';
 
 export interface IndicatorData {
   id: number;
   text: string;
-  questionId: number;
+  fieldId: number;
 }
 
 export const useIndicators = (formId: number | null) => {
@@ -13,7 +14,7 @@ export const useIndicators = (formId: number | null) => {
   useEffect(() => {
     if (formId) {
       setIsLoading(true);
-      fetchIndicators(formId).then(fetchedIndicators => {
+      getIndicatorsByForm(formId).then(fetchedIndicators => {
         setIndicators(fetchedIndicators);
         setIsLoading(false);
       });
@@ -22,10 +23,3 @@ export const useIndicators = (formId: number | null) => {
 
   return { indicators, isLoading };
 };
-
-async function fetchIndicators(_formId: number): Promise<IndicatorData[]> {
-  return new Promise(resolve => setTimeout(() => resolve([
-    { id: 1, text: 'Cursou pós-graduação', questionId: 1 }, 
-    { id: 2, text: 'Estado atual', questionId: 2 },
-    { id: 3, text: 'Satisfação com a Profissão', questionId: 3 }]), 1000));
-}

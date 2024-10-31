@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { debounce } from 'lodash';
 import './AdminData.css';
-import { fetchGraphData } from '../../mockData';
 import Chart from './Chart/Chart';
 import { FaChartPie, FaChartBar, FaTable } from "react-icons/fa";
 import { IoMdDownload } from "react-icons/io";
@@ -13,6 +12,7 @@ import jsPDF from 'jspdf';
 import { useCourse } from '../../context/CourseContext';
 import { YearRangeSelector } from './YearRangeSelector/YearRangeSelector';
 import Tooltip from '../Tooltip/Tooltip';
+import { getGroupedDataByIndicator } from '../../services/formService';
 
 
 const debouncedFetchData = debounce(async (fetchData: Function) => {
@@ -91,7 +91,7 @@ const AdminData: React.FC = () => {
   const fetchData = useCallback(async () => {
     if (selectedCourse && minYear && maxYear && indicator && grouping) {
       setIsLoading(true);
-      const graphData = await fetchGraphData({
+      const graphData = await getGroupedDataByIndicator({
         courseId: selectedCourse.id,
         year: `${minYear}-${maxYear}`,
         indicatorId: indicator,

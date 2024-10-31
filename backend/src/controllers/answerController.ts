@@ -8,13 +8,17 @@ interface SaveAnswerBody {
 
 export const saveAnswers = async (req: FastifyRequest, res: FastifyReply) => {
   const { formId } = req.params as { formId: string };
-  const userId = (req.user as any).id;
   const answers = req.body as SaveAnswerBody;
+  const user = req.user as { id: number };
+
+  if (!user) {
+    return res.status(401).send({ message: 'Usuário não autorizado' });
+  }
 
   try {
     const fields = await fieldModel.getFieldsByForm(Number(formId));
 
-    const formAnswerId = await answerModel.createFormAnswer(userId, Number(formId));
+    const formAnswerId = await answerModel.createFormAnswer(user.id, Number(formId));
 
     for (const [fieldId, response] of Object.entries(answers)) {
       const parsedFieldId = Number(fieldId);
