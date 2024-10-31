@@ -28,10 +28,10 @@ export const userModel = {
         user.name,
         user.email,
         hashedPassword,
-        user.birthdate,
-        user.gender,
-        user.ethnicity,
-        user.graduation_year,
+        user.birthdate ? user.birthdate : null,
+        user.gender ? user.gender : null,
+        user.ethnicity ? user.ethnicity : null,
+        user.graduation_year? user.graduation_year : null,
         user.is_admin ? 1 : 0
       ]
     );
@@ -93,5 +93,12 @@ export const userModel = {
       'UPDATE password_reset_token SET used_at = NOW() WHERE id = ?',
       [tokenId]
     );
-  }
+  },
+
+  async updatePassword(userId: number, newPassword: string) {
+    await db.execute(
+      'UPDATE user SET password = ?, modified = CURRENT_TIMESTAMP WHERE id = ?',
+      [newPassword, userId]
+    );
+  },
 };

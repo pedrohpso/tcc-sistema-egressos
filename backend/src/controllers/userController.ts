@@ -4,20 +4,29 @@ import { comparePassword, hashPassword } from '../utils/hashUtils';
 import crypto from 'crypto';
 import { sendPasswordResetEmail } from '../utils/email';
 
-interface RegisterRequestBody {
-  name: string;
-  email: string;
-  password: string;
-  birthdate?: string; // YYYY-MM-DD
-  gender?: 'male' | 'female' | 'trans_male' | 'trans_female' | 'non_binary' | 'other';
-  ethnicity?: 'white' | 'black' | 'brown' | 'yellow' | 'indigenous' | 'not_declared';
-  graduation_year?: number;
-  course_id?: number;
-}
+export const registerUser = async (req: FastifyRequest, res: FastifyReply) => {
+  const { name, email, password, birthdate, gender, ethnicity, graduation_year, course_id, is_admin } = req.body as {
+    name: string;
+    email: string;
+    password: string;
+    birthdate?: string; // YYYY-MM-DD
+    gender?: 'male' | 'female' | 'trans_male' | 'trans_female' | 'non_binary' | 'other';
+    ethnicity?: 'white' | 'black' | 'brown' | 'yellow' | 'indigenous' | 'not_declared';
+    graduation_year?: number;
+    course_id?: number;
+    is_admin?: boolean;
+  };
 
-export const registerUser = async (req: FastifyRequest<{ Body: RegisterRequestBody }>, res: FastifyReply) => {
-  const { name, email, password, birthdate, gender, ethnicity, graduation_year, course_id } = req.body;
+  let isAdmin = is_admin || false;
   
+  if (is_admin) {
+    const user = req.user as { is_admin: boolean };
+    console.log('user: ',user);
+    if (!user.is_admin) {
+      return res.status(403).send({ message: 'Apenas administradores podem registrar outros administradores.' });
+    }
+  }
+
   if (!name || !email || !password) {
     return res.status(400).send({ error: 'Campos obrigatórios faltando' });
   }
@@ -36,7 +45,7 @@ export const registerUser = async (req: FastifyRequest<{ Body: RegisterRequestBo
       gender,
       ethnicity,
       graduation_year,
-      is_admin: false
+      is_admin: isAdmin
     });
 
     if (course_id) {
@@ -51,13 +60,11 @@ export const registerUser = async (req: FastifyRequest<{ Body: RegisterRequestBo
   }
 };
 
-interface LoginRequestBody {
-  email: string;
-  password: string;
-}
-
-export const loginUser = async (req: FastifyRequest<{ Body: LoginRequestBody }>, res: FastifyReply) => {
-  const { email, password } = req.body;
+export const loginUser = async (req: FastifyRequest, res: FastifyReply) => {
+  const { email, password } = req.body as {
+    email: string;
+    password: string;
+  };
 
   if (!email || !password) {
     return res.status(400).send({ error: 'Email e senha são obrigatórios' });
@@ -151,5 +158,35 @@ export const resetPassword = async (req: FastifyRequest<{ Body: ResetPasswordBod
   } catch (error) {
     req.log.error(error);
     return res.status(500).send({ message: 'Erro ao redefinir a senha.' });
+  }
+};
+
+export const updatePassword = async (req: FastifyRequest, res: FastifyReply) => {
+  const { currentPassword, newPassword } = req.body as { currentPassword: string; newPassword: string };
+  const userId = (req.user as { id: number }).id;
+
+  if (!currentPassword || !newPassword) {
+    return res.status(400).send({ message: 'Senhas atuais e novas são obrigatórias.' });
+  }
+  
+  try {
+
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).send({ message: 'Usuário não encontrado.' });
+    }
+
+    const isCurrentPasswordCorrect = await comparePassword(currentPassword, user.password);
+    if (!isCurrentPasswordCorrect) {
+      return res.status(401).send({ message: 'Senha atual incorreta.' });
+    }
+
+    const hashedNewPassword = await hashPassword(newPassword);
+    await userModel.updatePassword(userId, hashedNewPassword);
+
+    return res.status(200).send({ message: 'Senha atualizada com sucesso.' });
+  } catch (error) {
+    req.log.error(error);
+    return res.status(500).send({ message: 'Erro ao atualizar a senha.' });
   }
 };

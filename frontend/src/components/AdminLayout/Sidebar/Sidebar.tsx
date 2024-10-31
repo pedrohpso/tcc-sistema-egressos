@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { FaHome, FaWpforms } from 'react-icons/fa';
-import { FaMagnifyingGlassChart } from "react-icons/fa6";
+import { FaMagnifyingGlassChart, FaUserShield } from "react-icons/fa6";
 import './Sidebar.css';
 
 const Sidebar: React.FC = () => {
@@ -30,6 +30,14 @@ const Sidebar: React.FC = () => {
             className={({ isActive }) => isActive ? 'active' : ''}
           >
             <FaWpforms className="sidebar-icon" /> Formulários
+          </NavLink>
+        </li>
+        <li>
+          <NavLink 
+            to="/admin/register-admin"
+            className={({ isActive }) => isActive ? 'active' : ''}
+          >
+            <FaUserShield className="sidebar-icon" /> Registrar Admin
           </NavLink>
         </li>
       </ul>

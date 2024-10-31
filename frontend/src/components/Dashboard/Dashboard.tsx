@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { getDashboardData } from '../../mockData';
 import { useCourse } from '../../context/CourseContext';
-import './Dashboard.css'; // Estilos do grid e layout
+import './Dashboard.css';
+import { getDashboardSummary } from '../../services/formService';
 
 const Dashboard: React.FC = () => {
   const { selectedCourse } = useCourse();
@@ -21,7 +21,7 @@ const Dashboard: React.FC = () => {
           registeredAlumniAmount,
           lastPublishedFormTitle,
           formReachAverage,
-        } = await getDashboardData(selectedCourse.id);
+        } = await getDashboardSummary(selectedCourse.id);
 
         setFormCount(publishedFormsAmount);
         setIndicatorCount(indicatorsAmount);
@@ -62,7 +62,7 @@ const Dashboard: React.FC = () => {
         </div>
         <div className="dashboard-card">
           <h2>Média de alcance dos Formulários</h2>
-          <p>{formReachAverage.toFixed(1)}%</p>
+          <p>{formReachAverage.toFixed(2)}%</p>
         </div>
       </div>
     </div>

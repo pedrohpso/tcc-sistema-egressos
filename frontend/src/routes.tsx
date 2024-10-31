@@ -12,6 +12,8 @@ import AdminFormEditPage from './components/AdminFormEditPage/AdminFormEditPage'
 import Dashboard from './components/Dashboard/Dashboard';
 import PasswordRecovery from './components/PasswordRecovery/PasswordRecovery';
 import PasswordReset from './components/PasswordReset/PasswordReset';
+import Profile from './components/Profile/Profile';
+import AdminRegister from './components/AdminRegister/AdminRegister';
 
 export const routes = () => {
   return (
@@ -26,7 +28,9 @@ export const routes = () => {
           <Route path="data" element={<AdminData />} />
           <Route path="forms" element={<AdminFormPage />} />
           <Route path="forms/:formId" element={<AdminFormEditPage/>} />
+          <Route path="register-admin" element={<AdminRegister />} />
         </Route>
+        <Route path="/profile" element={<Profile />} />
         <Route path='/alumni' element={<Alumni />} />
         <Route path="/form/:id" element={<AlumniForm />} />
         <Route path="*" element={<Error name="Página não encontrada" />} />

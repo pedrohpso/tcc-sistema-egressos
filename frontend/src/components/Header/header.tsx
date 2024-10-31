@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './Header.css';
 import Button from '../Button/Button';
 import { useNavigate } from 'react-router-dom';
@@ -29,37 +29,45 @@ const Header: React.FC = () => {
     navigate('/');
   }
 
+  const handleProfileClick = () => {
+    navigate('/profile');
+  };
+
   return (
     <header className="header">
       <div className='header-container'>
         <div className='title-container'>
           <h1 className="title" onClick={handleHomeClick}>Sistema de Egressos</h1>
         </div>
-        <div className= "image-container">
-          <img src='/marca_if_campinas.png' alt='Logo' className='header-image'/>
+        <div className="image-container">
+          <img src='/marca_if_campinas.png' alt='Logo' className='header-image' />
         </div>
       </div>
       <div className="bar">
-        { !user ? 
-        <div>
-          <Button className="bar-button" onClick={handleLoginClick} label="Login"/>
-          <Button className="bar-button" onClick={handleRegisterClick} label="Registrar"/>
-        </div>
-        :
+        {!user ?
+          <div>
+            <Button className="bar-button" onClick={handleLoginClick} label="Login" />
+            <Button className="bar-button" onClick={handleRegisterClick} label="Registrar" />
+          </div>
+          :
           <div className='user-header'>
-             <div className="course-selector">
+            <div className="course-selector">
               {user.is_admin ? courses.map(course => (
-                  <Button
-                    key={course.id}
-                    label={course.name}
-                    onClick={() => setSelectedCourse(course)}
-                    className={selectedCourse?.id === course.id ? 'selected' : ''}
-                  />
-                )) : (
-                  <p>Olá, {user.name}!</p>
-                )}
-              </div>
-            <Button className="bar-button" onClick={handleLogoutClick} label="Logout"/> 
+                <Button
+                  key={course.id}
+                  label={course.name}
+                  onClick={() => setSelectedCourse(course)}
+                  className={selectedCourse?.id === course.id ? 'selected' : ''}
+                />
+              )) : (
+                <p>Olá, {user.name}!</p>
+              )}
+            </div>
+            <div>
+              <Button className="bar-button" onClick={handleHomeClick} label="Início" />
+              <Button className="bar-button" onClick={handleProfileClick} label="Perfil" />
+              <Button className="bar-button" onClick={handleLogoutClick} label="Logout" />
+            </div>
           </div>
         }
       </div>

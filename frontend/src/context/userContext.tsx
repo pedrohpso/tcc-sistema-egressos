@@ -21,7 +21,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const token = localStorage.getItem('token');
 
     if (token) {
-      getUserData(token)
+      getUserData()
         .then(userData => {
           setUser(userData);
         })

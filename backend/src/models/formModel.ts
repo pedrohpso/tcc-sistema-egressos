@@ -70,7 +70,7 @@ export const formModel = {
       JOIN user_course uc ON f.course_id = uc.course_id
       LEFT JOIN form_answer fa ON f.id = fa.form_id AND fa.user_id = uc.user_id
       WHERE uc.user_id = ? AND f.status = 'published' 
-        AND f.deleted IS NULL AND uc.deleted IS NULL AND fa.deleted IS NULL
+        AND f.deleted IS NULL AND fa.deleted IS NULL
       Order by fa.created ASC`,
       [userId]
     );
@@ -143,6 +143,5 @@ export const formModel = {
     );
 
     return rows;
-  }
-
+  },
 };

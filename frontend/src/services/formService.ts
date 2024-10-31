@@ -286,3 +286,18 @@ export const saveAnswers = async (formId: number, answers: Record<string, string
     throw error;
   }
 }
+
+export const getDashboardSummary = async (courseId: number) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.get(`${API_URL}/courses/${courseId}/dashboard-summary`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar o resumo do dashboard:', error);
+    throw error;
+  }
+}
