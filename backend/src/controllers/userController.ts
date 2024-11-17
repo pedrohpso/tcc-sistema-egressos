@@ -21,7 +21,6 @@ export const registerUser = async (req: FastifyRequest, res: FastifyReply) => {
   
   if (is_admin) {
     const user = req.user as { is_admin: boolean };
-    console.log('user: ',user);
     if (!user.is_admin) {
       return res.status(403).send({ message: 'Apenas administradores podem registrar outros administradores.' });
     }

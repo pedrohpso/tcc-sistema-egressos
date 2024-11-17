@@ -186,15 +186,12 @@ export const fieldModel = {
     }
 
     if (options) {
-      console.log('options: ', options);
       const [existingOptionsRows] = await db.execute(
         'SELECT * FROM field_option WHERE field_id = ? and deleted IS NULL',
         [fieldId]
       );
       const existingOptions = existingOptionsRows as any[];
-      console.log('existingOptions: ', existingOptions);
       const existingOptionIds = existingOptions.map(opt => opt.id);
-      console.log('existingOptionIds: ', existingOptionIds);
       const incomingOptionIds = options.map(opt => opt.id).filter(id => id !== undefined);
 
       const optionsToDelete = existingOptionIds.filter(id => id && !incomingOptionIds.includes(id));
