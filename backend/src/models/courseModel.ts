@@ -59,7 +59,7 @@ export const courseModel = {
      ) AS reach`,
       [registeredAlumniAmount, courseId]
     );
-    console.log('formReach: ', formReach)
+
     return {
       publishedFormsAmount: publishedForms[0]?.publishedFormsAmount || 0,
       indicatorsAmount: indicators[0]?.indicatorsAmount || 0,

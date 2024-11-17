@@ -14,6 +14,8 @@ import PasswordRecovery from './components/PasswordRecovery/PasswordRecovery';
 import PasswordReset from './components/PasswordReset/PasswordReset';
 import Profile from './components/Profile/Profile';
 import AdminRegister from './components/AdminRegister/AdminRegister';
+import FormResponsesPage from './components/FormResponsesPage/FormResponsesPage';
+import UserAnswersPage from './components/UserAnswersPage/UserAnswersPage';
 
 export const routes = () => {
   return (
@@ -28,6 +30,8 @@ export const routes = () => {
           <Route path="data" element={<AdminData />} />
           <Route path="forms" element={<AdminFormPage />} />
           <Route path="forms/:formId" element={<AdminFormEditPage/>} />
+          <Route path="forms/:formId/responses" element={<FormResponsesPage />} />
+          <Route path="forms/:formId/responses/:userId" element={<UserAnswersPage />} />
           <Route path="register-admin" element={<AdminRegister />} />
         </Route>
         <Route path="/profile" element={<Profile />} />

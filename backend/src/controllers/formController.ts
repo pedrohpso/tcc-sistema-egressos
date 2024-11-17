@@ -277,3 +277,37 @@ export const getIndicatorData = async (req: FastifyRequest, res: FastifyReply) =
     return res.status(500).send({ message: 'Erro ao obter dados agrupados.' });
   }
 };
+
+export const getFormAnswersByUser = async (req: FastifyRequest, res: FastifyReply) => {
+  const { formId, userId } = req.params as { formId: string, userId: string };
+  const user = req.user as { is_admin: boolean };
+
+  if (!user?.is_admin) {
+    return res.status(403).send({ message: 'Acesso negado.' });
+  }
+
+  try {
+    const answers = await formModel.getAnswersByUser(Number(formId), Number(userId));
+    return res.send(answers);
+  } catch (error) {
+    req.log.error(error);
+    return res.status(500).send({ message: 'Erro ao buscar respostas do usuário.' });
+  }
+};
+
+export const getUsersFromPublishedForm = async (req: FastifyRequest, res: FastifyReply) => {
+  const { formId } = req.params as { formId: string };
+  const user = req.user as { is_admin: boolean };
+
+  if (!user?.is_admin) {
+    return res.status(403).send({ message: 'Acesso negado.' });
+  }
+
+  try {
+    const users = await formModel.getUsersByForm(Number(formId));
+    return res.send(users);
+  } catch (error) {
+    req.log.error(error);
+    return res.status(500).send({ message: 'Erro ao buscar usuários que responderam ao formulário.' });
+  }
+};

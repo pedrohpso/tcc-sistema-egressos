@@ -49,11 +49,11 @@ const AdminData: React.FC = () => {
 
   const [minYear, maxYear] = yearRange;
 
-  const { forms, isLoading: loadingForms } = useForms(selectedCourse!.id || null);
+  const { forms, isLoading: loadingForms } = useForms(selectedCourse?.id || null);
   const { indicators, isLoading: loadingIndicators } = useIndicators(formId);
 
   useEffect(() => {
-    if (forms.length > 0) {
+    if (forms && forms.length > 0) {
       setFormId(forms[0].id); 
     }
   }, [forms]);

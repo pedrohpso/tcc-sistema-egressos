@@ -16,7 +16,7 @@ interface Form {
 export const formModel = {
   async getFormsByCourseId(courseId: number) {
     const [rows] = await db.execute(
-      'SELECT id, title, status FROM form WHERE course_id = ? AND deleted IS NULL',
+      'SELECT id, title, status FROM form WHERE course_id = ? AND deleted IS NULL ORDER BY created DESC',
       [courseId]
     );
     return rows;
@@ -144,4 +144,36 @@ export const formModel = {
 
     return rows;
   },
+
+  async getAnswersByUser(formId: number, userId: number) {
+    const [rows] = await db.execute(
+      `SELECT f.question AS question, 
+      GROUP_CONCAT(COALESCE(fo.text, a.text) ORDER BY fo.id SEPARATOR ', ') AS answer
+      FROM form_answer fa
+      JOIN answer a ON fa.id = a.form_answer_id
+      JOIN field f ON a.field_id = f.id
+      LEFT JOIN field_option fo ON a.field_option_id = fo.id
+      WHERE fa.form_id = ? AND fa.user_id = ? 
+       AND fa.deleted IS NULL 
+       AND a.deleted IS NULL
+      GROUP BY f.id
+      ORDER BY f.position`,
+      [formId, userId]
+    );
+    return rows;
+  },
+
+  async getUsersByForm(formId: number) {
+    const [rows] = await db.execute(
+      `SELECT u.id, u.name, u.email
+       FROM form_answer fa
+       JOIN user u ON fa.user_id = u.id
+       WHERE fa.form_id = ? AND fa.deleted IS NULL AND u.deleted IS NULL
+       GROUP BY u.id
+       ORDER BY u.name`,
+      [formId]
+    );
+    return rows;
+  },
+
 };

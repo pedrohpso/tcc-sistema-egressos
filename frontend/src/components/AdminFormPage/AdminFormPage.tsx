@@ -66,6 +66,10 @@ const AdminFormPage: React.FC = () => {
     setNewFormTitle('');
   };
 
+  const handleViewForm = (formId: number) => {
+    navigate(`/admin/forms/${formId}/responses`);
+  };
+
   return (
     <div className="admin-form-page">
       <div className="admin-form-page-header">
@@ -85,8 +89,7 @@ const AdminFormPage: React.FC = () => {
                   <Button label="Excluir" onClick={() => openDeleteModal(form)} />
                 </div>
               ) : (
-                <div className="form-item-status">Publicado</div>
-              )}
+                <Button label="Visualizar" onClick={() => handleViewForm(form.id)} />              )}
             </li>
           ))}
         </ul>

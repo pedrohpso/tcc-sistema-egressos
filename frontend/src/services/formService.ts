@@ -301,3 +301,33 @@ export const getDashboardSummary = async (courseId: number) => {
     throw error;
   }
 }
+
+export const getFormAnswersByUser = async (formId: number, userId: number) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.get(`${API_URL}/forms/${formId}/answers/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar as respostas do usuário:', error);
+    throw error;
+  }
+}
+
+export const getUsersFromPublishedForm = async (formId: number) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.get(`${API_URL}/forms/${formId}/users`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar os usuários:', error);
+    throw error;
+  }
+}

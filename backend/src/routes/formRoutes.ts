@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { getFormsByCourse, createForm, updateForm, deleteForm, getFormById, publishForm, getUserForms, getPublishedFormsByCourse, getIndicatorData } from "../controllers/formController";
+import { getFormsByCourse, createForm, updateForm, deleteForm, getFormById, publishForm, getUserForms, getPublishedFormsByCourse, getIndicatorData, getUsersFromPublishedForm, getFormAnswersByUser } from "../controllers/formController";
 import { createField, deleteField, getIndicatorsByForm, updateField, updateFieldOrder } from "../controllers/fieldController";
 import { saveAnswers } from "../controllers/answerController";
 
@@ -13,7 +13,9 @@ export default async function formRoutes(app: FastifyInstance) {
 
   app.get('/:formId/indicators', { preValidation: [app.authenticate] }, getIndicatorsByForm);
   app.get('/data', { preValidation: [app.authenticate] }, getIndicatorData);
+  app.get('/:formId/answers/:userId', { preValidation: [app.authenticate] }, getFormAnswersByUser);
 
+  app.get('/:formId/users', { preValidation: [app.authenticate] }, getUsersFromPublishedForm);
   app.post('/:formId/fields', { preValidation: [app.authenticate] }, createField);
   app.put('/:formId/fields/:fieldId', { preValidation: [app.authenticate] }, updateField);
   app.post('/:formId/order', { preValidation: [app.authenticate] }, updateFieldOrder);
