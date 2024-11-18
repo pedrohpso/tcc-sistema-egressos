@@ -37,8 +37,6 @@ const Profile: React.FC = () => {
   }, []);
 
   const handlePasswordChange = async (formData: { [key: string]: string | string[] }) => {
-    console.log('formData:', formData);
-    
     const currentPass = formData.currentPassword as string;
     const newPass = formData.newPassword as string;
     const confirmPass = formData.confirmPassword as string;

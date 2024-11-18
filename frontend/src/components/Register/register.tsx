@@ -41,10 +41,8 @@ const Register: React.FC = () => {
                 course_id: Number(formData.course)
             };
 
-            console.log('userData:', userData)
-
             const response = await registerUser(userData); 
-            console.log('Usuário registrado com sucesso:', response);
+            console.info('Usuário registrado com sucesso:', response);
             navigate('/');
         } catch (error) {
             console.error('Erro ao registrar o usuário:', error);

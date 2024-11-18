@@ -15,7 +15,6 @@ const PasswordReset: React.FC = () => {
   }
 
   const handleSubmit = async (formData: { [key: string]: string | string[] }) => {
-    console.log('alo')
     const { newPassword } = formData;
 
     try {

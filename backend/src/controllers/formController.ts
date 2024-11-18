@@ -251,7 +251,6 @@ export const getIndicatorData = async (req: FastifyRequest, res: FastifyReply) =
 
   try {
     const rawData = await formModel.getGroupedDataByIndicator({courseId, indicatorId, startYear, endYear, grouping});
-    console.log('rawData: ', rawData);
     const formattedData = rawData.reduce((acc: any[], row: any) => {
       let groupName = row.group_label;
 
@@ -271,7 +270,6 @@ export const getIndicatorData = async (req: FastifyRequest, res: FastifyReply) =
       group[row.option_text] = row.response_count;
       return acc;
     }, []);
-    console.log('formattedData: ', formattedData);
     return res.send(formattedData);
   } catch (error) {
     req.log.error(error);

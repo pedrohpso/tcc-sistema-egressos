@@ -16,7 +16,7 @@ const AdminRegister: React.FC = () => {
             };
 
             const response = await registerAdmin(adminData);
-            console.log('Administrador registrado com sucesso:', response);
+            console.info('Administrador registrado com sucesso:', response);
             setMessage('Administrador registrado com sucesso.');
         } catch (error: any) {
             console.error('Erro ao registrar o administrador:', error);

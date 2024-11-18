@@ -140,7 +140,7 @@ const AdminData: React.FC = () => {
           link.click();
         }
       } catch (error) {
-        console.log('error: ', error);
+        console.error('error: ', error);
       }
     }else {
       const csvContent = convertToCSV(data);

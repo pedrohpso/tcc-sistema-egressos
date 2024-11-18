@@ -10,7 +10,6 @@ const PasswordRecovery: React.FC = () => {
   const handleSubmit = async (formData: { [key: string]: string | string[] }) => {
     const email = formData['Email'] as string;
     await requestPasswordReset(email);
-    console.log(`Enviar link de recuperação de senha para o email: ${email}`);
     setEmailSent(true);
   };
 

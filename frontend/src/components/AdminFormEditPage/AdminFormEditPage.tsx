@@ -129,7 +129,7 @@ const AdminFormEditPage: React.FC = () => {
         const fetchedForm = await getFormById(Number(formId));
         setFields(fetchedForm.fields);
       } catch (error) {
-        console.log('Erro ao excluir a questão:', error);
+        console.error('Erro ao excluir a questão:', error);
       }
     }
   };
@@ -148,7 +148,7 @@ const AdminFormEditPage: React.FC = () => {
         setFields(fetchedForm.fields);
       }
     } catch (error) {
-      console.log('Erro ao editar a questão:', error);
+      console.error('Erro ao editar a questão:', error);
     }
     setIsEditFieldModalOpen(false);
   };
