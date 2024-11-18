@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { courseModel } from '../models/courseModel';
+import { ReqUserType } from '../models/userModel';
 
 export const listCourses = async (_req: FastifyRequest, res: FastifyReply) => {
   try {
@@ -14,7 +15,7 @@ export const listCourses = async (_req: FastifyRequest, res: FastifyReply) => {
 
 export const getDashboardSummary = async (req: FastifyRequest, res: FastifyReply) => {
   const { courseId } = req.params as { courseId: string };
-  const user = req.user as { is_admin: boolean };
+  const user = req.user as ReqUserType;
 
   if (!user?.is_admin) {
     return res.status(403).send({ message: 'Acesso negado.' });

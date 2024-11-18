@@ -157,6 +157,15 @@ const AdminData: React.FC = () => {
     }
   };
 
+  const normalizedData = data.map(item => {
+    const newItem = { ...item };
+    data.flatMap(item => Object.keys(item).filter(key => key !== 'name')).forEach(key => {
+      if (!newItem[key]) {
+        newItem[key] = '0';
+      }
+    });
+    return newItem;
+  });
   
   return (
     <div className='admin-data-container'>
@@ -255,7 +264,7 @@ const AdminData: React.FC = () => {
         </div>
 
         <div id="chart-container" className="chart-container">
-          {isLoading ? <div className="loading">Carregando...</div> : data.length > 0 && <Chart type={chartType} data={data} />}
+          {isLoading ? <div className="loading">Carregando...</div> : data.length > 0 && <Chart type={chartType} data={normalizedData} />}
         </div>
       </div>
       <div>

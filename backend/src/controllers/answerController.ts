@@ -1,6 +1,7 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { fieldModel } from '../models/fieldModel';
 import { answerModel } from '../models/answerModel';
+import { ReqUserType } from '../models/userModel';
 
 interface SaveAnswerBody {
   [fieldId: string]: string | string[]; 
@@ -9,7 +10,7 @@ interface SaveAnswerBody {
 export const saveAnswers = async (req: FastifyRequest, res: FastifyReply) => {
   const { formId } = req.params as { formId: string };
   const answers = req.body as SaveAnswerBody;
-  const user = req.user as { id: number };
+  const user = req.user as ReqUserType;
 
   if (!user) {
     return res.status(401).send({ message: 'Usuário não autorizado' });

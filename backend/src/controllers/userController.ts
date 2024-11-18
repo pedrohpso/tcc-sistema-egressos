@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { userModel } from '../models/userModel';
+import { ReqUserType, userModel } from '../models/userModel';
 import { comparePassword, hashPassword } from '../utils/hashUtils';
 import crypto from 'crypto';
 import { sendPasswordResetEmail } from '../utils/email';
@@ -17,10 +17,10 @@ export const registerUser = async (req: FastifyRequest, res: FastifyReply) => {
     is_admin?: boolean;
   };
 
-  let isAdmin = is_admin || false;
+  const isAdmin = is_admin || false;
   
   if (is_admin) {
-    const user = req.user as { is_admin: boolean };
+    const user = req.user as ReqUserType;
     if (!user.is_admin) {
       return res.status(403).send({ message: 'Apenas administradores podem registrar outros administradores.' });
     }
@@ -72,12 +72,12 @@ export const loginUser = async (req: FastifyRequest, res: FastifyReply) => {
   try {
     const user = await userModel.findByEmail(email);
     if (!user) {
-      return res.status(401).send({ error: 'Email não registrado' });
+      return res.status(401).send({ error: 'Email não encontrado ou senha inválida' });
     }
 
     const isPasswordCorrect = await comparePassword(password, user.password);
     if (!isPasswordCorrect) {
-      return res.status(401).send({ error: 'Senha inválida' });
+      return res.status(401).send({ error: 'Email não encontrado ou senha inválida' });
     }
 
     const token = await res.jwtSign({ id: user.id, is_admin: user.is_admin });
@@ -92,7 +92,7 @@ export const loginUser = async (req: FastifyRequest, res: FastifyReply) => {
 
 export const getUserProfile = async (req: FastifyRequest, res: FastifyReply) => {
   try {
-    const userId = (req.user as {id: number}).id;
+    const userId = (req.user as ReqUserType).id;
 
     const user = await userModel.findById(userId);
     if (!user) {
@@ -112,7 +112,7 @@ export const requestPasswordReset = async (req: FastifyRequest, res: FastifyRepl
 
   try {
     const user = await userModel.findByEmail(email);
-    // Não informa se o e-mail não existe, pra não expor informações
+
     if (!user) return res.status(200).send({ message: 'Token de recuperação gerado e e-mail enviado, se o usuário existir.' });
 
     const token = crypto.randomBytes(32).toString('hex');
@@ -162,7 +162,7 @@ export const resetPassword = async (req: FastifyRequest<{ Body: ResetPasswordBod
 
 export const updatePassword = async (req: FastifyRequest, res: FastifyReply) => {
   const { currentPassword, newPassword } = req.body as { currentPassword: string; newPassword: string };
-  const userId = (req.user as { id: number }).id;
+  const userId = (req.user as ReqUserType).id;
 
   if (!currentPassword || !newPassword) {
     return res.status(400).send({ message: 'Senhas atuais e novas são obrigatórias.' });

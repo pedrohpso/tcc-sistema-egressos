@@ -18,6 +18,11 @@ interface User {
   deleted: Date | null;
 }
 
+export type ReqUserType = {
+  id: number;
+  is_admin: boolean;
+}
+
 export const userModel = {
   async createUser(user: Omit<User, 'id' | 'created' | 'modified' | 'deleted'>): Promise<User> {
     const hashedPassword = await hashPassword(user.password);

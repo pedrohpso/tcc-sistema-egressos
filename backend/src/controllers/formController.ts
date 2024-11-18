@@ -1,6 +1,7 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { formModel } from '../models/formModel';
 import { fieldModel } from '../models/fieldModel';
+import { ReqUserType } from '../models/userModel';
 
 interface CreateFormBody {
   course_id: number;
@@ -13,7 +14,7 @@ interface UpdateFormBody {
 
 export const getFormsByCourse = async (req: FastifyRequest, res: FastifyReply) => {
   const courseId = (req.params as { courseId: string }).courseId as string;
-  const user = req.user as { is_admin: boolean };
+  const user = req.user as ReqUserType;
 
   if (!user?.is_admin) {
     return res.status(403).send({ message: 'Acesso negado.' });
@@ -34,7 +35,7 @@ export const getFormsByCourse = async (req: FastifyRequest, res: FastifyReply) =
 
 export const createForm = async (req: FastifyRequest, res: FastifyReply) => {
   const { title, course_id } = req.body as CreateFormBody
-  const user = req.user as { is_admin: boolean };
+  const user = req.user as ReqUserType;
 
   if (!user?.is_admin) {
     return res.status(403).send({ message: 'Acesso negado.' });
@@ -46,7 +47,7 @@ export const createForm = async (req: FastifyRequest, res: FastifyReply) => {
       return res.status(400).send({ message: 'O título do formulário é obrigatório.' });
     }
 
-    const user = req.user as { id: number, is_admin: boolean };
+    const user = req.user as ReqUserType
 
     if (!user || !user.is_admin) {
       return res.status(401).send({ message: 'Usuário não autorizado.' });
@@ -66,7 +67,7 @@ export const updateForm = async (
 ) => {
   const formId = parseInt((req.params as {id: string}).id, 10);
   const { title } = req.body as UpdateFormBody;
-  const user = req.user as {id: number, is_admin: boolean}
+  const user = req.user as ReqUserType
 
   if (isNaN(formId) || !title || !user) {
     return res.status(400).send({ message: 'Dados inválidos' });
@@ -96,7 +97,7 @@ export const updateForm = async (
 
 export const deleteForm = async (req: FastifyRequest, res: FastifyReply) => {
   const { id } = req.params as { id: string };
-  const user = req.user as { is_admin: boolean };
+  const user = req.user as ReqUserType;
 
   if (!user?.is_admin) {
     return res.status(403).send({ message: 'Acesso negado.' });
@@ -121,7 +122,7 @@ export const deleteForm = async (req: FastifyRequest, res: FastifyReply) => {
 
 export const getFormById = async (req: FastifyRequest, res: FastifyReply) => {
   const formId = parseInt((req.params as {id: string}).id, 10);
-  const user = req.user as { id: number };
+  const user = req.user as ReqUserType;
 
   if (!user) {
     return res.status(401).send({ message: 'Usuário não autorizado' });
@@ -149,7 +150,7 @@ export const getFormById = async (req: FastifyRequest, res: FastifyReply) => {
 
 export const publishForm = async (req: FastifyRequest, res: FastifyReply) => {
   const formId = parseInt((req.params as {id: string}).id, 10);
-  const user = req.user as { is_admin: boolean };
+  const user = req.user as ReqUserType;
 
   if (!user?.is_admin) {
     return res.status(403).send({ message: 'Acesso negado.' });
@@ -178,7 +179,7 @@ export const publishForm = async (req: FastifyRequest, res: FastifyReply) => {
 }
 
 export const getUserForms = async (req: FastifyRequest, res: FastifyReply) => {
-  const user = req.user as { id: number };
+  const user = req.user as ReqUserType;
 
   if (!user) {
     return res.status(401).send({ message: 'Usuário não autorizado' });
@@ -195,7 +196,7 @@ export const getUserForms = async (req: FastifyRequest, res: FastifyReply) => {
 
 export const getPublishedFormsByCourse = async (req: FastifyRequest, res: FastifyReply) => {
   const { courseId } = req.params as { courseId: string };
-  const user = req.user as { is_admin: boolean };
+  const user = req.user as ReqUserType;
 
   if (!user?.is_admin) {
     return res.status(403).send({ message: 'Acesso negado.' });
@@ -240,7 +241,7 @@ export const getIndicatorData = async (req: FastifyRequest, res: FastifyReply) =
     indicatorId: number;
     grouping: string;
   };
-  const user = req.user as { is_admin: boolean };
+  const user = req.user as ReqUserType;
 
   if (!user?.is_admin) {
     return res.status(403).send({ message: 'Acesso negado.' });
@@ -250,7 +251,7 @@ export const getIndicatorData = async (req: FastifyRequest, res: FastifyReply) =
 
   try {
     const rawData = await formModel.getGroupedDataByIndicator({courseId, indicatorId, startYear, endYear, grouping});
-
+    console.log('rawData: ', rawData);
     const formattedData = rawData.reduce((acc: any[], row: any) => {
       let groupName = row.group_label;
 
@@ -270,7 +271,7 @@ export const getIndicatorData = async (req: FastifyRequest, res: FastifyReply) =
       group[row.option_text] = row.response_count;
       return acc;
     }, []);
-
+    console.log('formattedData: ', formattedData);
     return res.send(formattedData);
   } catch (error) {
     req.log.error(error);
@@ -280,7 +281,7 @@ export const getIndicatorData = async (req: FastifyRequest, res: FastifyReply) =
 
 export const getFormAnswersByUser = async (req: FastifyRequest, res: FastifyReply) => {
   const { formId, userId } = req.params as { formId: string, userId: string };
-  const user = req.user as { is_admin: boolean };
+  const user = req.user as ReqUserType;
 
   if (!user?.is_admin) {
     return res.status(403).send({ message: 'Acesso negado.' });
@@ -297,7 +298,7 @@ export const getFormAnswersByUser = async (req: FastifyRequest, res: FastifyRepl
 
 export const getUsersFromPublishedForm = async (req: FastifyRequest, res: FastifyReply) => {
   const { formId } = req.params as { formId: string };
-  const user = req.user as { is_admin: boolean };
+  const user = req.user as ReqUserType;
 
   if (!user?.is_admin) {
     return res.status(403).send({ message: 'Acesso negado.' });

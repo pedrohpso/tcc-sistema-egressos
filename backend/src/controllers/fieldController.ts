@@ -1,5 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { CreateFieldInput, fieldModel, UpdateFieldInput } from '../models/fieldModel';
+import { ReqUserType } from '../models/userModel';
 
 const defaultUpdateFields = {
   question: null,
@@ -16,7 +17,7 @@ function normalizeData<T>(data: Partial<T>, defaultFields: Partial<T>) {
 export const createField = async (req: FastifyRequest, res: FastifyReply) => {
   const { formId } = req.params as { formId: string };
   const { question, type, position, options, dependencies, indicator } = req.body as CreateFieldInput;
-  const user = req.user as { is_admin: boolean };
+  const user = req.user as ReqUserType;
 
   if (!user?.is_admin) {
     return res.status(403).send({ message: 'Acesso negado.' });
@@ -48,7 +49,7 @@ export const updateField = async (req: FastifyRequest, res: FastifyReply) => {
   const { fieldId } = req.params as { fieldId: string };
   const updates = req.body as UpdateFieldInput
   const normalizedUpdates  = normalizeData(updates, defaultUpdateFields);
-  const user = req.user as { is_admin: boolean };
+  const user = req.user as ReqUserType;
 
   if (!user?.is_admin) {
     return res.status(403).send({ message: 'Acesso negado.' });
@@ -65,7 +66,7 @@ export const updateField = async (req: FastifyRequest, res: FastifyReply) => {
 
 export const deleteField = async (req: FastifyRequest, res: FastifyReply) => {
   const { fieldId } = req.params as { fieldId: string };
-  const user = req.user as { is_admin: boolean };
+  const user = req.user as ReqUserType;
 
   if (!user?.is_admin) {
     return res.status(403).send({ message: 'Acesso negado.' });
@@ -83,7 +84,7 @@ export const deleteField = async (req: FastifyRequest, res: FastifyReply) => {
 export const updateFieldOrder = async (req: FastifyRequest, res: FastifyReply) => {
   const { formId } = req.params as { formId: string };
   const { fields } = req.body as { fields: { fieldId: number, position: number }[] };
-  const user = req.user as { is_admin: boolean };
+  const user = req.user as ReqUserType;
 
   if (!user?.is_admin) {
     return res.status(403).send({ message: 'Acesso negado.' });
@@ -100,7 +101,7 @@ export const updateFieldOrder = async (req: FastifyRequest, res: FastifyReply) =
 
 export const getIndicatorsByForm = async (req: FastifyRequest, res: FastifyReply) => {
   const { formId } = req.params as { formId: string };
-  const user = req.user as { is_admin: boolean };
+  const user = req.user as ReqUserType;
 
   if (!user?.is_admin) {
     return res.status(403).send({ message: 'Acesso negado.' });

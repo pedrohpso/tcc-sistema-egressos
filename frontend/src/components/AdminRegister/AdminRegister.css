@@ -1,5 +1,6 @@
 .admin-register-container {
-  max-width: 600px;
+  width: 350px;
+  font-size: 0.83em;
   margin: 0 auto;
   padding: 20px;
   background-color: #f9f9f9;

@@ -39,8 +39,6 @@ server.register(formRoutes, { prefix: '/api/forms' });
 
 const start = async () => {
   try {
-    server.log.info('Conectado ao banco de dados');
-
     await server.listen({ port: 3000, host: '0.0.0.0' });
     server.log.info(`Servidor rodando em http://localhost:3000`);
   } catch (err) {

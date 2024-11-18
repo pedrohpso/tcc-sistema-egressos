@@ -64,7 +64,7 @@ const Profile: React.FC = () => {
   const fields: FormFieldProps[] = [
     {
       type: 'password',
-      label: 'Nova Senha',
+      label: 'Senha atual',
       required: true,
       name: 'currentPassword',
       value: currentPassword,
