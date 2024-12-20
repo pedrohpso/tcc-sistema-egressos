@@ -1,0 +1,47 @@
+.dashboard-container {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-header {
+  text-align: left;
+  margin-bottom: 30px;
+}
+
+.dashboard-title {
+  font-size: 2em;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.course-name {
+  text-align: left;
+  font-size: 1.2em;
+  color: #555;
+  margin-top: 5px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.dashboard-card {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  height: 160px
+}
+
+.dashboard-card h2 {
+  margin: 0;
+}
+
+.dashboard-card p {
+  font-weight: bold;
+  color: #333;
+}

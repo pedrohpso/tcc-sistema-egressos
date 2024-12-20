@@ -1,0 +1,21 @@
+.homepage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: auto;
+    width: 100%;
+}
+
+.homepage h2 {
+    font-size: 40px;
+    color: #17882c;
+}
+
+.homepage-description {
+    font-size: 20px;
+    color: #555;
+    margin-top: 15px;
+    max-width: 800px;
+}
